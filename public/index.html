@@ -4,8 +4,29 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Hello, world!</title>
+
+		<script src="https://unpkg.com/vue@next" defer></script>
+		<script src="/scripts/index.js" defer></script>
 	</head>
 	<body>
-		<h1>Hello, world!</h1>
+		<div id="todo-list">
+			<ul>
+				<todo-item
+					v-for="(todo, i) in todos"
+					:key="todo.id"
+					:text="todo.text"
+					@remove="todos.splice(i, 1)"
+					></todo-item>
+			</ul>
+			<form @submit.prevent="addNewTodo">
+				<label for="new-todo">Add a todo</label>
+				<input
+					v-model="newTodoText"
+					id="new-todo"
+					placeholder="e.g. Feed the cat"
+					/>
+				<button>Add</button>
+			</form>
+		</div>
 	</body>
 </html>
