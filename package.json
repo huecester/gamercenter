@@ -1,0 +1,8 @@
+{
+  "name": "gamercenter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:huecester/gamercenter",
+  "author": "huecester <jericho.paulino@yahoo.com.ph>",
+  "license": "MIT"
+}
