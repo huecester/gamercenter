@@ -1,4 +1,6 @@
-const app = Vue.createApp({
+import { createApp } from 'vue';
+
+const app = createApp({
 	data() {
 		return {
 			newTodoText: '',
@@ -28,4 +30,4 @@ app.component('todo-item', {
 	emits: ['remove'],
 });
 
-app.mount('#todo-list')
+app.mount('#todo-list');

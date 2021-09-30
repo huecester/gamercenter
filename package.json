@@ -1,0 +1,19 @@
+{
+  "name": "gamercenter",
+  "version": "1.0.0",
+  "repository": "git@github.com:huecester/gamercenter",
+  "scripts": {
+    "build": "webpack",
+    "serve": "webpack serve"
+  },
+  "author": "huecester <jericho.paulino@yahoo.com.ph>",
+  "license": "MIT",
+  "dependencies": {
+    "vue": "^3.2.19"
+  },
+  "devDependencies": {
+    "webpack": "^5.55.1",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.3.0"
+  }
+}
