@@ -4,9 +4,18 @@ const fs = require('fs');
 const webpack = require('webpack');
 const { VueLoaderPlugin } = require('vue-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-	mode: 'development',
+	mode: process.env.NODE_ENV !== 'production'
+	? 'development'
+	: 'production',
+
+	devtool: process.env.NODE_ENV !== 'production'
+	? 'eval-source-map'
+	: 'source-map',
 
 	entry: './src/index.js',
 
@@ -17,6 +26,15 @@ module.exports = {
 		}),
 		new VueLoaderPlugin(),
 		new MiniCssExtractPlugin(),
+		new HtmlWebpackPlugin({
+			title: 'gamer god',
+			template: './src/index.html',
+		}),
+		new CopyPlugin({
+			patterns: [
+				{ from: './public', to: './static' },
+			],
+		}),
 	],
 
 	resolve: {
@@ -24,22 +42,23 @@ module.exports = {
 			vue: "vue/dist/vue.esm-bundler.js",
 		},
 		extensions: ['.tsx', '.ts', '.js'],
+		symlinks: false,
 	},
 
 	module: {
 		rules: [
 			{
-				test: /\.vue$/,
+				test: /\.vue$/i,
 				use: 'vue-loader',
 			},
 
 			{
-				test: /\.(?:png|jpe?g|gif)$/,
-				use: 'url-loader',
+				test: /\.(?:png|jpe?g|gif|svg)$/i,
+				type: 'asset/resource'
 			},
 
 			{
-				test: /\.sass$/,
+				test: /\.sass$/i,
 				use: [
 					process.env.NODE_ENV !== 'production'
 						? 'style-loader'
@@ -49,7 +68,7 @@ module.exports = {
 						loader: 'sass-loader',
 						options: {
 							additionalData: `
-								@import "./src/styles/_variables.sass"
+								@import "./src/_variables.sass"
 							`,
 							sassOptions: {
 								indentedSyntax: true,
@@ -62,7 +81,17 @@ module.exports = {
 	},
 
 	output: {
-		filename: 'main.js',
+		filename: '[name].[contenthash].js',
+		assetModuleFilename: 'images/[hash][ext][query]',
 		path: path.resolve(__dirname, 'dist'),
+		clean: true,
+	},
+
+	optimization: {
+		moduleIds: 'deterministic',
+		runtimeChunk: 'single',
+		splitChunks: {
+			chunks: 'all',
+		},
 	},
 };
