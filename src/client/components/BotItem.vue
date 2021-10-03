@@ -21,7 +21,7 @@ export default {
 	<article>
 		<h2>{{ name }}</h2>
 		<p>{{ description }}</p>
-		<a :href="link">Invite {{ name }}</a>
+		<a :href="link">Invite "{{ name }}"</a>
 	</article>
 </template>
 
