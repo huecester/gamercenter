@@ -1,22 +1,15 @@
 <script>
 export default {
-	data() {
-		return {
-			posts: [],
-		};
-	},
 	async created() {
-		let posts = this.$store.posts;
-		if (!posts) {
+		if (this.$store.state.posts.length <= 0) {
 			try {
 				const data = await fetch('/api/posts');
-				posts = await data.json();
+				const posts = await data.json();
 				this.$store.commit('setPosts', posts);
 			} catch (err) {
 				console.error(err);
 			};
 		};
-		this.posts = posts;
 	},
 };
 </script>
@@ -24,7 +17,7 @@ export default {
 <template>
 	<h1>Hello, world!</h1>
 	<article
-			v-for="post in posts"
+			v-for="post in this.$store.state.posts"
 			:key="post.id"
 			>
 			<h2>{{ post.title }}</h2>

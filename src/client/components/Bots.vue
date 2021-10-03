@@ -5,23 +5,16 @@ export default {
 	components: {
 		BotItem,
 	},
-	data() {
-		return {
-			bots: [],
-		};
-	},
 	async created() {
-		let bots = this.$store.bots;
-		if (!bots) {
+		if (this.$store.state.bots.length <= 0) {
 			try {
 				const data = await fetch('/api/bots');
-				bots = await data.json();
+				const bots = await data.json();
 				this.$store.commit('setBots', bots);
 			} catch (err) {
 				console.error(err);
 			};
 		};
-		this.bots = bots;
 	},
 };
 </script>
@@ -29,7 +22,7 @@ export default {
 <template>
 	<h1>Bots</h1>
 	<BotItem
-			v-for="bot in bots"
+			v-for="bot in this.$store.state.bots"
 			:key="bot.id"
 			:name="bot.name"
 			:description="bot.description"
