@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import { createStore } from 'vuex';
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
 
 // Main app
@@ -18,13 +19,31 @@ const routes = [
 ];
 
 // Initalize app
+const store = createStore({
+	state() {
+		return {
+			posts: [],
+			bots: [],
+		};
+	},
+	mutations: {
+		setPosts(state, newPosts) {
+			state.posts = newPosts;
+		},
+		setBots(state, newBots) {
+			state.bots = newBots;
+		},
+	},
+});
+
 const router = createRouter({
 	history: createWebHistory(),
 	routes,
 });
 
-const app = createApp(App);
 
+const app = createApp(App);
+app.use(store);
 app.use(router);
 
 app.mount('#app');

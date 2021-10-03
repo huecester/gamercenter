@@ -6,15 +6,19 @@ export default {
 		};
 	},
 	async created() {
-		try {
-			const data = await fetch('/api/posts');
-			this.posts = await data.json();
-		} catch (err) {
-			console.error(err);
-		}
+		let posts = this.$store.posts;
+		if (!posts) {
+			try {
+				const data = await fetch('/api/posts');
+				posts = await data.json();
+				this.$store.commit('setPosts', posts);
+			} catch (err) {
+				console.error(err);
+			};
+		};
+		this.posts = posts;
 	},
 };
-// TOOD: get content from database
 </script>
 
 <template>

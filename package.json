@@ -29,6 +29,7 @@
     "vue": "^3.2.19",
     "vue-loader": "^16.8.1",
     "vue-router": "^4.0.11",
+    "vuex": "^4.0.2",
     "webpack": "^5.55.1",
     "webpack-cli": "^4.8.0",
     "webpack-dev-server": "^4.3.0"
