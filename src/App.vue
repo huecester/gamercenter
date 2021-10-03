@@ -1,27 +1,46 @@
 <script>
 import Heading from './components/Heading.vue';
-import Counter from './components/Counter.vue';
+import Navbar from './components/Navbar.vue';
+
+import normalize from '../node_modules/normalize.css/normalize.css';
 
 export default {
 	components: {
 		Heading,
-		Counter,
+		Navbar,
 	},
-}
+	data() {
+		return {
+			navItems: [
+				{ title: 'Home', path: '/' },
+				{ title: 'About', path: '/about' },
+				{ title: 'Games', path: '/games' },
+				{ title: 'Bots', path: '/bots' },
+			],
+		};
+	},
+};
 </script>
 
 <template>
-	<heading logoPath='/images/logo-black-200px.png'></heading>
-	<div id="button-wrapper">
-		<counter
-				v-for="i in 5"
-				:title="i.toString()"
-				>
-		</counter>
-	</div>
+	<Heading logoPath='/images/logo-white-200px.png' />
+
+	<Navbar
+			:nav-items="navItems"
+			/>
+
+	<main>
+		<router-view />
+	</main>
 </template>
 
 <style lang="sass">
 html
-	border: 1px solid $test-color-2
+	font-family: $font-stack
+	background-color: $bg-dark
+	color: white
+	margin: 0 1rem
+
+a
+	color: $fg-light
 </style>

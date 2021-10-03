@@ -11,12 +11,16 @@ export default {
 
 <template>
 	<header>
-		<img :src="logoPath">
+		<router-link to="/">
+			<img :src="logoPath" />
+		</router-link>
 	</header>
 </template>
 
 <style scoped lang="sass">
 header
 	text-align: center
-	background-color: $test-color-1
+	img
+		width: 100px
+		height: auto
 </style>

@@ -4,7 +4,6 @@ const fs = require('fs');
 const webpack = require('webpack');
 const { VueLoaderPlugin } = require('vue-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
@@ -27,7 +26,7 @@ module.exports = {
 		new VueLoaderPlugin(),
 		new MiniCssExtractPlugin(),
 		new HtmlWebpackPlugin({
-			title: 'gamer god',
+			title: 'gamercenter',
 			template: './src/index.html',
 		}),
 		new CopyPlugin({
@@ -58,6 +57,16 @@ module.exports = {
 			},
 
 			{
+				test: /\.css$/i,
+				use: [
+					process.env.NODE_ENV !== 'production'
+					? 'style-loader'
+					: MiniCssExtractPlugin.loader,
+					'css-loader',
+				],
+			},
+
+			{
 				test: /\.sass$/i,
 				use: [
 					process.env.NODE_ENV !== 'production'
@@ -69,6 +78,7 @@ module.exports = {
 						options: {
 							additionalData: `
 								@import "./src/_variables.sass"
+								@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300&display=swap')
 							`,
 							sassOptions: {
 								indentedSyntax: true,
