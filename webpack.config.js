@@ -16,7 +16,7 @@ module.exports = {
 	? 'eval-source-map'
 	: 'source-map',
 
-	entry: './src/index.js',
+	entry: './src/client/index.js',
 
 	plugins: [
 		new webpack.DefinePlugin({
@@ -27,7 +27,7 @@ module.exports = {
 		new MiniCssExtractPlugin(),
 		new HtmlWebpackPlugin({
 			title: 'gamercenter',
-			template: './src/index.html',
+			template: './src/client/index.html',
 		}),
 		new CopyPlugin({
 			patterns: [
@@ -77,7 +77,7 @@ module.exports = {
 						loader: 'sass-loader',
 						options: {
 							additionalData: `
-								@import "./src/_variables.sass"
+								@import "./src/client/_variables.sass"
 								@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300&display=swap')
 							`,
 							sassOptions: {
