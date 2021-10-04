@@ -20,14 +20,16 @@ export default {
 </script>
 
 <template>
-	<h1>Bots</h1>
-	<BotItem
-			v-for="bot in this.$store.state.bots"
-			:key="bot.id"
-			:name="bot.name"
-			:description="bot.description"
-			:link="bot.link"
-			/>
+	<main>
+		<h1>Bots</h1>
+		<BotItem
+				v-for="bot in this.$store.state.bots"
+				:key="bot.id"
+				:name="bot.name"
+				:description="bot.description"
+				:link="bot.link"
+				/>
+	</main>
 </template>
 
 <style scoped lang="sass">

@@ -15,14 +15,16 @@ export default {
 </script>
 
 <template>
-	<h1>Hello, world!</h1>
-	<article
-			v-for="post in this.$store.state.posts"
-			:key="post.id"
-			>
-			<h2>{{ post.title }}</h2>
-			<p>{{ post.content }}</p>
-	</article>
+	<main>
+		<h1>Hello, world!</h1>
+		<article
+				v-for="post in this.$store.state.posts"
+				:key="post.id"
+				>
+				<h2>{{ post.title }}</h2>
+				<p>{{ post.content }}</p>
+		</article>
+	</main>
 </template>
 
 <style scoped lang="sass">

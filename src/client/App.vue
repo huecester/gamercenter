@@ -29,9 +29,11 @@ export default {
 			:nav-items="navItems"
 			/>
 
-	<main>
-		<router-view />
-	</main>
+	<router-view v-slot="{ Component }">
+		<transition name="slide" mode="out-in">
+			<component :is="Component" />
+		</transition>
+	</router-view>
 </template>
 
 <style lang="sass">
@@ -43,4 +45,16 @@ html
 
 a
 	color: $fg-light
+
+
+// Slide animation
+.slide-enter-from
+	transform: translateX(100%)
+
+.slide-leave-to
+	transform: translateX(-100%)
+
+.slide-enter-active,
+.slide-leave-active
+	transition: transform 0.25s ease
 </style>
