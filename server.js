@@ -1,12 +1,17 @@
+// Packages
 const path = require('path');
 const express = require('express');
 const history = require('connect-history-api-fallback');
+
+// Config
 const port = process.env.PORT || 8080;
 
+
+// Init
 const app = express();
 
-// Routes
-app.use('/api', require(path.resolve(__dirname, 'src/api/api.js')))
+// API Routes
+app.use('/api', require('./src/server/api.js'));
 
 // SPA fallback
 const distMiddleware = express.static(path.resolve(__dirname, 'dist'));
