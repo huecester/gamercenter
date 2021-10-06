@@ -8,10 +8,10 @@ ENV NODE_ENV=production
 EXPOSE 8080 8080
 
 # Install packages
-COPY package.json .
+COPY package.prod.json package.json
 COPY yarn.lock .
 
-RUN yarn install
+RUN ["yarn", "install", "--prod"]
 
 # Copy other files
 COPY public public
