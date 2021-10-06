@@ -2,6 +2,6 @@
 Gaming gaming
 
 TODO:
-- [ ] automatic date in db
+- [x] automatic date in db
 - [ ] favicon.ico
 - [ ] buildx docker image multi-platform

@@ -2,7 +2,7 @@ const express = require('express');
 const db = require('../db.js');
 
 // Initialize table
-db.query('CREATE TABLE IF NOT EXISTS posts (id serial primary key, title text not null, content text not null)')
+db.query('CREATE TABLE IF NOT EXISTS posts (id SERIAL PRIMARY KEY, title TEXT NOT NULL, content TEXT NOT NULL, creation DATE NOT NULL DEFAULT CURRENT_DATE)')
 	.catch(err => console.error(err));
 
 // Create router
