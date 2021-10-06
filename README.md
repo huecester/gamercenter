@@ -7,4 +7,7 @@ TODO:
     - [ ] game page
     - [ ] server
         - [ ] room list via api
-        - [ ] game instances with socket.io
+        - [ ] socket.io
+            - [ ] setup
+            - [ ] namespace
+            - [ ] rooms
