@@ -1,5 +1,13 @@
 <script>
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 export default {
+	methods: {
+		formatDate(dateString) {
+			const date = new Date(dateString);
+			return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+		}
+	},
 	async created() {
 		if (this.$store.state.posts.length <= 0) {
 			try {
@@ -16,16 +24,20 @@ export default {
 
 <template>
 	<main>
-		<h1>Hello, world!</h1>
+		<h1>gamercenter</h1>
 		<article
 				v-for="post in this.$store.state.posts"
 				:key="post.id"
 				>
-				<h2>{{ post.title }}</h2>
+				<h2>{{ post.title }} <time :datetime="post.creation">{{ formatDate(post.creation) }}</time></h2>
 				<p>{{ post.content }}</p>
 		</article>
 	</main>
 </template>
 
 <style scoped lang="sass">
+time
+	font-size: 0.75rem
+	font-weight: initial
+	font-style: italic
 </style>
