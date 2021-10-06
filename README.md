@@ -2,6 +2,9 @@
 Gaming gaming
 
 TODO:
-- [x] automatic date in db
-- [x] favicon.ico
-- [x] buildx docker image multi-platform
+- [ ] battlesnake
+    - [ ] rooms page
+    - [ ] game page
+    - [ ] server
+        - [ ] room list via api
+        - [ ] game instances with socket.io
