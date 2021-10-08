@@ -46,6 +46,15 @@ html
 a
 	color: $fg-light
 
+article
+	background-color: $bg-medium
+	border: 1px solid $bg-light
+	margin: 1rem 0
+	padding: 1rem
+	& > :first-child
+		margin-top: 0
+	& > :last-child
+		margin-bottom: 0
 
 // Slide animation
 .slide-enter-from

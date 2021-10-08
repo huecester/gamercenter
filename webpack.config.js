@@ -28,6 +28,9 @@ const config = {
 		new HtmlWebpackPlugin({
 			title: 'gamercenter',
 			template: './src/client/index.html',
+			inject: 'head',
+			scriptLoading: 'defer',
+			publicPath: '/',
 		}),
 		new CopyPlugin({
 			patterns: [
