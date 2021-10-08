@@ -50,6 +50,7 @@ const store = createStore({
 				},
 			],
 			bots: [],
+			battlsnakeRooms: [],
 		};
 	},
 	mutations: {
@@ -58,6 +59,9 @@ const store = createStore({
 		},
 		setBots(state, newBots) {
 			state.bots = newBots;
+		},
+		setBattlesnakeRooms(state, newRooms) {
+			state.battlesnakeRooms = newRooms;
 		},
 	},
 });
