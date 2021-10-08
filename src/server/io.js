@@ -1,26 +1,40 @@
 // Packages
 const path = require('path');
 const fs = require('fs');
-const getJS = require('./getJS.js');
+const { getJS, pathToApiPath } = require('./pathHelpers.js');
 
 
 // Get handlers from files
-let initHandlers = [];
-let onConnectHandlers = [];
-for (const path of getJS('./io')) {
-	const module = require(`./${path.slice(3)}`);
-	initHandlers = [...initHandlers, module.init];
-	onConnectHandlers = [...onConnectHandlers, module.onConnect];
+const rootPath = path.resolve(__dirname, './root');
+let initHandlers = {};
+let onConnectHandlers = {};
+
+for (const jsFile of getJS(rootPath)) {
+	const module = require('./' + path.relative(__dirname, jsFile));
+	if (module.io) {
+		const apiPath = pathToApiPath(rootPath, jsFile);
+		if (module.io.init) { initHandlers[apiPath] = module.io.init; };
+		if (module.io.onConnect) { onConnectHandlers[apiPath] = module.io.onConnect; };
+	};
 };
 
 module.exports = {
 	init(io) {
-
+		for (const namespace in initHandlers) {
+			initHandlers[namespace](io.of(namespace));
+		};
 	},
-	onConnect(io, socket) {
-
-	},
-	onDisconnect(io, socket) {
-
+	setupOnConnect(io) {
+		for (const namespace in onConnectHandlers) {
+			const namespacedIO = io.of(namespace);
+			namespacedIO.on('connection', socket => {
+				try {
+					onConnectHandlers[namespace](namespacedIO, socket);
+				} catch (err) {
+					console.error(err);
+					socket.disconnect();
+				};
+			});
+		};
 	},
 };

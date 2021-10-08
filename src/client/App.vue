@@ -2,7 +2,7 @@
 import Heading from './components/Heading.vue';
 import Navbar from './components/Navbar.vue';
 
-import normalize from '../../node_modules/normalize.css/normalize.css';
+import normalize from 'normalize.css/normalize.css';
 
 export default {
 	components: {

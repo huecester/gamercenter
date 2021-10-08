@@ -34,9 +34,9 @@ app.use(publicMiddleware);
 const io = new Server(server, {
 	serveClient: false,
 });
-const ioHandler = require('./src/server/io.js');
-ioHandler.init(io);
-io.on('connect', ioHandler.onConnect);
+const ioHandlers = require('./src/server/io.js');
+ioHandlers.init(io);
+ioHandlers.setupOnConnect(io);
 
 
 // Start server

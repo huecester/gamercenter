@@ -8,6 +8,6 @@ TODO:
     - [ ] server
         - [ ] room list via api
         - [ ] socket.io
-            - [ ] setup
-            - [ ] namespace
+            - [x] setup
+            - [x] namespace
             - [ ] rooms
