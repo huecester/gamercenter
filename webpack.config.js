@@ -7,7 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
-module.exports = {
+const config = {
 	mode: process.env.NODE_ENV !== 'production'
 	? 'development'
 	: 'production',
@@ -28,6 +28,9 @@ module.exports = {
 		new HtmlWebpackPlugin({
 			title: 'gamercenter',
 			template: './src/client/index.html',
+			inject: 'head',
+			scriptLoading: 'defer',
+			publicPath: '/',
 		}),
 		new CopyPlugin({
 			patterns: [
@@ -105,3 +108,12 @@ module.exports = {
 		},
 	},
 };
+
+if (process.env.NODE_ENV === 'production') {
+	config.module.rules.push({
+		test: /\.js$/i,
+		loader: 'webpack-remove-debug',
+	});
+};
+
+module.exports = config;

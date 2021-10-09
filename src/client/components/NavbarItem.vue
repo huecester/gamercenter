@@ -8,9 +8,7 @@ export default {
 
 <template>
 	<li>
-		<router-link
-			:to="to"
-			>
+		<router-link :to="to">
 			<slot />
 		</router-link>
 	</li>

@@ -1,9 +1,9 @@
 <script>
-import BotItem from './BotItem.vue';
+import BotsItem from './BotsItem.vue';
 
 export default {
 	components: {
-		BotItem,
+		BotsItem,
 	},
 	async created() {
 		if (this.$store.state.bots.length <= 0) {
@@ -22,7 +22,7 @@ export default {
 <template>
 	<main>
 		<h1>Bots</h1>
-		<BotItem
+		<BotsItem
 				v-for="bot in this.$store.state.bots"
 				:key="bot.id"
 				:name="bot.name"

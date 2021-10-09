@@ -6,24 +6,51 @@ import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router
 import App from './App.vue'
 
 // Routes
-import Home from './components/Home.vue';
-import About from './components/About.vue';
-import Games from './components/Games.vue';
-import Bots from './components/Bots.vue';
+const Home = () => import('./components/Home.vue');
+const About = () => import('./components/About.vue');
+const Games = () => import('./components/Games.vue');
+const Bots = () => import('./components/Bots.vue');
+
+const Battlesnake = () => import('./components/games/Battlesnake.vue');
+const BattlesnakeRooms = () => import('./components/games/BattlesnakeRooms.vue');
+const BattlesnakeGame = () => import('./components/games/BattlesnakeGame.vue');
 
 const routes = [
 	{ path: '/',  component: Home },
 	{ path: '/about', component: About },
-	{ path: '/games', component: Games },
+	{ path: '/games', component: Games, },
+	{
+		path: '/games/battlesnake',
+		component: Battlesnake,
+		children: [
+			{
+				path: '',
+				component: BattlesnakeRooms,
+			},
+			{
+				path: ':id',
+				component: BattlesnakeGame,
+			},
+		],
+	},
 	{ path: '/bots', component: Bots },
 ];
 
-// Initalize app
+// Initalize store
 const store = createStore({
 	state() {
 		return {
 			posts: [],
+			games: [
+				{
+					title: 'Battlesnake',
+					description: 'Snake battle arena. Fight your friends, or strangers, or little children, for glory.',
+					thumbnail: '/static/images/battlesnake.jpg',
+					link: '/games/battlesnake',
+				},
+			],
 			bots: [],
+			battlesnakeRooms: [],
 		};
 	},
 	mutations: {
@@ -33,15 +60,20 @@ const store = createStore({
 		setBots(state, newBots) {
 			state.bots = newBots;
 		},
+		setBattlesnakeRooms(state, newRooms) {
+			state.battlesnakeRooms = newRooms;
+		},
 	},
 });
 
+// Initialize router
 const router = createRouter({
 	history: createWebHistory(),
 	routes,
 });
 
 
+// Initialize app
 const app = createApp(App);
 app.use(store);
 app.use(router);
