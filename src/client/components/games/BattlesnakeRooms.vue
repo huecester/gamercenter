@@ -21,13 +21,12 @@ export default {
 
 <template>
 	<section>
-		<h2>Rooms</h2>
 		<table>
 			<thead>
 				<tr>
 					<td>Room</td>
 					<td>Players</td>
-					<td>Password?</td>
+					<td>Password</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -45,4 +44,18 @@ export default {
 </template>
 
 <style scoped lang="sass">
+table
+	text-align: center
+	width: 100%
+	border-spacing: 0
+	border: 0.1rem solid $fg-medium
+
+thead
+	background: $fg-medium
+	font-size: 1.5rem
+	tr
+		display: flex
+	td
+		padding: 0.5rem 0
+		flex: 1
 </style>

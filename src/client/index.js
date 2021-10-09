@@ -50,7 +50,7 @@ const store = createStore({
 				},
 			],
 			bots: [],
-			battlsnakeRooms: [],
+			battlesnakeRooms: [],
 		};
 	},
 	mutations: {

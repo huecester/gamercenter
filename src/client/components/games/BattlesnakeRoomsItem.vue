@@ -19,11 +19,16 @@ export default {
 			},
 		},
 	},
+	methods: {
+		redirectToGame() {
+			this.$router.push({ path: `/games/battlesnake/${this.roomID}` });
+		},
+	},
 };
 </script>
 
 <template>
-	<tr>
+	<tr @click="redirectToGame">
 		<td>
 			<p>{{ name }}</p>
 		</td>
@@ -38,10 +43,30 @@ export default {
 			</ul>
 		</td>
 		<td>
-			<p>{{ password }}</p>
+			<p>{{ hasPassword }}</p>
 		</td>
 	</tr>
 </template>
 
 <style scoped lang="sass">
+tr
+	display: flex
+	cursor: pointer
+	background-color: $bg-dark
+
+	&:nth-child(even)
+		background-color: $bg-medium
+
+	&:hover
+		filter: brightness(1.3)
+	&:active
+		filter: brightness(1.1)
+td
+	flex: 1
+
+ul
+	margin: 1rem 0
+	padding: 0
+li
+	list-style-type: none
 </style>
