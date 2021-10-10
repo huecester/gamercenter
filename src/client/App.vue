@@ -1,13 +1,15 @@
 <script>
 import Heading from './components/Heading.vue';
 import Navbar from './components/Navbar.vue';
+import Notifications from './components/Notifications.vue'
 
-import normalize from 'normalize.css/normalize.css';
+import 'normalize.css/normalize.css';
 
 export default {
 	components: {
 		Heading,
 		Navbar,
+		Notifications,
 	},
 	data() {
 		return {
@@ -34,6 +36,8 @@ export default {
 			<component :is="Component" />
 		</transition>
 	</router-view>
+
+	<Notifications />
 </template>
 
 <style lang="sass">
@@ -92,7 +96,8 @@ input
 	display: flex
 	align-items: center
 
-.link
+.clickable
+	cursor: pointer
 	&:hover
 		filter: brightness(1.3)
 	&:active
@@ -110,7 +115,17 @@ $slide-offset: 4rem
 	opacity: 0
 .slide-enter-active,
 .slide-leave-active
-	transition: transform 0.25s, opacity 0.25s
+	transition: all 0.25
+
+// Slide back
+.slide-back-enter-from,
+.slide-back-leave-to
+	transform: translateX($slide-offset)
+	opacity: 0
+.notification
+	transition: all 0.25s
+.slide-back-leave-active
+	position: absolute
 
 // Fade in/out
 .fade-enter-from,

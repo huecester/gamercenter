@@ -19,7 +19,7 @@ export default {
 
 <template>
 	<a :href="link">
-		<article class="link">
+		<article class="clickable">
 			<h2>{{ name }}</h2>
 			<p>{{ description }}</p>
 		</article>

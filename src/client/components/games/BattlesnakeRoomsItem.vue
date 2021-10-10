@@ -28,7 +28,7 @@ export default {
 </script>
 
 <template>
-	<tr class="link" @click="redirectToGame">
+	<tr class="clickable" @click="redirectToGame">
 		<td>
 			<p class="big">{{ name }}</p>
 		</td>
@@ -51,7 +51,6 @@ export default {
 <style scoped lang="sass">
 tr
 	display: flex
-	cursor: pointer
 	background-color: $bg-dark
 
 	&:nth-child(even)

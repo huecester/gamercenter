@@ -51,6 +51,8 @@ const store = createStore({
 			],
 			bots: [],
 			battlesnakeRooms: [],
+			notifications: [],
+			nextID: 0,
 		};
 	},
 	mutations: {
@@ -62,6 +64,16 @@ const store = createStore({
 		},
 		setBattlesnakeRooms(state, newRooms) {
 			state.battlesnakeRooms = newRooms;
+		},
+		notify(state, { level, message }) {
+			state.notifications.push({
+				id: state.nextID++,
+				level,
+				message,
+			});
+		},
+		removeNotification(state, id) {
+			state.notifications = state.notifications.filter(notification => notification.id !== id)
 		},
 	},
 });
