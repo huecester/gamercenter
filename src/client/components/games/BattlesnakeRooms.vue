@@ -20,7 +20,7 @@ export default {
 
 				xhr.onload = () => {
 					if (xhr.status !== 201) {
-						console.error(`Error creating rooms; HTTP ${xhr.status}`);
+						this.$store.commit('notify', { level: 'error', message: 'Could not create a room.' });
 						return;
 					}
 					this.$router.push({ path: `/games/battlesnake/${xhr.response.id}` })
@@ -38,7 +38,7 @@ export default {
 				const rooms = await data.json();
 				this.$store.commit('setBattlesnakeRooms', rooms);
 			} catch (err) {
-				console.error(err);
+				this.$store.commit('notify', { level: 'error', message: 'Could not fetch data.' });
 			};
 		};
 	},

@@ -12,8 +12,7 @@ export default {
 				const bots = await data.json();
 				this.$store.commit('setBots', bots);
 			} catch (err) {
-				this.$store.commit('notify', { level: 'error', message: 'Could not reach server.' })
-				console.error(err);
+				this.$store.commit('notify', { level: 'error', message: 'Could not fetch data.' });
 			};
 		};
 	},
