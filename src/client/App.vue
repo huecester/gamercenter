@@ -115,7 +115,7 @@ $slide-offset: 4rem
 	opacity: 0
 .slide-enter-active,
 .slide-leave-active
-	transition: all 0.25
+	transition: transform 0.25s, opacity 0.25s
 
 // Slide back
 .slide-back-enter-from,
