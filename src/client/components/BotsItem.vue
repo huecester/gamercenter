@@ -18,12 +18,16 @@ export default {
 </script>
 
 <template>
-	<article>
-		<h2>{{ name }}</h2>
-		<p>{{ description }}</p>
-		<a :href="link">Invite "{{ name }}"</a>
-	</article>
+	<a :href="link">
+		<article class="link">
+			<h2>{{ name }}</h2>
+			<p>{{ description }}</p>
+		</article>
+	</a>
 </template>
 
 <style scoped lang="sass">
+a
+	color: inherit
+	text-decoration: inherit
 </style>

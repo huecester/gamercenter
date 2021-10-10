@@ -1,9 +1,35 @@
 <script>
 import BattlesnakeRoomsItem from './BattlesnakeRoomsItem.vue';
+import BattlesnakeRoomsCreateModal from './BattlesnakeRoomsCreateModal.vue'
 
 export default {
 	components: {
 		BattlesnakeRoomsItem,
+		BattlesnakeRoomsCreateModal,
+	},
+	data() {
+		return {
+			showModal: false,
+		};
+	},
+	methods: {
+		closeModal(data) {
+			this.showModal = false;
+			if (data) {
+				const xhr = new XMLHttpRequest();
+
+				xhr.onload = () => {
+					if (xhr.status !== 201) {
+						console.error(`Error creating rooms; HTTP ${xhr.status}`);
+						return;
+					}
+					this.$router.push({ path: `/games/battlesnake/${xhr.response.id}` })
+				};
+
+				xhr.open('POST', `/api/battlesnake/rooms?name=${data.roomname}&password=${data.password}`);
+				xhr.send();
+			};
+		},
 	},
 	async created() {
 		if (this.$store.state.battlesnakeRooms.length <= 0) {
@@ -21,6 +47,9 @@ export default {
 
 <template>
 	<section>
+		<div class="row">
+			<button @click="this.showModal = true">Create room</button>
+		</div>
 		<table>
 			<thead>
 				<tr>
@@ -40,6 +69,10 @@ export default {
 						/>
 			</tbody>
 		</table>
+		<BattlesnakeRoomsCreateModal
+				:show="this.showModal"
+				@close="closeModal($event)"
+				/>
 	</section>
 </template>
 

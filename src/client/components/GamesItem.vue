@@ -23,7 +23,7 @@ export default {
 
 <template>
 	<router-link :to="link">
-		<article>
+		<article class="link">
 			<h2>{{ title }}</h2>
 			<p>{{ description }}</p>
 			<img :src="thumbnail" />

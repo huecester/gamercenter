@@ -28,9 +28,9 @@ export default {
 </script>
 
 <template>
-	<tr @click="redirectToGame">
+	<tr class="link" @click="redirectToGame">
 		<td>
-			<p>{{ name }}</p>
+			<p class="big">{{ name }}</p>
 		</td>
 		<td>
 			<ul>
@@ -43,7 +43,7 @@ export default {
 			</ul>
 		</td>
 		<td>
-			<p>{{ hasPassword }}</p>
+			<p class="big">{{ hasPassword }}</p>
 		</td>
 	</tr>
 </template>
@@ -57,12 +57,10 @@ tr
 	&:nth-child(even)
 		background-color: $bg-medium
 
-	&:hover
-		filter: brightness(1.3)
-	&:active
-		filter: brightness(1.1)
 td
 	flex: 1
+	.big
+		font-size: 1.25rem
 
 ul
 	margin: 1rem 0
