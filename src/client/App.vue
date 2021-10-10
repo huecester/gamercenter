@@ -71,7 +71,6 @@ button
 	font-size: 1rem
 	text-align: center
 	cursor: pointer
-
 	&:hover
 		background-color: $fg-light
 	&:active
@@ -84,7 +83,6 @@ input
 		outline: 0
 		color: inherit
 		font-size: 0.75rem
-
 	&:invalid
 		outline: 1px solid $error-dk
 		background-color: $error-lt

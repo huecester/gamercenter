@@ -15,6 +15,7 @@ export default {
 				const posts = await data.json();
 				this.$store.commit('setPosts', posts);
 			} catch (err) {
+				this.$store.commit('notify', { level: 'error', message: 'Could not reach server.' });
 				console.error(err);
 			};
 		};
