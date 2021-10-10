@@ -20,26 +20,25 @@ export default {
 
 				xhr.onload = () => {
 					if (xhr.status !== 201) {
-						this.$store.commit('notify', { level: 'error', message: 'Could not create a room.' });
+						this.$store.commit('notify', { level: 'error', message: 'Could not create the room.' });
 						return;
 					}
 					this.$router.push({ path: `/games/battlesnake/${xhr.response.id}` })
 				};
 
-				xhr.open('POST', `/api/battlesnake/rooms?name=${data.roomname}&password=${data.password}`);
-				xhr.send();
+				xhr.open('POST', '/api/battlesnake/rooms', true);
+				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+				xhr.send(`name=${data.roomname}&password=${data.password}`);
 			};
 		},
 	},
-	async created() {
-		if (this.$store.state.battlesnakeRooms.length <= 0) {
-			try {
-				const data = await fetch('/api/battlesnake/rooms');
-				const rooms = await data.json();
-				this.$store.commit('setBattlesnakeRooms', rooms);
-			} catch (err) {
-				this.$store.commit('notify', { level: 'error', message: 'Could not fetch data.' });
-			};
+	async mounted() {
+		try {
+			const data = await fetch('/api/battlesnake/rooms');
+			const rooms = await data.json();
+			this.$store.commit('setBattlesnakeRooms', rooms);
+		} catch (err) {
+			this.$store.commit('notify', { level: 'error', message: 'Could not fetch data.' });
 		};
 	},
 };

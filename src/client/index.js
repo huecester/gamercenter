@@ -4,6 +4,7 @@ import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router
 
 // Main app
 import App from './App.vue'
+const app = createApp(App);
 
 // Routes
 const Home = () => import('./components/Home.vue');
@@ -35,6 +36,14 @@ const routes = [
 	},
 	{ path: '/bots', component: Bots },
 ];
+
+// Directives
+app.directive('focus', {
+	mounted(el) {
+		el.focus();
+	},
+});
+
 
 // Initalize store
 const store = createStore({
@@ -86,7 +95,6 @@ const router = createRouter({
 
 
 // Initialize app
-const app = createApp(App);
 app.use(store);
 app.use(router);
 
