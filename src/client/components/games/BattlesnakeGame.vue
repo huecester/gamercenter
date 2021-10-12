@@ -1,4 +1,56 @@
 <script>
+import { io } from 'socket.io-client';
+
+export default {
+	data() {
+		return {
+			id: this.$route.params.id,
+			socket: null,
+		};
+	},
+	computed: {
+		username() {
+			return window.localStorage?.getItem('username');
+		},
+	},
+	created() {
+		if (!this.username) {
+			this.$store.commit('notify', { level: 'warn', message: 'Username cannot be empty.' });
+			this.$router.push('/games/battlesnake');
+			return;
+		}
+
+		this.socket = io('/battlesnake');
+
+		this.socket.on('close', reason => {
+			switch (reason) {
+				case 'hostleft':
+					this.$store.commit('notify', { level: 'info', message: 'The host left the room.' });
+					break;
+				case 'notfound':
+					this.$store.commit('notify', { level: 'warn', message: `Room "${this.id}" does not exist.` });
+					break;
+				case 'nousername':
+					this.$store.commit('notify', { level: 'warn', message: 'Username was not set.' });
+					break;
+				default:
+					this.$store.commit('notify', { level: 'warn', message: 'Something went weong.' });
+					break;
+			};
+			this.$router.push('/games/battlesnake');
+		});
+
+		this.socket.on('joined', data => {
+			console.log('Joined');
+		});
+
+		this.socket.emit('join', { id: this.id, username: this.username });
+	},
+	unmounted() {
+		this.socket.disconnect();
+		this.socket = null;
+	}
+};
 </script>
 
 <template>

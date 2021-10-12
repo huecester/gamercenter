@@ -4,6 +4,7 @@ import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router
 
 // Main app
 import App from './App.vue'
+const app = createApp(App);
 
 // Routes
 const Home = () => import('./components/Home.vue');
@@ -36,6 +37,14 @@ const routes = [
 	{ path: '/bots', component: Bots },
 ];
 
+// Directives
+app.directive('focus', {
+	mounted(el) {
+		el.focus();
+	},
+});
+
+
 // Initalize store
 const store = createStore({
 	state() {
@@ -51,6 +60,8 @@ const store = createStore({
 			],
 			bots: [],
 			battlesnakeRooms: [],
+			notifications: [],
+			nextID: 0,
 		};
 	},
 	mutations: {
@@ -63,6 +74,16 @@ const store = createStore({
 		setBattlesnakeRooms(state, newRooms) {
 			state.battlesnakeRooms = newRooms;
 		},
+		notify(state, { level, message }) {
+			state.notifications.push({
+				id: state.nextID++,
+				level,
+				message,
+			});
+		},
+		removeNotification(state, id) {
+			state.notifications = state.notifications.filter(notification => notification.id !== id)
+		},
 	},
 });
 
@@ -74,7 +95,6 @@ const router = createRouter({
 
 
 // Initialize app
-const app = createApp(App);
 app.use(store);
 app.use(router);
 

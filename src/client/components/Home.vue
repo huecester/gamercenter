@@ -15,7 +15,7 @@ export default {
 				const posts = await data.json();
 				this.$store.commit('setPosts', posts);
 			} catch (err) {
-				console.error(err);
+				this.$store.commit('notify', { level: 'error', message: 'Could not fetch data.' });
 			};
 		};
 	},

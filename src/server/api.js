@@ -8,6 +8,10 @@ const { getJS, pathToApiPath } = require('./pathHelpers.js');
 const router = express.Router();
 
 
+// Middleware
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
+
 // Register routers in root path if js file contains router
 const rootPath = path.resolve(__dirname, './root');
 for (const jsFile of getJS(rootPath)) {
