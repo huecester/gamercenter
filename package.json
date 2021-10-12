@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "webpack",
-    "dev": "webpack serve",
+    "dev": "webpack serve && node .",
     "serve": "webpack && node ."
   },
   "author": "huecester <jericho.paulino@yahoo.com.ph>",

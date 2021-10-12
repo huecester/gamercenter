@@ -44,7 +44,7 @@ export default {
 			console.log('Joined');
 		});
 
-		this.socket.emit('join', { this.id, this.username });
+		this.socket.emit('join', { id: this.id, username: this.username });
 	},
 	unmounted() {
 		this.socket.disconnect();

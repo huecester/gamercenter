@@ -73,12 +73,32 @@ module.exports = {
 				}
 
 				newPlayer.socket.join(room.id);
-				room.push(newPlayer);
-				newPlayer.socket.emit('joined', { host: newPlayer.isHost });
+				room.players.push(newPlayer);
+				newPlayer.socket.emit('joined', {
+					isHost: newPlayer.isHost,
+					players: room.players.map(player => {
+						delete player.socket;
+						return player;
+					}),
+				});
 
+				io.of(room.id).emit('join', {
+					player: newPlayer.username,
+					players: room.players.map(player => {
+						delete player.socket;
+						return player;
+					}),
+				});
 
 				newPlayer.socket.on('disconnect', () => {
 					room.players = room.players.filter(player => player.id !== newPlayer.id);
+					io.of(room.id).emit('leave', {
+						player: newPlayer.username,
+						players: room.players.map(player => {
+							delete player.socket;
+							return player;
+						}),
+					});
 					if (newPlayer.isHost) {
 						io.of(room.id).emit('close', 'hostleft');
 					};

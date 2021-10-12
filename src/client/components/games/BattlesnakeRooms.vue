@@ -102,6 +102,7 @@ table
 	width: 100%
 	border-spacing: 0
 	border: 0.1rem solid $fg-medium
+	margin: 0.5rem 0 2.5rem 0
 
 thead
 	background: $fg-medium
