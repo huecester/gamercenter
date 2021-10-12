@@ -25,7 +25,7 @@ export default {
 		this.socket.on('close', reason => {
 			switch (reason) {
 				case 'hostleft':
-					this.$store.commit('notify', { level: 'info', message: 'Host has left the room.' });
+					this.$store.commit('notify', { level: 'info', message: 'The host left the room.' });
 					break;
 				case 'notfound':
 					this.$store.commit('notify', { level: 'warn', message: `Room "${this.id}" does not exist.` });

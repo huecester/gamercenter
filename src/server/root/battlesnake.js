@@ -6,7 +6,7 @@ const genRandHex = size => [...Array(size)].map(() => Math.floor(Math.random() *
 
 
 // Rooms
-const rooms = [];
+let rooms = [];
 
 // Factories
 const createRoom = (name, password) => {
@@ -21,7 +21,6 @@ const createRoom = (name, password) => {
 const createPlayer = (username, socket) => {
 	return {
 		username,
-		name,
 		socket,
 		id: genRandHex(16),
 		isHost: false,
@@ -34,9 +33,11 @@ const router = express.Router();
 
 router.get('/rooms', (req, res) => {
 	res.json(rooms.map(room => {
-		room.password = room.password ? true : false;
-		room.players = room.players.map(player => player.username);
-		return room;
+		return {
+			...room,
+			password: room.password ? true : false,
+			players: room.players.map(player => player.username),
+		};
 	}));
 });
 
@@ -74,35 +75,45 @@ module.exports = {
 					newPlayer.isHost = true;
 				}
 
+				console.log(`Battlesnake: ${newPlayer.username} [${newPlayer.id}] isHost ${newPlayer.isHost} joining room ${room.id}.`);
 				socket.join(room.id);
 				room.players.push(newPlayer);
 				socket.emit('joined', {
 					isHost: newPlayer.isHost,
 					players: room.players.map(player => {
-						delete player.socket;
-						return player;
+						return {
+							...player,
+							socket: undefined,
+						};
 					}),
 				});
 
 				io.in(room.id).emit('join', {
 					player: newPlayer.username,
 					players: room.players.map(player => {
-						delete player.socket;
-						return player;
+						return {
+							...player,
+							socket: undefined,
+						};
 					}),
 				});
 
 				socket.on('disconnect', () => {
+					console.log(`Battlesnake: ${newPlayer.username} [${newPlayer.id}] isHost ${newPlayer.isHost} leaving room ${room.id}.`);
 					room.players = room.players.filter(player => player.id !== newPlayer.id);
 					io.in(room.id).emit('leave', {
 						player: newPlayer.username,
 						players: room.players.map(player => {
-							delete player.socket;
-							return player;
+							return {
+								...player,
+								socket: undefined,
+							};
 						}),
 					});
 					if (newPlayer.isHost) {
+						console.log(`Battlesnake: Closing room ${room.id}.`);
 						io.in(room.id).emit('close', 'hostleft');
+						rooms = rooms.filter(existingRoom => existingRoom.id !== room.id);
 					};
 				});
 			});
