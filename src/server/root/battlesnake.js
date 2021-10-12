@@ -18,8 +18,9 @@ const createRoom = (name, password) => {
 	};
 };
 
-const createPlayer = (name, socket) => {
+const createPlayer = (username, socket) => {
 	return {
+		username,
 		name,
 		socket,
 		id: genRandHex(16),
