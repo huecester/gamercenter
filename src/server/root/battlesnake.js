@@ -98,6 +98,15 @@ module.exports = {
 					}),
 				});
 
+
+				socket.on('message', message => {
+					console.log(`Battlesnake: ${newPlayer.username} [${room.id}]: ${message}`);
+					io.in(room.id).emit('message', {
+						author: newPlayer.username,
+						message: message.slice(0, Math.max(message.length, 256)),
+					});
+				});
+
 				socket.on('disconnect', () => {
 					console.log(`Battlesnake: ${newPlayer.username} [${newPlayer.id}] isHost ${newPlayer.isHost} leaving room ${room.id}.`);
 					room.players = room.players.filter(player => player.id !== newPlayer.id);
