@@ -30,7 +30,6 @@ router.get('/rooms', (req, res) => {
 });
 
 router.post('/rooms', (req, res) => {
-	console.log('Body:', req.body);
 	const { name, password } = req.body;
 	if (!name) {
 		res.sendStatus(400);
@@ -45,10 +44,15 @@ module.exports = {
 	router,
 	io: {
 		onConnect(io, socket) {
-			console.log('Connect.');
-			socket.emit('message', 'Hello, world!');
-			socket.on('disconnect', () => {
-				console.log('Disconnect.');
+			socket.on('join', id => {
+				const room = rooms.find(room => room.id === id);
+				if (!room) {
+					socket.emit('joined', { error: 'notfound' });
+					return;
+				};
+
+				socket.join(room.id);
+				socket.emit('joined', { error: null });
 			});
 		},
 	},
