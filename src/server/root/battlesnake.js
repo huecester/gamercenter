@@ -34,6 +34,7 @@ const router = express.Router();
 router.get('/rooms', (req, res) => {
 	res.json(rooms.map(room => {
 		room.password = room.password ? true : false;
+		room.players = room.players.map(player => player.username);
 		return room;
 	}));
 });
@@ -72,9 +73,9 @@ module.exports = {
 					newPlayer.isHost = true;
 				}
 
-				newPlayer.socket.join(room.id);
+				socket.join(room.id);
 				room.players.push(newPlayer);
-				newPlayer.socket.emit('joined', {
+				socket.emit('joined', {
 					isHost: newPlayer.isHost,
 					players: room.players.map(player => {
 						delete player.socket;
@@ -82,7 +83,7 @@ module.exports = {
 					}),
 				});
 
-				io.of(room.id).emit('join', {
+				io.in(room.id).emit('join', {
 					player: newPlayer.username,
 					players: room.players.map(player => {
 						delete player.socket;
@@ -90,9 +91,9 @@ module.exports = {
 					}),
 				});
 
-				newPlayer.socket.on('disconnect', () => {
+				socket.on('disconnect', () => {
 					room.players = room.players.filter(player => player.id !== newPlayer.id);
-					io.of(room.id).emit('leave', {
+					io.in(room.id).emit('leave', {
 						player: newPlayer.username,
 						players: room.players.map(player => {
 							delete player.socket;
@@ -100,7 +101,7 @@ module.exports = {
 						}),
 					});
 					if (newPlayer.isHost) {
-						io.of(room.id).emit('close', 'hostleft');
+						io.in(room.id).emit('close', 'hostleft');
 					};
 				});
 			});
