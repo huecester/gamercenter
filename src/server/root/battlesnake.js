@@ -18,6 +18,15 @@ const createRoom = (name, password) => {
 	};
 };
 
+const createPlayer = (name, socket) => {
+	return {
+		name,
+		socket,
+		id: genRandHex(16),
+		isHost: false,
+	};
+};
+
 
 // API
 const router = express.Router();
@@ -46,16 +55,34 @@ module.exports = {
 	router,
 	io: {
 		onConnect(io, socket) {
-			socket.on('join', id => {
-				const room = rooms.find(room => room.id === id);
+			socket.on('join', data => {
+				const room = rooms.find(room => room.id === data.id);
 				if (!room) {
-					socket.emit('joined', { error: 'notfound' });
-					socket.disconnect();
+					socket.emit('close', 'notfound');
+					return;
+				} else if (!data.username) {
+					socket.emit('close', 'nousername');
 					return;
 				};
 
-				socket.join(room.id);
-				socket.emit('joined', { error: null });
+				const newPlayer = createPlayer(data.username, socket);
+
+				// Set to host if first player
+				if (room.players.length <= 0) {
+					newPlayer.isHost = true;
+				}
+
+				newPlayer.socket.join(room.id);
+				room.push(newPlayer);
+				newPlayer.socket.emit('joined', { host: newPlayer.isHost });
+
+
+				newPlayer.socket.on('disconnect', () => {
+					room.players = room.players.filter(player => player.id !== newPlayer.id);
+					if (newPlayer.isHost) {
+						io.of(room.id).emit('close', 'hostleft');
+					};
+				});
 			});
 		},
 	},

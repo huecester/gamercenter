@@ -10,7 +10,13 @@ export default {
 	data() {
 		return {
 			showModal: false,
+			username: '',
 		};
+	},
+	watch: {
+		username(newUsername) {
+			window.localStorage?.setItem('username', newUsername);
+		},
 	},
 	methods: {
 		closeModal(data) {
@@ -33,7 +39,9 @@ export default {
 			};
 		},
 	},
-	async mounted() {
+	async created() {
+		this.username = window.localStorage?.getItem('username') || '';
+
 		try {
 			const data = await fetch('/api/battlesnake/rooms');
 			const rooms = await data.json();
@@ -50,6 +58,15 @@ export default {
 		<div class="row">
 			<button @click="this.showModal = true">Create room</button>
 		</div>
+
+		<form
+				class="row"
+				@submit.prevent=""
+				>
+				<label for="username">Username</label>
+				<input type="text" name="username" id="username" v-model="username" required maxlength="20" autocomplete="off" />
+		</form>
+
 		<table>
 			<thead>
 				<tr>
@@ -77,6 +94,9 @@ export default {
 </template>
 
 <style scoped lang="sass">
+input
+	margin: 0.5rem
+
 table
 	text-align: center
 	width: 100%
