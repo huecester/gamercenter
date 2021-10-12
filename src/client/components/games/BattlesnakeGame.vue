@@ -5,27 +5,31 @@ export default {
 	data() {
 		return {
 			id: this.$route.params.id,
-			io: null,
+			socket: null,
 		};
 	},
 	created() {
-		this.io = io('/battlesnake');
-		io.on('joined', data => {
+		this.socket = io('/battlesnake');
+		this.socket.on('joined', data => {
 			if (data.error) {
 				switch (data.error) {
 					case 'notfound':
-						this.$store.commit('notify', { level: 'warn', message: `Room ${this.id} does not exist.` });
+						this.$store.commit('notify', { level: 'warn', message: `Room "${this.id}" does not exist.` });
 						break;
 					default:
 						this.$store.commit('notify', { level: 'warn', message: 'Something went weong.' });
 				};
-				this.$router.push('/battlesnake');
+				this.$router.push('/games/battlesnake');
 			};
 			console.log('Joined');
 		});
 
-		this.io.emit('join', this.id);
+		this.socket.emit('join', this.id);
 	},
+	unmounted() {
+		this.socket.disconnect();
+		this.socket = null;
+	}
 };
 </script>
 

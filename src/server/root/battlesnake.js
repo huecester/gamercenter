@@ -35,7 +35,9 @@ router.post('/rooms', (req, res) => {
 		res.sendStatus(400);
 		return;
 	}
+
 	const newRoom = createRoom(name, password || null);
+	console.log(`Battlesnake: Creating new room ${newRoom.name} with id ${newRoom.id}`);
 	rooms.push(newRoom);
 	res.status(201).json({ id: newRoom.id });
 });
@@ -48,6 +50,7 @@ module.exports = {
 				const room = rooms.find(room => room.id === id);
 				if (!room) {
 					socket.emit('joined', { error: 'notfound' });
+					socket.disconnect();
 					return;
 				};
 

@@ -23,7 +23,8 @@ export default {
 						this.$store.commit('notify', { level: 'error', message: 'Could not create the room.' });
 						return;
 					}
-					this.$router.push({ path: `/games/battlesnake/${xhr.response.id}` })
+					const data = JSON.parse(xhr.response);
+					this.$router.push({ path: `/games/battlesnake/${data.id}` })
 				};
 
 				xhr.open('POST', '/api/battlesnake/rooms', true);
