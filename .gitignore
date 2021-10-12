@@ -1,4 +1,4 @@
-client/
+/client/
 .breakpoints
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,vim,tags,node
