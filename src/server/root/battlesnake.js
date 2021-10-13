@@ -60,6 +60,7 @@ module.exports = {
 	io: {
 		onConnect(io, socket) {
 			socket.on('join', data => {
+				// Disconnect if room does not exist
 				const room = rooms.find(room => room.id === data.id);
 				if (!room) {
 					socket.emit('close', 'notfound');
@@ -69,49 +70,32 @@ module.exports = {
 					return;
 				};
 
-				const newPlayer = createPlayer(data.username, socket);
+				// Initialize player function (call at bottom)
+				const initializePlayer = () => {
+					// Create new player
+					const newPlayer = createPlayer(data.username, socket);
 
-				// Set to host if first player
-				if (room.players.length <= 0) {
-					newPlayer.isHost = true;
-				}
+					// Set to host if first player
+					if (room.players.length <= 0) {
+						newPlayer.isHost = true;
+					}
 
-				console.log(`Battlesnake: ${newPlayer.username} [${newPlayer.id}] isHost ${newPlayer.isHost} joining room ${room.id}.`);
-				socket.join(room.id);
-				room.players.push(newPlayer);
-				socket.emit('joined', {
-					isHost: newPlayer.isHost,
-					players: room.players.map(player => {
-						return {
-							...player,
-							socket: undefined,
-						};
-					}),
-				});
-
-				io.in(room.id).emit('join', {
-					player: newPlayer.username,
-					players: room.players.map(player => {
-						return {
-							...player,
-							socket: undefined,
-						};
-					}),
-				});
-
-
-				socket.on('message', message => {
-					console.log(`Battlesnake: ${newPlayer.username} [${room.id}]: ${message}`);
-					io.in(room.id).emit('message', {
-						author: newPlayer.username,
-						message: message.slice(0, Math.max(message.length, 256)),
+					// Add player to room
+					console.log(`Battlesnake: ${newPlayer.username} [${newPlayer.id}] isHost ${newPlayer.isHost} joining room ${room.id}.`);
+					socket.join(room.id);
+					room.players.push(newPlayer);
+					socket.emit('joined', {
+						isHost: newPlayer.isHost,
+						players: room.players.map(player => {
+							return {
+								...player,
+								socket: undefined,
+							};
+						}),
 					});
-				});
 
-				socket.on('disconnect', () => {
-					console.log(`Battlesnake: ${newPlayer.username} [${newPlayer.id}] isHost ${newPlayer.isHost} leaving room ${room.id}.`);
-					room.players = room.players.filter(player => player.id !== newPlayer.id);
-					io.in(room.id).emit('leave', {
+					// Join notification
+					io.in(room.id).emit('join', {
 						player: newPlayer.username,
 						players: room.players.map(player => {
 							return {
@@ -120,12 +104,50 @@ module.exports = {
 							};
 						}),
 					});
-					if (newPlayer.isHost) {
-						console.log(`Battlesnake: Closing room ${room.id}.`);
-						io.in(room.id).emit('close', 'hostleft');
-						rooms = rooms.filter(existingRoom => existingRoom.id !== room.id);
-					};
-				});
+
+
+					// Messages
+					socket.on('message', message => {
+						console.log(`Battlesnake: ${newPlayer.username} [${room.id}]: ${message}`);
+						io.in(room.id).emit('message', {
+							author: newPlayer.username,
+							message: message.slice(0, Math.max(message.length, 256)),
+						});
+					});
+
+					socket.on('disconnect', () => {
+						console.log(`Battlesnake: ${newPlayer.username} [${newPlayer.id}] isHost ${newPlayer.isHost} leaving room ${room.id}.`);
+						room.players = room.players.filter(player => player.id !== newPlayer.id);
+
+						// Leave notification
+						io.in(room.id).emit('leave', {
+							player: newPlayer.username,
+							players: room.players.map(player => {
+								return {
+									...player,
+									socket: undefined,
+								};
+							}),
+						});
+
+						// Close room if leaving player is host
+						if (newPlayer.isHost) {
+							console.log(`Battlesnake: Closing room ${room.id}.`);
+							io.in(room.id).emit('close', 'hostleft');
+							rooms = rooms.filter(existingRoom => existingRoom.id !== room.id);
+						};
+					});
+				};
+
+				// Ask for password if needed before initializing player
+				if (room.password) {
+					socket.emit('password');
+					socket.on('password', password => {
+						password === room.password ? initializePlayer() : socket.emit('close', 'wrongpassword');
+					});
+				} else {
+					initializePlayer();
+				};
 			});
 		},
 	},

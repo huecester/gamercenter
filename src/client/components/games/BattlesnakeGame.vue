@@ -24,14 +24,17 @@ export default {
 
 		this.socket.on('close', reason => {
 			switch (reason) {
-				case 'hostleft':
-					this.$store.commit('notify', { level: 'info', message: 'The host left the room.' });
-					break;
 				case 'notfound':
 					this.$store.commit('notify', { level: 'warn', message: `Room "${this.id}" does not exist.` });
 					break;
 				case 'nousername':
 					this.$store.commit('notify', { level: 'warn', message: 'Username was not set.' });
+					break;
+				case 'wrongpassword':
+					this.$store.commit('notify', { level: 'warn', message: 'Incorrect password.' });
+					break;
+				case 'hostleft':
+					this.$store.commit('notify', { level: 'info', message: 'The host left the room.' });
 					break;
 				default:
 					this.$store.commit('notify', { level: 'warn', message: 'Something went wrong.' });
