@@ -26,7 +26,7 @@ export default {
 	<main>
 		<h1>gamercenter</h1>
 		<article
-				v-for="post in this.$store.state.posts"
+				v-for="post in this.$store.state.posts.reverse()"
 				:key="post.id"
 				>
 				<h2>{{ post.title }} <time :datetime="post.creation">{{ formatDate(post.creation) }}</time></h2>
