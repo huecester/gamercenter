@@ -1,13 +1,26 @@
 # gamercenter
 Gaming gaming
 
-TODO:
+# TODO
 - [ ] battlesnake
-    - [ ] rooms page
+    - [x] rooms page
     - [ ] game page
+        - [ ] game using canvas
+        - [ ] player list
+            - [ ] show players
+            - [ ] show player colors
+            - [ ] update player list on join/leave
+            - [ ] update player statuses on start/death/win
+            - [ ] show marker if player is host
+        - [ ] chat
     - [ ] server
-        - [ ] room list via api
-        - [ ] socket.io
+        - [x] room list via api
+        - [x] socket.io
             - [x] setup
             - [x] namespace
-            - [ ] rooms
+            - [x] rooms
+            - [ ] game
+                - [ ] starting
+                - [ ] run game
+                - [ ] send game info
+                - [ ] win/death
