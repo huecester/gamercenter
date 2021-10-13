@@ -23,6 +23,7 @@ const createPlayer = (username, socket) => {
 		username,
 		socket,
 		id: genRandHex(16),
+		color: `#${genRandHex(6)}`,
 		isHost: false,
 	};
 };
