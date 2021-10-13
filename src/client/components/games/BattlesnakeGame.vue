@@ -34,7 +34,7 @@ export default {
 					this.$store.commit('notify', { level: 'warn', message: 'Username was not set.' });
 					break;
 				default:
-					this.$store.commit('notify', { level: 'warn', message: 'Something went weong.' });
+					this.$store.commit('notify', { level: 'warn', message: 'Something went wrong.' });
 					break;
 			};
 			this.$router.push('/games/battlesnake');
