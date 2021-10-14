@@ -1,4 +1,8 @@
 <script>
+import BattlesnakeGameCanvas from 'BattlesnakeGameCanvas.vue';
+import BattlesnakeGamePlayers from 'BattlesnakeGamePlayers.vue';
+import BattlesnakeGameChat from 'BattlesnakeGameChat.vue';
+
 import { io } from 'socket.io-client';
 
 export default {
@@ -58,7 +62,9 @@ export default {
 
 <template>
 	<section>
-		<h2>Game</h2>
+		<BattlesnakeGameCanvas />
+		<BattlesnakeGamePlayers />
+		<BattlesnakeGameChat />
 	</section>
 </template>
 
