@@ -40,17 +40,34 @@ export default {
 					>
 					<p>
 						<label for="roomname">Room name</label>
-						<input v-focus type="text" name="roomname" id="roomname" v-model="roomname" required maxlength="32" autocomplete="off" />
+						<input
+								v-focus
+								type="text"
+								id="roomname"
+								v-model="roomname"
+								required
+								maxlength="32"
+								autocomplete="off"/>
 					</p>
 
 					<p>
 						<label for="password">Password</label>
-						<input type="password" name="password" id="password" v-model="password" maxlength="32" />
+						<input
+								type="password"
+								id="password"
+								v-model="password"
+								maxlength="32"
+								/>
 					</p>
 
 					<div class="row">
 						<button type="submit">OK</button>
-						<button type="button" @click="this.$emit('close')">Cancel</button>
+						<button
+								type="button"
+								@click="this.$emit('close')"
+								>
+								Cancel
+						</button>
 					</div>
 			</form>
 	</BaseModal>

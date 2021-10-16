@@ -11,6 +11,7 @@ export default {
 		return {
 			showModal: false,
 			username: '',
+			disableRefresh: false,
 		};
 	},
 	watch: {
@@ -19,6 +20,17 @@ export default {
 		},
 	},
 	methods: {
+		async fetchRooms() {
+			this.disableRefresh = true;
+			setTimeout(() => { this.disableRefresh = false; }, 3000);
+			try {
+				const data = await fetch('/api/battlesnake/rooms');
+				const rooms = await data.json();
+				this.$store.commit('setBattlesnakeRooms', rooms);
+			} catch (err) {
+				this.$store.commit('notify', { level: 'error', message: 'Could not fetch data.' });
+			};
+		},
 		closeModal(data) {
 			this.showModal = false;
 			if (data) {
@@ -39,16 +51,9 @@ export default {
 			};
 		},
 	},
-	async created() {
+	created() {
 		this.username = window.localStorage?.getItem('username') || '';
-
-		try {
-			const data = await fetch('/api/battlesnake/rooms');
-			const rooms = await data.json();
-			this.$store.commit('setBattlesnakeRooms', rooms);
-		} catch (err) {
-			this.$store.commit('notify', { level: 'error', message: 'Could not fetch data.' });
-		};
+		this.fetchRooms();
 	},
 };
 </script>
@@ -56,7 +61,18 @@ export default {
 <template>
 	<section>
 		<div class="row">
-			<button @click="this.showModal = true">Create room</button>
+			<button
+					type="button"
+					@click="this.showModal = true">
+					Create room
+			</button>
+			<button
+					type="button"
+					@click="this.fetchRooms"
+					:disabled="this.disableRefresh"
+					>
+					Refresh
+			</button>
 		</div>
 
 		<form
@@ -64,7 +80,14 @@ export default {
 				@submit.prevent=""
 				>
 				<label for="username">Username</label>
-				<input type="text" name="username" id="username" v-model="username" required maxlength="20" autocomplete="off" />
+				<input
+						type="text"
+						id="username"
+						v-model="username"
+						required
+						maxlength="20"
+						autocomplete="off"
+						/>
 		</form>
 
 		<table>

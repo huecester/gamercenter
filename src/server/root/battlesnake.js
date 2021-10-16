@@ -28,11 +28,21 @@ const createPlayer = (username, socket) => {
 	};
 };
 
+// Helpers
+const parsedPlayer = player => {
+	return {
+		username: player.username,
+		id: player.id,
+		color: player.color,
+		isHost: player.isHost,
+	};
+};
 
 // API
 const router = express.Router();
 
 router.get('/rooms', (req, res) => {
+	console.log('Battlesnake: GET /rooms');
 	res.json(rooms.map(room => {
 		return {
 			...room,
@@ -86,23 +96,13 @@ module.exports = {
 					room.players.push(newPlayer);
 					socket.emit('joined', {
 						isHost: newPlayer.isHost,
-						players: room.players.map(player => {
-							return {
-								...player,
-								socket: undefined,
-							};
-						}),
+						players: room.players.map(player => parsedPlayer(player)),
 					});
 
 					// Join notification
 					io.in(room.id).emit('join', {
 						player: newPlayer.username,
-						players: room.players.map(player => {
-							return {
-								...player,
-								socket: undefined,
-							};
-						}),
+						players: room.players.map(player => parsedPlayer(player)),
 					});
 
 
@@ -122,12 +122,7 @@ module.exports = {
 						// Leave notification
 						io.in(room.id).emit('leave', {
 							player: newPlayer.username,
-							players: room.players.map(player => {
-								return {
-									...player,
-									socket: undefined,
-								};
-							}),
+							players: room.players.map(player => parsedPlayer(player)),
 						});
 
 						// Close room if leaving player is host

@@ -1,11 +1,7 @@
 <script>
 export default {
 	props: {
-		width: {
-			type: Number,
-			default: 300,
-		},
-		height: {
+		size: {
 			type: Number,
 			default: 300,
 		},
@@ -15,12 +11,15 @@ export default {
 
 <template>
 	<canvas
-			:width="width"
-			:height="height"
+			:width="size"
+			:height="size"
 			/>
 </template>
 
 <style scoped lang="sass">
 canvas
 	background: black
+	border: 2px solid $fg-medium
+	padding: 2rem
+	margin: auto
 </style>
