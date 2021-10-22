@@ -35,10 +35,10 @@ export default {
 		<td>
 			<ul>
 				<li
-						v-for="(player, index) in players"
-						:key="index"
+						v-for="player in players"
+						:key="player.id"
 						>
-						{{ player }}
+						{{ player.username }}
 				</li>
 			</ul>
 		</td>

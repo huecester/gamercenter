@@ -20,6 +20,4 @@ export default {
 canvas
 	background: black
 	border: 2px solid $fg-medium
-	padding: 2rem
-	margin: auto
 </style>

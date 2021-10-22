@@ -4,6 +4,7 @@ import BattlesnakeGamePlayers from './BattlesnakeGamePlayers.vue';
 import BattlesnakeGameChat from './BattlesnakeGameChat.vue';
 
 import { io } from 'socket.io-client';
+import _ from 'lodash';
 
 export default {
 	components: {
@@ -13,9 +14,12 @@ export default {
 	},
 	data() {
 		return {
-			id: this.$route.params.id,
+			roomID: this.$route.params.id,
 			socket: null,
+			roomName: null,
 			isHost: false,
+			canvasSize: 0,
+			canvasResizePercent: 60,
 			players: [],
 			messages: [],
 		};
@@ -27,21 +31,31 @@ export default {
 	},
 	methods: {
 		send(message) {
-			this.io.emit('message', message);
+			this.socket.emit('message', message);
+		},
+		resizeCanvas(percent) {
+			const vh = document.documentElement.clientHeight;
+			this.canvasSize = vh * (percent / 100);
 		},
 	},
 	created() {
+		// Check for username
 		if (!this.username) {
 			this.$store.commit('notify', { level: 'warn', message: 'Username cannot be empty.' });
 			this.$router.push('/games/battlesnake');
 			return;
 		};
 
+		// Size canvas to 60vh
+		this.resizeCanvas(this.canvasResizePercent);
+		window.addEventListener('resize', _.debounce(() => this.resizeCanvas(this.canvasResizePercent), 110));
+
+		// Attempt connection to server
 		this.socket = io('/battlesnake');
 		this.socket.on('close', reason => {
 			switch (reason) {
 				case 'notfound':
-					this.$store.commit('notify', { level: 'warn', message: `Room "${this.id}" does not exist.` });
+					this.$store.commit('notify', { level: 'warn', message: `Room "${this.roomID}" does not exist.` });
 					break;
 				case 'nousername':
 					this.$store.commit('notify', { level: 'warn', message: 'Username was not set.' });
@@ -61,19 +75,37 @@ export default {
 
 		this.socket.on('joined', data => {
 			this.isHost = data.isHost;
-			// TODO add statuses to players
-			this.players = data.players.map(player => {
-				return {
-					...player,
-					status: '\u{1F40D}',
-				};
+			this.roomName = data.roomName;
+
+			// Initialize room handlers
+			this.socket.on('join', data => {
+				this.messages.push({
+					type: 'join',
+					id: data.id,
+					player: data.player,
+				});
+				this.players = data.players;
 			});
 
-			this.socket.on('message', messages.push(message));
+			this.socket.on('leave', data => {
+				this.messages.push({
+					type: 'leave',
+					id: data.id,
+					player: data.player,
+				});
+				this.players = data.players;
+			});
+
+			this.socket.on('message', message => {
+				this.messages.push({
+					type: 'message',
+					...message,
+				});
+			});
 		});
 
-		this.socket.emit('join', { 
-			id: this.id,
+		this.socket.emit('join', {
+			id: this.roomID,
 			username: this.username,
 		});
 	},
@@ -86,8 +118,11 @@ export default {
 
 <template>
 	<section class="row">
-		<div id="canvas-container">
-			<BattlesnakeGameCanvas />
+		<div id="main">
+			<h2>{{ roomName }}</h2>
+			<div id="canvas-container">
+				<BattlesnakeGameCanvas :size="canvasSize" />
+			</div>
 		</div>
 		<div id="sidebar">
 			<BattlesnakeGamePlayers :players="players" />
@@ -102,17 +137,19 @@ export default {
 <style scoped lang="sass">
 section
 	width: 100%
-
-#canvas-container, #sidebar
-	flex: 1
 	align-items: center
 	justify-content: center
 
-#sidebar
+#main, #sidebar, #canvas-container
 	display: flex
-	flex-direction: column
-
-section, #sidebar
 	align-items: center
 	justify-content: center
+#main, #sidebar
+	flex-direction: column
+#main
+	flex: 2
+#sidebar
+	flex: 1
+	& > *
+		margin: 0.5rem
 </style>

@@ -100,8 +100,8 @@ export default {
 			</thead>
 			<tbody>
 				<BattlesnakeRoomsItem
-						v-for="(room, index) in this.$store.state.battlesnakeRooms"
-						:key="index"
+						v-for="room in this.$store.state.battlesnakeRooms"
+						:key="room.id"
 						:name="room.name"
 						:roomID="room.id"
 						:players="room.players"

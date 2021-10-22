@@ -12,8 +12,8 @@ export default {
 	<main>
 		<h1>Games</h1>
 		<GamesItem
-				v-for="(game, index) in this.$store.state.games"
-				:key="index"
+				v-for="game in this.$store.state.games"
+				:key="game.id"
 				:title="game.title"
 				:description="game.description"
 				:thumbnail="game.thumbnail"

@@ -15,21 +15,22 @@ export default {
 </script>
 
 <template>
-	<h2>Players</h2>
 	<table>
 		<thead>
 			<tr>
 				<th />
-				<th>Username</th>
-				<th>Status</th>
+				<th>Players</th>
+				<th />
 			</tr>
 		</thead>
 		<tbody>
 			<BattlesnakeGamePlayersItem
 					v-for="player in players"
+					:key="player.id"
 					:color="player.color"
 					:username="player.username"
 					:status="player.status"
+					:isHost="player.isHost"
 					/>
 		</tbody>
 	</table>
@@ -39,21 +40,21 @@ export default {
 table
 	border-collapse: collapse
 	border: 2px solid $fg-medium
-	width: 8rem
+	width: 16rem
 
 thead
 	background-color: $fg-medium
 
 thead
 	tr
-		height: $bs-row-height
+		height: calc($bs-row-height * 1.5)
 		display: flex
 		align-items: center
 		justify-content: center
-		td:nth-child(1)
-			width: $bs-row-height
-		td:nth-child(2)
-			flex: 1
-		td:nth-child(3)
-			width: $bs-row-height
+		th
+			&:nth-child(1), &:nth-child(3)
+				width: $bs-row-height
+			&:nth-child(2)
+				flex: 1
+				font-size: 1.25rem
 </style>
