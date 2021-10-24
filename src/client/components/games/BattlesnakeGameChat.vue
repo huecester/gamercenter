@@ -68,17 +68,20 @@ export default {
 	border: 2px solid $fg-medium
 	display: flex
 	flex-direction: column
+	width: 100%
 	height: 12rem
+	overflow: auto
 
 ul
 	margin: 0
-	padding: 0.25rem
+	padding: 0
 	flex: 1
-	width: 24rem
 	overflow: auto
+	line-height: 1.25rem
 li
 	list-style-type: none
 	font-size: 0.8rem
+	padding-left: 0.25rem
 
 form
 	display: flex

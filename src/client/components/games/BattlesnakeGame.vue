@@ -18,8 +18,6 @@ export default {
 			socket: null,
 			roomName: null,
 			isHost: false,
-			canvasSize: 0,
-			canvasResizePercent: 60,
 			players: [],
 			messages: [],
 		};
@@ -33,10 +31,6 @@ export default {
 		send(message) {
 			this.socket.emit('message', message);
 		},
-		resizeCanvas(percent) {
-			const vh = document.documentElement.clientHeight;
-			this.canvasSize = vh * (percent / 100);
-		},
 	},
 	created() {
 		// Check for username
@@ -45,10 +39,6 @@ export default {
 			this.$router.push('/games/battlesnake');
 			return;
 		};
-
-		// Size canvas to 60vh
-		this.resizeCanvas(this.canvasResizePercent);
-		window.addEventListener('resize', _.debounce(() => this.resizeCanvas(this.canvasResizePercent), 110));
 
 		// Attempt connection to server
 		this.socket = io('/battlesnake');
@@ -65,6 +55,9 @@ export default {
 					break;
 				case 'hostleft':
 					this.$store.commit('notify', { level: 'info', message: 'The host left the room.' });
+					break;
+				case 'roomfull':
+					this.$store.commit('notify', { level: 'warn', message: 'This room is full.' });
 					break;
 				default:
 					this.$store.commit('notify', { level: 'warn', message: 'Something went wrong.' });
@@ -117,11 +110,11 @@ export default {
 </script>
 
 <template>
-	<section class="row">
+	<section>
 		<div id="main">
 			<h2>{{ roomName }}</h2>
 			<div id="canvas-container">
-				<BattlesnakeGameCanvas :size="canvasSize" />
+				<BattlesnakeGameCanvas />
 			</div>
 		</div>
 		<div id="sidebar">
@@ -136,9 +129,15 @@ export default {
 
 <style scoped lang="sass">
 section
+	display: flex
+	flex-direction: row
+	margin-bottom: 3rem
 	width: 100%
 	align-items: center
 	justify-content: center
+	@media (orientation: portrait)
+		flex-direction: column
+		margin-bottom: 0
 
 #main, #sidebar, #canvas-container
 	display: flex
@@ -149,7 +148,11 @@ section
 #main
 	flex: 2
 #sidebar
+	width: clamp(0vw, 24rem, 95vw)
 	flex: 1
 	& > *
 		margin: 0.5rem
+	@media (orientation: portrait)
+		width: 100%
+		flex-direction: row
 </style>

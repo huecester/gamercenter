@@ -22,6 +22,7 @@ const initCreateRoom = io => {
 			password: password?.trim().slice(0, 32) || null,
 			io: io.in(id),
 			players: [],
+			maxPlayers: 8,
 
 			parsedPlayers() {
 				return this.players.map(player => player.parsed());
@@ -33,7 +34,7 @@ const initCreateRoom = io => {
 			},
 
 			addPlayer(player) {
-				console.log(`Battlesnake: ${player.username} [${player.id}] isHost ${player.isHost} joining room ${this.id}.`);
+				console.log(`Battlesnake: ${player.username} [${player.id}] ${player.isHost ? 'host ' : ''}joining room ${this.name} [${this.id}].`);
 				player.socket.join(this.id);
 
 				// Register player
@@ -53,7 +54,7 @@ const initCreateRoom = io => {
 				// Event handlers
 				// Messages
 				player.socket.on('message', message => {
-					console.log(`Battlesnake: ${player.username} [${this.id}]: ${message}`);
+					console.log(`Battlesnake: ${player.username}@${this.name} [${player.id}@${this.id}]: ${message}`);
 					this.io.emit('message', {
 						author: player.username,
 						message: message.trim().slice(0, 256),
@@ -63,7 +64,7 @@ const initCreateRoom = io => {
 			},
 
 			removePlayer(target) {
-				console.log(`Battlesnake: ${target.username} [${target.id}] isHost ${target.isHost} leaving room ${this.id}.`);
+				console.log(`Battlesnake: ${target.username} [${target.id}] ${target.isHost ? 'host ' : ''}leaving room ${this.name} [${this.id}].`);
 
 				// Remove player
 				this.players = this.players.filter(player => player.id !== target.id);
@@ -114,10 +115,11 @@ const createPlayer = (username, socket) => {
 const router = express.Router();
 
 router.get('/rooms', (req, res) => {
-	console.log('Battlesnake: GET /rooms');
-	res.json(rooms.map(room => {
+	console.log('Battlesnake: GET /rooms.');
+	res.json(rooms.filter(room => room.players.length < room.maxPlayers).map(room => {
 		return {
-			...room,
+			name: room.name,
+			id: room.id,
 			password: room.password ? true : false,
 			players: room.players.map(player => {
 				return {
@@ -137,8 +139,8 @@ router.post('/rooms', (req, res) => {
 	}
 
 	const newRoom = createRoom(name, password || null);
-	newRoom.timeoutID = setTimeout(newRoom.close, 10000);
-	console.log(`Battlesnake: Creating new room ${newRoom.name} with id ${newRoom.id}`);
+	newRoom.timeoutID = setTimeout(() => newRoom.close(), 5000);
+	console.log(`Battlesnake: Creating new room ${newRoom.name} with id ${newRoom.id}.`);
 	rooms.push(newRoom);
 	res.status(201).json({ id: newRoom.id });
 });
@@ -158,6 +160,9 @@ module.exports = {
 					return;
 				} else if (!data.username) {
 					socket.emit('close', 'nousername');
+					return;
+				} else if (room.players.length >= room.maxPlayers) {
+					socket.emit('close', 'roomfull');
 					return;
 				};
 

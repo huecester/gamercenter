@@ -1,23 +1,16 @@
 <script>
-export default {
-	props: {
-		size: {
-			type: Number,
-			default: 300,
-		},
-	},
-};
 </script>
 
 <template>
-	<canvas
-			:width="size"
-			:height="size"
-			/>
+	<canvas />
 </template>
 
 <style scoped lang="sass">
+$canvas-size: clamp(300px, 60vh, 90vw)
+
 canvas
 	background: black
 	border: 2px solid $fg-medium
+	width: $canvas-size
+	height: $canvas-size
 </style>

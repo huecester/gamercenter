@@ -57,4 +57,7 @@ thead
 			&:nth-child(2)
 				flex: 1
 				font-size: 1.25rem
+
+tbody
+	overflow: auto
 </style>
