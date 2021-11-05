@@ -2,6 +2,7 @@
 Gaming gaming
 
 # TODO
+- [ ] nuxt
 - [ ] battlesnake
     - [x] rooms page
     - [ ] game page
