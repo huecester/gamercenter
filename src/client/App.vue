@@ -72,14 +72,18 @@ button
 	text-align: center
 	cursor: pointer
 	&:hover
-		background-color: $fg-light
+		filter: brightness(1.3)
 	&:active
-		background-color: $fg-dark
+		filter: brightness(0.9)
+	&:disabled
+		filter: brightness(0.8)
+		cursor: not-allowed
 
 input
 	&[type=text], &[type=password]
 		background-color: $bg-medium
 		border: 1px solid $bg-light
+		border-radius: 0
 		outline: 0
 		color: inherit
 		font-size: 0.75rem
@@ -99,7 +103,7 @@ input
 	&:hover
 		filter: brightness(1.3)
 	&:active
-		filter: brightness(1.1)
+		filter: brightness(0.9)
 
 // Transitions
 $slide-offset: 4rem

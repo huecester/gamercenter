@@ -80,6 +80,10 @@ const store = createStore({
 				level,
 				message,
 			});
+
+			if (state.notifications.length > 3) {
+				state.notifications.unshift();
+			};
 		},
 		removeNotification(state, id) {
 			state.notifications = state.notifications.filter(notification => notification.id !== id)
