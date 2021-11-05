@@ -92,6 +92,7 @@ form
 		flex: 1
 		height: 100%
 		box-sizing: border-box
+		outline: none
 	button
 		height: 100%
 		font-size: 0.75rem
@@ -101,5 +102,4 @@ form
 	font-weight: bold
 .italic
 	font-style: italic
-
 </style>

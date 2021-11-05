@@ -2,15 +2,16 @@
 import BattlesnakeGameCanvas from './BattlesnakeGameCanvas.vue';
 import BattlesnakeGamePlayers from './BattlesnakeGamePlayers.vue';
 import BattlesnakeGameChat from './BattlesnakeGameChat.vue';
+import BattlesnakeGameNotifications from './BattlesnakeGameNotifications.vue';
 
 import { io } from 'socket.io-client';
-import _ from 'lodash';
 
 export default {
 	components: {
 		BattlesnakeGameCanvas,
 		BattlesnakeGamePlayers,
 		BattlesnakeGameChat,
+		BattlesnakeGameNotifications,
 	},
 	data() {
 		return {
@@ -19,7 +20,9 @@ export default {
 			roomName: null,
 			isHost: false,
 			players: [],
+			notifications: [],
 			messages: [],
+			enableStartButton: false,
 		};
 	},
 	computed: {
@@ -30,6 +33,9 @@ export default {
 	methods: {
 		send(message) {
 			this.socket.emit('message', message);
+		},
+		start() {
+			this.socket.emit('start');
 		},
 	},
 	created() {
@@ -69,6 +75,10 @@ export default {
 		this.socket.on('joined', data => {
 			this.isHost = data.isHost;
 			this.roomName = data.roomName;
+
+			if (this.isHost) {
+				this.enableStartButton = true;
+			};
 
 			// Initialize room handlers
 			this.socket.on('join', data => {
@@ -118,7 +128,14 @@ export default {
 			</div>
 		</div>
 		<div id="sidebar">
+			<button
+					v-if="enableStartButton"
+					@click="start"
+					>
+					Start
+			</button>
 			<BattlesnakeGamePlayers :players="players" />
+			<BattlesnakeGameNotifications :notifications="notifications" />
 			<BattlesnakeGameChat
 					:messages="messages"
 					@message="send($event)"
