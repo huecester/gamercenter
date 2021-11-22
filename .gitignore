@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/macos,vim,tags,node
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,vim,tags,node
+# Created by https://www.toptal.com/developers/gitignore/api/macos,vim,node
+# Edit at https://www.toptal.com/developers/gitignore?templates=macos,vim,node
 
 ### macOS ###
 # General
@@ -154,24 +154,11 @@ dist
 # Serverless Webpack directories
 .webpack/
 
-### Tags ###
-# Ignore tags created by etags, ctags, gtags (GNU global) and cscope
-TAGS
-.TAGS
-!TAGS/
-tags
-.tags
-!tags/
-gtags.files
-GTAGS
-GRTAGS
-GPATH
-GSYMS
-cscope.files
-cscope.out
-cscope.in.out
-cscope.po.out
+# Optional stylelint cache
+.stylelintcache
 
+# SvelteKit build / generate output
+.svelte-kit
 
 ### Vim ###
 # Swap
@@ -190,7 +177,8 @@ Sessionx.vim
 .netrwhist
 *~
 # Auto-generated tag files
+tags
 # Persistent undo
 [._]*.un~
 
-# End of https://www.toptal.com/developers/gitignore/api/macos,vim,tags,node
+# End of https://www.toptal.com/developers/gitignore/api/macos,vim,node
