@@ -4,14 +4,14 @@ const { $http, store } = useContext();
 
 const error = ref(false);
 if (store.state.cache.bots.length <= 0) {
-	try {
-		$http.$get('/api/bots').then(newBots => {
+	$http.$get('/api/bots')
+		.then(newBots => {
 			store.commit('cache/setBots', newBots);
+		})
+		.catch(err => {
+			error.value = true;
+			store.commit('notifications/add', { level: 'error', msg: 'Couldn\'t reach server.' });
 		});
-	} catch (err) {
-		error.value = true;
-		store.commit('notifications/add', { level: 'error', msg: 'Couldn\'t reach server.' });
-	}
 }
 </script>
 

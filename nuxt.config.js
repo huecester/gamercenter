@@ -1,5 +1,5 @@
 export default {
-	// Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
+	target: 'server',
 	ssr: false,
 
 	// Global page headers: https://go.nuxtjs.dev/config-head
@@ -24,6 +24,11 @@ export default {
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
 	components: true,
+
+	server: {
+		host: process.env.HOST || 'localhost',
+		port: process.env.PORT || 3000,
+	},
 
 	css: [
 		'@/assets/scss/main.scss',
@@ -52,6 +57,10 @@ export default {
 	],
 
 	// Module options
+	http: {
+		baseURL: `http://${process.env.HOST}:${process.env.PORT}/`,
+	},
+
 	styleResources: {
 		scss: [ '@/assets/scss/_variables.scss' ],
 	},
