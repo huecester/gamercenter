@@ -53,10 +53,6 @@ export default {
 	],
 
 	// Module options
-	http: {
-		baseURL: `http://${process.env.HOST}:${process.env.PORT}/`,
-	},
-
 	styleResources: {
 		scss: [ '@/assets/scss/_variables.scss' ],
 	},

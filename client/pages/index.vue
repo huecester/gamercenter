@@ -11,7 +11,7 @@ const error = ref(false);
 if (store.state.cache.posts.length <= 0) {
 	$http.$get('/api/posts')
 		.then(newPosts => {
-			store.commit('cache/setPosts', newPosts);
+			store.commit('cache/setPosts', newPosts.reverse());
 		})
 		.catch(err => {
 			error.value = true;
