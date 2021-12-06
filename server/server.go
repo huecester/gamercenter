@@ -8,6 +8,7 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/static"
 )
 
 func main() {
@@ -61,10 +62,7 @@ func main() {
 	r.SetTrustedProxies(nil)
 
 	// routes
-	r.LoadHTMLGlob("./dist/**/*.html")
-	r.StaticFile("/", "./dist/")
-	r.Static("/_nuxt", "./dist/_nuxt")
-	r.Static("/favicon.ico", "./dist/favicon.ico")
+	r.Use(static.Serve("/", static.LocalFile("./dist", false)))
 
 	api := r.Group("/api")
 	for _, fn := range []func(*gin.RouterGroup, *sql.DB) {
