@@ -1,5 +1,5 @@
 export default {
-	// Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
+	target: 'static',
 	ssr: false,
 
 	// Global page headers: https://go.nuxtjs.dev/config-head
@@ -25,16 +25,17 @@ export default {
 	// Auto import components: https://go.nuxtjs.dev/config-components
 	components: true,
 
+	server: {
+		host: process.env.HOST || 'localhost',
+		port: process.env.PORT || 3000,
+	},
+
 	css: [
 		'@/assets/scss/main.scss',
 	],
 
 	pageTransition: 'slide',
 
-
-	serverMiddleware: [
-		{ path: '/api', handler: '@/api/index.js' },
-	],
 
 	// Modules
 	modules: [

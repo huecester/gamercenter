@@ -9,14 +9,14 @@ const { $http, store } = useContext();
 
 const error = ref(false);
 if (store.state.cache.posts.length <= 0) {
-	try {
-		$http.$get('/api/posts').then(newPosts => {
-			store.commit('cache/setPosts', newPosts);
+	$http.$get('/api/posts')
+		.then(newPosts => {
+			store.commit('cache/setPosts', newPosts.reverse());
+		})
+		.catch(err => {
+			error.value = true;
+			store.commit('notifications/add', { level: 'error', msg: 'Couldn\'t reach server.' });
 		});
-	} catch (err) {
-		error.value = true;
-		store.commit('notifications/add', { level: 'error', msg: 'Couldn\'t reach server.' });
-	}
 }
 </script>
 
