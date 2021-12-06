@@ -1,5 +1,5 @@
 export default {
-	target: 'server',
+	target: 'static',
 	ssr: false,
 
 	// Global page headers: https://go.nuxtjs.dev/config-head
@@ -36,10 +36,6 @@ export default {
 
 	pageTransition: 'slide',
 
-
-	serverMiddleware: [
-		{ path: '/api', handler: '@/api/index.js' },
-	],
 
 	// Modules
 	modules: [
