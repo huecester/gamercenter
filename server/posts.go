@@ -34,8 +34,8 @@ func getPosts(c *gin.Context, db *sql.DB) {
 	c.JSON(200, posts)
 }
 
-func posts(r *gin.Engine, db *sql.DB) {
-	posts := r.Group("/posts")
+func posts(g *gin.RouterGroup, db *sql.DB) {
+	posts := g.Group("/posts")
 
 	posts.GET("/", func(c *gin.Context) {
 		getPosts(c, db)

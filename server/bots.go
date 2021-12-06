@@ -34,8 +34,8 @@ func getBots(c *gin.Context, db *sql.DB) {
 	c.JSON(200, bots)
 }
 
-func bots(r *gin.Engine, db *sql.DB) {
-	bots := r.Group("/bots")
+func bots(g *gin.RouterGroup, db *sql.DB) {
+	bots := g.Group("/bots")
 
 	bots.GET("/", func(c *gin.Context) {
 		getBots(c, db)

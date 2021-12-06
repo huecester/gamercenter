@@ -61,11 +61,16 @@ func main() {
 	r.SetTrustedProxies(nil)
 
 	// routes
-	for _, fn := range []func(*gin.Engine, *sql.DB) {
+	r.LoadHTMLGlob("./dist/**/*.html")
+	r.StaticFile("/", "./dist/")
+	r.Static("/_nuxt", "./dist/_nuxt")
+
+	api := r.Group("/api")
+	for _, fn := range []func(*gin.RouterGroup, *sql.DB) {
 		posts,
 		bots,
 	} {
-		fn(r, db)
+		fn(api, db)
 	}
 
 	// start
