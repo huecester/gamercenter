@@ -64,6 +64,7 @@ func main() {
 	r.LoadHTMLGlob("./dist/**/*.html")
 	r.StaticFile("/", "./dist/")
 	r.Static("/_nuxt", "./dist/_nuxt")
+	r.Static("/favicon.ico", "./dist/favicon.ico")
 
 	api := r.Group("/api")
 	for _, fn := range []func(*gin.RouterGroup, *sql.DB) {
