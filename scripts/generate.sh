@@ -4,4 +4,4 @@ yarn generate
 
 cd ../server
 rm -rf dist
-cp ../client/dist .
+cp -r ../client/dist .
