@@ -59,7 +59,7 @@ export default {
 
 	googleFonts: {
 		families: {
-			'Ubuntu+Mono': true,
+			'Titillium+Web': true,
 		},
 	},
 };
