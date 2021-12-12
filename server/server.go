@@ -3,17 +3,18 @@ package main
 import (
 	"database/sql"
 	"log"
-	"fmt"
 	"os"
 
-	_ "github.com/lib/pq"
+	postgres "github.com/huecester/gamercenter/server/database"
+	"github.com/huecester/gamercenter/server/posts"
+	"github.com/huecester/gamercenter/server/bots"
+	"github.com/huecester/gamercenter/server/battlesnake"
+
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	/// DB ///
-
-	// variables
+	// DB variables
 	var (
 		dbhost = "localhost"
 		dbport = "5432"
@@ -37,24 +38,15 @@ func main() {
 		database = envDatabase
 	}
 
-	// connect to db
-	psqlconn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbhost, dbport, user, password, database)
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := postgres.Init(dbhost, dbport, user, password, database)
 	if err != nil {
-		log.Fatalf("Error connecting to database: %v", err)
+		log.Fatalf("Error connecing to database: %v", err)
 	}
 	defer db.Close()
-
-	// ping db
-	err = db.Ping()
-	if err != nil {
-		log.Fatalf("Error pinging database: %v", err)
-	}
-
 	log.Println("Connected to database.")
 
 
-	/// Gin ///
+	// Gin
 
 	// init
 	r := gin.Default()
@@ -64,9 +56,9 @@ func main() {
 	api := r.Group("/api")
 
 	for _, fn := range []func(*gin.RouterGroup, *sql.DB) {
-		posts,
-		bots,
-		battlesnake,
+		posts.Init,
+		bots.Init,
+		battlesnake.Init,
 	} {
 		fn(api, db)
 	}

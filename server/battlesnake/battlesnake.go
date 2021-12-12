@@ -1,53 +1,55 @@
-package main
+package battlesnake
 
 import (
 	"database/sql"
 
+	"github.com/huecester/gamercenter/server/id"
+
 	"github.com/gin-gonic/gin"
 )
 
-type Player struct {
+type player struct {
 	Username string `json:"username"`
 	ID string `json:"id"`
 }
 
-type NewRoom struct {
+type newRoom struct {
 	Name string `json:"name" binding:"required,min=1,max=32"`
 	Password string `json:"password" binding:"max=32"`
 }
 
-type Room struct {
+type room struct {
 	Name string `json:"name"`
 	ID string `json:"id"`
-	Players []Player `json:"players"`
+	Players []player `json:"players"`
 	Password string `json:"-"`
 	HasPassword bool `json:"password"`
 }
 
-var rooms []Room
+var rooms []room
 
 func getRooms(c *gin.Context) {
 	c.JSON(200, rooms)
 }
 
 func createRoom(c *gin.Context) {
-	var n NewRoom
+	var n newRoom
 	if err := c.BindJSON(&n); err != nil {
 		c.AbortWithError(400, err)
 	}
 
-	var r Room
+	var r room
 	r.Name = n.Name
 	r.Password = n.Password
 
-	r.ID = id()
+	r.ID = id.Gen()
 	r.HasPassword = len(r.Password) > 0
 	rooms = append(rooms, r)
 
 	c.String(201, r.ID)
 }
 
-func battlesnake(g *gin.RouterGroup, _ *sql.DB) {
+func Init(g *gin.RouterGroup, _ *sql.DB) {
 	battlesnake := g.Group("/battlesnake")
 
 	battlesnake.GET("/rooms", getRooms)

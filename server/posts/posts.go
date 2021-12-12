@@ -1,4 +1,4 @@
-package main
+package posts
 
 import (
 	"database/sql"
@@ -34,7 +34,7 @@ func getPosts(c *gin.Context, db *sql.DB) {
 	c.JSON(200, posts)
 }
 
-func posts(g *gin.RouterGroup, db *sql.DB) {
+func Init(g *gin.RouterGroup, db *sql.DB) {
 	posts := g.Group("/posts")
 
 	posts.GET("", func(c *gin.Context) {
