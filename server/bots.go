@@ -37,7 +37,7 @@ func getBots(c *gin.Context, db *sql.DB) {
 func bots(g *gin.RouterGroup, db *sql.DB) {
 	bots := g.Group("/bots")
 
-	bots.GET("/", func(c *gin.Context) {
+	bots.GET("", func(c *gin.Context) {
 		getBots(c, db)
 	})
 }

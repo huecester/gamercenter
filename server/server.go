@@ -8,11 +8,10 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-contrib/static"
 )
 
 func main() {
-	// DB //
+	/// DB ///
 
 	// variables
 	var (
@@ -55,19 +54,19 @@ func main() {
 	log.Println("Connected to database.")
 
 
-	// Gin //
+	/// Gin ///
 
 	// init
 	r := gin.Default()
 	r.SetTrustedProxies(nil)
 
 	// routes
-	r.Use(static.Serve("/", static.LocalFile("./dist", false)))
-
 	api := r.Group("/api")
+
 	for _, fn := range []func(*gin.RouterGroup, *sql.DB) {
 		posts,
 		bots,
+		battlesnake,
 	} {
 		fn(api, db)
 	}

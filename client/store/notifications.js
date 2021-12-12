@@ -3,10 +3,24 @@ export const state = () => ({
 });
 
 export const mutations = {
-	add(state, data) {
+	info(state, msg) {
 		state.list.push({
-			level: data.level,
-			msg: data.msg,
+			level: 'info',
+			msg,
+			id: this.$genID(),
+		});
+	},
+	warn(state, msg) {
+		state.list.push({
+			level: 'warn',
+			msg,
+			id: this.$genID(),
+		});
+	},
+	error(state, msg) {
+		state.list.push({
+			level: 'error',
+			msg,
 			id: this.$genID(),
 		});
 	},

@@ -15,7 +15,7 @@ if (store.state.cache.posts.length <= 0) {
 		})
 		.catch(err => {
 			error.value = true;
-			store.commit('notifications/add', { level: 'error', msg: 'Couldn\'t reach server.' });
+			store.commit('notifications/error', 'Failed to reach server.');
 		});
 }
 </script>

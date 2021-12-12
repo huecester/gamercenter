@@ -37,7 +37,7 @@ func getPosts(c *gin.Context, db *sql.DB) {
 func posts(g *gin.RouterGroup, db *sql.DB) {
 	posts := g.Group("/posts")
 
-	posts.GET("/", func(c *gin.Context) {
+	posts.GET("", func(c *gin.Context) {
 		getPosts(c, db)
 	})
 }

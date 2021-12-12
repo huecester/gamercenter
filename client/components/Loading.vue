@@ -1,8 +1,10 @@
 <script setup>
 import { defineProps } from '@nuxtjs/composition-api';
-
 const props = defineProps({
-	condition: Boolean,
+	condition: {
+		type: Boolean,
+		default: false,
+	},
 	error: {
 		type: Boolean,
 		default: false,
@@ -11,7 +13,7 @@ const props = defineProps({
 </script>
 
 <template>
-	<transition
+	<Transition
 			name="fade"
 			mode="out-in"
 			>
@@ -26,7 +28,7 @@ const props = defineProps({
 			<div v-else class="center" key="loading">
 				<span class="fas fa-spinner fa-3x fa-spin" />
 			</div>
-	</transition>
+	</Transition>
 </template>
 
 <style scoped lang="scss">
