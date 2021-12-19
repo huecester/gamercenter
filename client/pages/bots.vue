@@ -24,6 +24,7 @@ if (store.state.cache.bots.length <= 0) {
 				>
 				<a
 						v-for="bot in store.state.cache.bots"
+						class="delink"
 						:href="bot.link"
 						>
 						<article
@@ -37,10 +38,3 @@ if (store.state.cache.bots.length <= 0) {
 		</Loading>
 	</main>
 </template>
-
-<style scoped lang="scss">
-a {
-	color: inherit;
-	text-decoration: none;
-}
-</style>
