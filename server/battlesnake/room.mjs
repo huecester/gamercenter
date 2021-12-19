@@ -4,7 +4,7 @@ import createGame from './game.mjs';
 export default (name, password) => ({
 	name,
 	id: genID(),
-	players: [],
+	players: new Map(),
 	password,
 	max: 8,
 	onclose: null,
@@ -15,31 +15,39 @@ export default (name, password) => ({
 	// init
 	ioInit(io) {
 		this.io = io;
-		this.game = createGame(this.io);
+		this.game = createGame(this.io, this);
 	},
 
 
 	// sanitization
 	sanitized() {
+		const sanitizedPlayers = [];
+		for (const player of this.players.values()) {
+			sanitizedPlayers.push(player.sanitized());
+		}
 		return {
 			name: this.name,
 			id: this.id,
-			players: this.players.map(player => player.sanitized()),
+			players: sanitizedPlayers,
 			password: (this.password) ? true : false,
 			gridSize: this.gridSize,
 		};
 	},
 
 	sanitizedPlayers() {
-		return this.players.map(player => player.sanitized());
+		const sanitizedPlayers = [];
+		for (const player of this.players.values()) {
+			sanitizedPlayers.push(player.sanitized());
+		}
+		return sanitizedPlayers;
 	},
 
 	// player management
 	add(adding) {
 		// check for limit
-		if (this.players.length >= this.max) return false;
+		if (this.players.size >= this.max) return false;
 
-		this.players.push(adding);
+		this.players.set(adding.id, adding);
 		adding.socket.join(this.id);
 		this.io.emit('player', adding.username, 'join', this.sanitizedPlayers());
 
@@ -63,7 +71,7 @@ export default (name, password) => ({
 			this.close();
 			return;
 		}
-		this.players = this.players.filter(player => player.id !== removing.id);
+		this.players.delete(removing);
 		this.game.players = this.game.players.filter(player => player.id !== removing.id);
 		this.io.emit('player', removing.username, 'leave', this.sanitizedPlayers());
 	},
@@ -72,7 +80,7 @@ export default (name, password) => ({
 	start() {
 		if (this.game.started) return;
 		this.game.started = true;
-		this.game.players = this.players;
+		this.game.players = Array.from(this.players.values());
 
 		let n = 3;
 		const intervalID = setInterval(() => {
@@ -82,6 +90,10 @@ export default (name, password) => ({
 				this.game.start();
 			}
 		}, 1000);
+	},
+
+	updatePlayers() {
+		this.io.emit('players', this.sanitizedPlayers());
 	},
 
 	close() {

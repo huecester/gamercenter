@@ -1,8 +1,6 @@
 <script setup>
-import { ref, useStore, computed } from '@nuxtjs/composition-api';
+import { ref, useStore, computed, watch } from '@nuxtjs/composition-api';
 const store = useStore();
-
-const players = computed(() => store.state.battlesnake.players.list);
 
 const lightOrDark = bgColor => {
 	const match = bgColor.match(/^#([a-z0-9]{6})$/i);
@@ -17,6 +15,8 @@ const lightOrDark = bgColor => {
 	const brightness = Math.round(((r * 299) + (g * 587) + (b * 114)) / 1000);
 	return (brightness > 125) ? 'black' : 'white';
 }
+
+const players = computed(() => store.state.battlesnake.players.list);
 </script>
 
 <template>
@@ -27,26 +27,37 @@ const lightOrDark = bgColor => {
 			</tr>
 		</thead>
 		<tbody>
-			<tr v-for="player in players">
-				<td
-						:style="{
-								'color': lightOrDark(player.color),
-								'background-color': player.color,
-						}"
-						class="icon-container"
-						>
-						<span v-if="player.status === 'alive'"class="fas fa-heart" />
-						<span v-if="player.status === 'dead'"class="fas fa-skull" />
-						<span v-if="player.status === 'winner'"class="fas fa-trophy" />
-				</td>
+			<tr
+					v-for="player in players"
+					:key="player.id"
+					>
+					<td
+							:style="{
+									'color': lightOrDark(player.color),
+									'background-color': player.color,
+							}"
+							class="icon-container"
+							>
+							<div v-if="player.status === 'alive'" key="alive">
+								<span class="fas fa-heart" />
+							</div>
 
-				<td>
-					<span
-							v-if="player.isHost"
-							class="host-icon fas fa-crown"
-							/>
-							{{ player.username }}
-				</td>
+							<div v-else-if="player.status === 'dead'" key="dead">
+								<span class="fas fa-skull" />
+							</div>
+
+							<div v-else-if="player.status === 'winner'" key="winner">
+								<span class="fas fa-trophy" />
+							</div>
+					</td>
+
+					<td>
+						<span
+								v-if="player.isHost"
+								class="host-icon fas fa-crown"
+								/>
+								{{ player.username }}
+					</td>
 			</tr>
 		</tbody>
 	</table>

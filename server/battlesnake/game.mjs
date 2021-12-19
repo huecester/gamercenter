@@ -3,7 +3,7 @@ const ms = () => {
 	return time[0] * 1000 + time[1] / 1000000;
 }
 
-export default io => ({
+export default (io, room) => ({
 	gridSize: 20,
 	speed: 5,
 	maxFood: 2,
@@ -11,6 +11,7 @@ export default io => ({
 	io,
 	started: false,
 	players: [],
+	room,
 	foods: [],
 
 	isColliding(s1, s2) {
@@ -30,6 +31,7 @@ export default io => ({
 	init() {
 		let i = 0;
 		for (const player of this.players) {
+			this.room.players.get(player.id).status = 'alive';
 			player.status = 'alive';
 			player.body = [[i, 2], [i, 1], [i, 0]];
 			player.direction = 'down';
@@ -40,6 +42,8 @@ export default io => ({
 		for (let food = this.maxFood; food > 0; food--) {
 			this.foods.push(this.randomEmpty());
 		}
+
+		this.room.updatePlayers();
 	},
 
 	update() {
@@ -95,18 +99,24 @@ export default io => ({
 			if (this.players.filter(target => target.id !== player.id)
 					.some(target => target.body
 					.some(seg => this.isColliding(head, seg)))) {
+				this.room.players.get(player.id).status = 'dead';
+				this.room.updatePlayers();
 				player.status = 'dead';
 				player.body = [];
 			}
 
 			// death with self
 			if (player.body.slice(1).some(seg => this.isColliding(head, seg))) {
+				this.room.players.get(player.id).status = 'dead';
+				this.room.updatePlayers();
 				player.status = 'dead';
 				player.body = [];
 			}
 
 			// void
 			if (head[0] < 0 || head[0] >= this.gridSize || head[1] < 0 || head[1] >= this.gridSize) {
+				this.room.players.get(player.id).status = 'dead';
+				this.room.updatePlayers();
 				player.status = 'dead';
 				player.body = [];
 			}
@@ -127,6 +137,8 @@ export default io => ({
 		const alive = this.players.filter(player => player.status === 'alive');
 		if (alive.length <= 1) {
 			if (alive.length === 1) {
+				this.room.players.get(alive[0].id).status = 'winner';
+				this.room.updatePlayers();
 				return alive[0].username;
 			} else {
 				return 'No one';
