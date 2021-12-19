@@ -65,7 +65,7 @@ fetchRooms();
 			</tbody>
 		</table>
 
-		<BattlesnakeCreateModal
+		<LazyBattlesnakeCreateModal
 				:show="showModal"
 				@close="showModal = false"
 				/>

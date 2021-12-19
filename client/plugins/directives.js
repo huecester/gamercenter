@@ -1,7 +1,13 @@
 import Vue from 'vue';
 
 Vue.directive('focus', {
-	mounted(el) {
-		el.focus()
+	inserted(el) {
+		el.focus();
+	},
+});
+
+Vue.directive('scroll', {
+	inserted(el) {
+		el.scrollIntoView();
 	},
 });

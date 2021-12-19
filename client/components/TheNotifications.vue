@@ -11,7 +11,6 @@ const { store } = useContext();
 					:key="notification.id"
 					:id="notification.id"
 					:level="notification.level"
-					@click="store.commit('notifications/remove', notification.id)"
 					>
 					{{ notification.msg }}
 			</TheNotificationsItem>

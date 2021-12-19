@@ -54,14 +54,6 @@ export default {
 	],
 
 	// Module options
-	http: {
-		proxy: (process.env.API_PROXY === 'true') ? true : false,
-	},
-
-	proxy: {
-		'/api/': 'http://localhost:3031',
-	},
-
 	styleResources: {
 		scss: [ '@/assets/scss/_variables.scss' ],
 	},
