@@ -86,6 +86,6 @@ export default (name, password) => ({
 
 	close() {
 		this.io.disconnectSockets();
-		this.onclose?.();
+		this.onclose();
 	},
 });

@@ -6,11 +6,13 @@ const router = useRouter();
 const store = useStore();
 
 // check for username
-const username = computed(() => window.localStorage.getItem('username'));
+const username = computed(() => localStorage.getItem('username'));
 if (!username) {
 	store.commit('notifications/error', 'Username must be set.');
 	router.push('/games/battlesnake');
 }
+// get password
+const password = computed(() => sessionStorage.getItem('password'));
 
 // variables
 const roomName = ref('');
@@ -28,6 +30,10 @@ const handleError = err => {
 			break;
 		case 'full':
 			msg = 'This room is full.';
+			level = 'warn';
+			break;
+		case 'wrongpassword':
+			msg = 'Incorrect password.';
 			level = 'warn';
 			break;
 
@@ -53,7 +59,7 @@ onUnmounted(() => {
 	store.dispatch('battlesnake/teardown');
 });
 
-socket.emit('join', id.value, username.value, res => {
+socket.emit('join', id.value, username.value, password.value, res => {
 	if (res.status !== 'ok') {
 		handleError(res.err);
 	}

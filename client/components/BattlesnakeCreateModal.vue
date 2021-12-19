@@ -1,6 +1,7 @@
 <script setup>
-import { defineProps, defineEmits, ref, useContext, useRouter } from '@nuxtjs/composition-api';
-const { store, $http } = useContext();
+import { defineProps, defineEmits, ref, useContext, useStore, useRouter } from '@nuxtjs/composition-api';
+const store = useStore();
+const { $http } = useContext();
 const router = useRouter();
 const props = defineProps({
 	show: {
@@ -22,6 +23,7 @@ const submit = async () => {
 
 		if (res.status === 201) {
 			const id = await res.text();
+			sessionStorage.setItem('password', password.value);
 			router.push({ path: `/games/battlesnake/${id}` })
 		} else {
 			store.commit('notifications/error', 'Failed to create room.');

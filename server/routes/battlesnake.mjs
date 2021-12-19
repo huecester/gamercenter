@@ -30,15 +30,18 @@ router.post('/rooms', (req, res) => {
 	newRoom.onclose = () => {
 		rooms.delete(newRoom.id);
 	};
-	rooms.set(newRoom.id, newRoom)
+	newRoom.timeoutID = setTimeout(() => {
+		newRoom.onclose();
+	}, 2000);
 
+	rooms.set(newRoom.id, newRoom)
 	res.status(201).type('txt').send(newRoom.id);
 });
 
 // io
 export function ioInit(io) {
 	io.on('connection', socket => {
-		socket.on('join', (roomID, username, cb) => {
+		socket.on('join', (roomID, username, password, cb) => {
 			const room = rooms.get(roomID);
 			if (!room) {
 				cb({
@@ -46,11 +49,19 @@ export function ioInit(io) {
 					err: 'notfound',
 				});
 				return;
+			} else if (room.password && password !== room.password) {
+				cb({
+					status: 'err',
+					err: 'wrongpassword',
+				});
+				return;
 			}
 
 			const player = createPlayer(username, socket.id, socket);
 			if (!room.io) {
 				// player is host, initialize room io
+				clearTimeout(room.timeoutID);
+				delete room.timeoutID;
 				room.ioInit(io.in(room.id));
 				player.isHost = true;
 			}

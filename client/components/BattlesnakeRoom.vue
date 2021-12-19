@@ -1,5 +1,5 @@
 <script setup>
-import { useRouter, defineProps } from '@nuxtjs/composition-api';
+import { useRouter, defineProps, defineEmits } from '@nuxtjs/composition-api';
 const router = useRouter();
 const props = defineProps({
 	name: {
@@ -19,9 +19,14 @@ const props = defineProps({
 		default: false,
 	},
 });
+const emit = defineEmits(['password']);
 
 const joinRoom = () => {
-	router.push({ path: `/games/battlesnake/${props.roomID}` });
+	if (props.hasPassword) {
+		emit('password', props.roomID);
+	} else {
+		router.push({ path: `/games/battlesnake/${props.roomID}` });
+	}
 }
 </script>
 

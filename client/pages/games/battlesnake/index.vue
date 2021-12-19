@@ -1,12 +1,25 @@
 <script setup>
-import { ref, computed, useStore, useContext } from '@nuxtjs/composition-api';
+import { ref, computed, useStore, useContext, useRouter } from '@nuxtjs/composition-api';
 const { $http } = useContext();
+const router = useRouter();
 const store = useStore();
 
-const showModal = ref(false);
+const showCreateModal = ref(false);
+const showPasswordModal = ref(false);
 const disableRefresh = ref(false);
 
 const rooms = ref([]);
+const id = ref('');
+
+const showPasswordModalHandler = newID => {
+	id.value = newID;
+	showPasswordModal.value = true;
+}
+
+const submitWithPassword = password => {
+	sessionStorage.setItem('password', password);
+	router.push({ path: `/games/battlesnake/${id.value}` });
+}
 
 const fetchRooms = async () => {
 	disableRefresh.value = true;
@@ -30,7 +43,7 @@ fetchRooms();
 		<div class="row">
 			<button
 					type="button"
-					@click="showModal = true"
+					@click="showCreateModal = true"
 					>
 					Create room
 			</button>
@@ -61,13 +74,19 @@ fetchRooms();
 						:roomID="room.id"
 						:players="room.players"
 						:hasPassword="room.password"
+						@password="showPasswordModalHandler"
 						/>
 			</tbody>
 		</table>
 
 		<LazyBattlesnakeCreateModal
-				:show="showModal"
-				@close="showModal = false"
+				:show="showCreateModal"
+				@close="showCreateModal = false"
+				/>
+		<LazyBattlesnakePasswordModal
+				:show="showPasswordModal"
+				@close="showPasswordModal = false"
+				@submit="submitWithPassword"
 				/>
 	</main>
 </template>
