@@ -89,6 +89,7 @@ socket.emit('join', id.value, username.value, password.value, res => {
 	socket.on('players', players => store.commit('battlesnake/players/set', players));
 	socket.on('win', username => {
 		store.commit('battlesnake/chat/winner', username);
+		store.commit('battlesnake/canvas/update', []);
 		started.value = false;
 	});
 

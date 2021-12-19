@@ -7,6 +7,7 @@ export default (io, room) => ({
 	gridSize: 20,
 	speed: 5,
 	maxFood: 2,
+	startingLength: 3,
 
 	io,
 	started: false,
@@ -29,13 +30,55 @@ export default (io, room) => ({
 	},
 
 	init() {
-		let i = 0;
-		for (const player of this.players) {
+		const oneFifth = this.gridSize / 5;
+		const twoFifth = oneFifth * 2;
+		const threeFifth = oneFifth * 3;
+		const fourFifth = oneFifth * 4;
+		const startingPositions = [
+			{ head: [oneFifth, twoFifth], dir: 'right' },
+			{ head: [fourFifth, threeFifth], dir: 'left' },
+			{ head: [threeFifth, oneFifth], dir: 'down' },
+			{ head: [twoFifth, fourFifth], dir: 'up' },
+			{ head: [oneFifth, threeFifth], dir: 'right' },
+			{ head: [fourFifth, twoFifth], dir: 'left' },
+			{ head: [twoFifth, oneFifth], dir: 'down' },
+			{ head: [threeFifth, fourFifth], dir: 'up' },
+		];
+		for (const pos of startingPositions) {
+			let mod = [0, 0];
+			switch (pos.dir) {
+				case 'up':
+					mod = [0, 1];
+					break;
+				case 'down':
+					mod = [0, -1];
+					break;
+				case 'left':
+					mod = [1, 0];
+					break;
+				case 'right':
+					mod = [-1, 0];
+					break;
+			}
+
+			pos.pos = [];
+			for (let i = 0; i < this.startingLength; i++) {
+				pos.pos.push([
+					pos.head[0] + (mod[0] * i),
+					pos.head[1] + (mod[1] * i),
+				]);
+			}
+		}
+
+		for (let i = 0; i < this.players.length; i++) {
+			const player = this.players[i];
+			const startingPos = startingPositions[i];
+
 			this.room.players.get(player.id).status = 'alive';
 			player.status = 'alive';
-			player.body = [[i, 2], [i, 1], [i, 0]];
-			player.direction = 'down';
-			i++;
+			player.body = startingPos.pos;
+			player.direction = startingPos.dir;
+			player.nextDirections = [];
 		}
 
 		this.foods = [];
@@ -96,13 +139,12 @@ export default (io, room) => ({
 			}
 
 			// death with others
-			if (this.players.filter(target => target.id !== player.id)
+			if (this.players.filter(target => target.status === 'alive' && target.id !== player.id)
 					.some(target => target.body
 					.some(seg => this.isColliding(head, seg)))) {
 				this.room.players.get(player.id).status = 'dead';
 				this.room.updatePlayers();
 				player.status = 'dead';
-				player.body = [];
 			}
 
 			// death with self
@@ -110,7 +152,6 @@ export default (io, room) => ({
 				this.room.players.get(player.id).status = 'dead';
 				this.room.updatePlayers();
 				player.status = 'dead';
-				player.body = [];
 			}
 
 			// void
@@ -118,7 +159,6 @@ export default (io, room) => ({
 				this.room.players.get(player.id).status = 'dead';
 				this.room.updatePlayers();
 				player.status = 'dead';
-				player.body = [];
 			}
 		}
 
