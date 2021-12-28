@@ -1,7 +1,7 @@
 <script context="module">
 	export const load = async ({ page }) => ({
 		props: {
-			key: page.path,
+			path: page.path,
 		},
 	});
 </script>
@@ -12,7 +12,7 @@
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Transition from '$lib/components/Transition.svelte';
 
-	export let key;
+	export let path;
 
 	const routes = [
 		{ title: 'Home', path: '/' },
@@ -24,9 +24,9 @@
 
 
 <Header />
-<Navbar {routes} />
+<Navbar {routes} {path} />
 
-{#key key}
+{#key path}
 	<Transition>
 		<slot />
 	</Transition>
