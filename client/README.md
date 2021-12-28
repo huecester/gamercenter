@@ -1,2 +1,0 @@
-# gamercenter
-Gaming gamers
