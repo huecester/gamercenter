@@ -1,7 +1,18 @@
+<script context="module">
+	export const load = async ({ page }) => ({
+		props: {
+			key: page.path,
+		},
+	});
+</script>
+
 <script>
 	import '../app.scss';
-	import Header from '../components/Header.svelte';
-	import Navbar from '../components/Navbar.svelte';
+	import Header from '$lib/components/Header.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
+	import Transition from '$lib/components/Transition.svelte';
+
+	export let key;
 
 	const routes = [
 		{ title: 'Home', path: '/' },
@@ -15,4 +26,8 @@
 <Header />
 <Navbar {routes} />
 
-<slot />
+{#key key}
+	<Transition>
+		<slot />
+	</Transition>
+{/key}
