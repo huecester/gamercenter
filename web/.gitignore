@@ -7,3 +7,5 @@ package/
 .env.*
 !.env.example
 .vercel_build_output/
+
+.vercel
