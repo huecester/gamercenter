@@ -11,7 +11,8 @@
 
 	import Header from '$lib/components/Header.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
-	import Transition from '$lib/components/Transition.svelte';
+
+	import { fly } from 'svelte/transition';
 
 	export let path;
 
@@ -20,6 +21,8 @@
 		{ title: 'About', path: '/about' },
 		{ title: 'Games', path: '/games' },
 	];
+
+	const transitionDuration = 400;
 </script>
 
 
@@ -27,7 +30,10 @@
 <Navbar {routes} {path} />
 
 {#key path}
-	<Transition>
+	<div
+		in:fly="{{delay: transitionDuration, duration: transitionDuration, x: -250, opacity: 0}}"
+		out:fly="{{duration: transitionDuration, x: 250, opacity: 0}}"
+	>
 		<slot />
-	</Transition>
+	</div>
 {/key}
