@@ -1,12 +1,10 @@
-FROM golang:latest
+FROM node:16
 WORKDIR /app
 
+ENV NODE_ENV=production
+COPY ["package.json", "yarn.lock", "."]
+RUN ["yarn", "install"]
+
 COPY . .
-RUN [ "go", "mod", "tidy", "-v" ]
 
-ENV PORT=3000
-ENV GIN_MODE=release
-RUN [ "go", "install", "-v" ]
-
-ENV PGDATABASE=gamercenter
-CMD [ "server" ]
+CMD ["node", "."]

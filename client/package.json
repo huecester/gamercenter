@@ -1,25 +1,22 @@
 {
-	"name": "gamercenter",
-	"version": "1.0.0",
-	"private": true,
-	"scripts": {
-		"dev": "nuxt dev",
-		"build": "nuxt build",
-		"start": "nuxt start",
-		"generate": "nuxt generate"
-	},
-	"dependencies": {
-		"@nuxt/http": "^0.6.4",
-		"@nuxtjs/composition-api": "^0.30.0",
-		"@nuxtjs/google-fonts": "^1.3.0",
-		"@nuxtjs/style-resources": "^1.2.1",
-		"core-js": "^3.15.1",
-		"express": "^4.17.1",
-		"nuxt": "^2.15.8",
-		"nuxt-edge": "latest",
-		"pg": "^8.7.1",
-		"sass": "^1.43.4",
-		"sass-loader": "10"
-	},
-	"devDependencies": {}
+  "name": "client",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "svelte-kit dev",
+    "build": "svelte-kit build",
+    "package": "svelte-kit package",
+    "preview": "svelte-kit preview"
+  },
+  "devDependencies": {
+    "@portabletext/svelte": "^0.2.0",
+    "@sveltejs/adapter-auto": "next",
+    "@sveltejs/kit": "next",
+    "sass": "^1.45.1",
+    "svelte": "^3.44.0",
+    "svelte-preprocess": "^4.10.1"
+  },
+  "type": "module",
+  "dependencies": {
+    "@sanity/client": "^2.23.2"
+  }
 }
