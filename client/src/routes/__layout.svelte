@@ -8,9 +8,11 @@
 
 <script>
 	import '../app.scss';
+
 	import Header from '$lib/components/Header.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Transition from '$lib/components/Transition.svelte';
+
 
 	export let path;
 

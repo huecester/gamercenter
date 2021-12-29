@@ -88,6 +88,12 @@ input {
 	flex-direction: column;
 }
 
+.center {
+	@extend %center-flex;
+	justify-content: center;
+}
+
+
 .clickable {
 	@extend %clickable;
 }

@@ -8,11 +8,15 @@
     "preview": "svelte-kit preview"
   },
   "devDependencies": {
+    "@portabletext/svelte": "^0.2.0",
     "@sveltejs/adapter-auto": "next",
     "@sveltejs/kit": "next",
-    "svelte": "^3.44.0",
     "sass": "^1.45.1",
+    "svelte": "^3.44.0",
     "svelte-preprocess": "^4.10.1"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@sanity/client": "^2.23.2"
+  }
 }
