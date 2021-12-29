@@ -13,14 +13,12 @@
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Transition from '$lib/components/Transition.svelte';
 
-
 	export let path;
 
 	const routes = [
 		{ title: 'Home', path: '/' },
 		{ title: 'About', path: '/about' },
 		{ title: 'Games', path: '/games' },
-		{ title: 'Bots', path: '/bots' },
 	];
 </script>
 
