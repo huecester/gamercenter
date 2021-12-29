@@ -6,14 +6,14 @@
 	const img = client.getDocument(portableText.block.asset._ref);
 </script>
 
-{#await img then img}
+{#await img}
+	<div>
+		<i class="fas fa-spinner fa-spin" />
+	</div>
+{:then img}
 	<img src={img.url} />
 {:catch err}
-	<p class="error">Failed to load image.</p>
+	<div>
+		<i class="fas fa-unlink" />
+	</div>
 {/await}
-
-<style lang="scss">
-	.error {
-		color: $error-dk;
-	}
-</style>
