@@ -31,8 +31,8 @@
 
 {#key path}
 	<div
-		in:fly="{{delay: transitionDuration, duration: transitionDuration, x: -250, opacity: 0}}"
-		out:fly="{{duration: transitionDuration, x: 250, opacity: 0}}"
+		in:fly="{{ delay: transitionDuration, duration: transitionDuration, x: -250, opacity: 0 }}"
+		out:fly="{{ duration: transitionDuration, x: 250, opacity: 0 }}"
 	>
 		<slot />
 	</div>
