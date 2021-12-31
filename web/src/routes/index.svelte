@@ -1,27 +1,11 @@
-<script context="module">
-	import client from '$lib/scripts/sanity.js';
-
-	export const load = async () => ({
-		props: {
-			posts: client.fetch("*[_type == 'post']{ title, body, _createdAt }"),
-		},
-	});
-</script>
-
 <script>
 	import BlockImage from '$lib/components/BlockImage.svelte';
 	import BlockLink from '$lib/components/BlockLink.svelte';
 	import PortableText from '@portabletext/svelte';
-
+	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 
-	export let posts;
-
-	function formatDate(dateString) {
-		const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-		const date = new Date(dateString);
-		return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-	}
+	let posts = [];
 
 	const serializers = {
 		types: {
@@ -31,8 +15,19 @@
 			link: BlockLink,
 		},
 	}
-</script>
 
+	function formatDate(dateString) {
+		const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+		const date = new Date(dateString);
+		return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+	}
+
+	onMount(() => posts = new Promise((resolve, reject) => {
+		fetch('/api/posts')
+			.then(res => resolve(res.json()))
+			.catch(err => reject(err));
+	}));
+</script>
 
 <main>
 	<h1>gamercenter</h1>
