@@ -21,6 +21,7 @@
 
 <style lang="scss">
 	label {
-		margin-right: 0.25rem;
+		font-size: 1.25rem;
+		margin-right: 0.5rem;
 	}
 </style>
