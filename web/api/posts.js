@@ -15,7 +15,7 @@ export default async (req, res) => {
 		},
 	},
 }`;
-		console.log('Returning:', posts);
+		console.log('Success.');
 		res.json(posts);
 	} catch (err) {
 		console.error('Error:', err);
