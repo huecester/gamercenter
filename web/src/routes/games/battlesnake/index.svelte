@@ -2,13 +2,25 @@
 	import Username from '$lib/components/Username.svelte';
 	import BattlesnakeCreateModal from '$lib/components/BattlesnakeCreateModal.svelte';
 	import BattlesnakeRooms from '$lib/components/BattlesnakeRooms.svelte';
+	import { onMount } from 'svelte';
 
 	let showCreate = false;
-	let rooms = [{name:'bazinga',id:'deadbeef',players:[{username:'gaminggamer',id:'aabbccdd'},{username:'gagag',id:'asdfasf'}],hasPassword:true},{name:'aids',id:'notgord',players:[{username:'faef',id:'aabbccdd'},{username:'peasant',id:'asdfasf'}],hasPassword:false}];
+	let rooms = [];
 
 	const submit = event => {
 		const { roomname, password } = event.detail;
 	}
+
+	const refresh = async () => {
+		try {
+			const res = await fetch('/api/battlesnake/rooms');
+			rooms = await res.json();
+		} catch (err) {
+			// TODO error
+		}
+	}
+
+	onMount(refresh);
 </script>
 
 <main>

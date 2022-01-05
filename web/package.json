@@ -17,6 +17,8 @@
   },
   "type": "module",
   "dependencies": {
-    "@sanity/client": "^2.23.2"
+    "@sanity/client": "^2.23.2",
+    "@upstash/redis": "^0.2.1",
+    "axios": "^0.24.0"
   }
 }
