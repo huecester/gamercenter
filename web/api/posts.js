@@ -20,6 +20,8 @@ export default async (req, res) => {
 		res.json(posts);
 	} catch (err) {
 		console.error('Error:', err);
-		res.sendStatus(500);
+		res
+			.status(500)
+			.send('Internal Server Error');
 	}
 }
