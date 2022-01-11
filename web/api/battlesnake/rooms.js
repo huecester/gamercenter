@@ -22,7 +22,9 @@ export default async (req, res) => {
 	switch (req.method) {
 		case 'HEAD':
 		case 'OPTIONS':
-			return res.status(204).end();
+			return res
+				.status(204)
+				.end();
 
 		case 'GET':
 			try {
@@ -35,7 +37,7 @@ export default async (req, res) => {
 				console.log('Error:', err);
 				res
 					.status('500')
-					.send('Internal Server Error.');
+					.end();
 			}
 			return;
 
@@ -43,7 +45,7 @@ export default async (req, res) => {
 			console.log('Method not allowed.');
 			return res
 				.status(405)
-				.send('Method Not Allowed');
+				.end();
 	}
 }
 
