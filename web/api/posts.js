@@ -29,7 +29,7 @@ export default async (req, res) => {
 	switch (req.method) {
 		case 'HEAD':
 		case 'OPTIONS':
-			return res.end();
+			return res.status(204).end();
 
 		case 'GET':
 			try {

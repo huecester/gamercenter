@@ -17,12 +17,12 @@ const getRooms = () => {
 
 export default async (req, res) => {
 	console.log(`${req.method} /battlesnake/rooms`);
-	res.setHeader('Allow', 'GET, HEAD, OPTIONS');
+	res.setHeader('Allow', 'GET, POST, HEAD, OPTIONS');
 
 	switch (req.method) {
 		case 'HEAD':
 		case 'OPTIONS':
-			return res.end();
+			return res.status(204).end();
 
 		case 'GET':
 			try {
