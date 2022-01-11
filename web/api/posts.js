@@ -1,7 +1,7 @@
 import client from '../lib/sanity.js';
 
 export default async (req, res) => {
-	console.log('GET /posts');
+	console.log(`${req.method} /posts`);
 
 	try {
 		const posts = await client.fetch`*[_type == 'post'] {

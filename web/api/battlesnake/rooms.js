@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default async (req, res) => {
-	console.log('GET /battlesnake/rooms');
+	console.log(`${req.method} /battlesnake/rooms`);
 
 	try {
 		const rooms = await axios.get(`${process.env.UPSTASH_API_URL.trim()}/get/battlesnake:rooms`.trim(), {
