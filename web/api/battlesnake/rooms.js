@@ -2,16 +2,7 @@ import axios from 'axios';
 
 const getRooms = () => {
 	return new Promise(async (resolve, reject) => {
-		try {
-			const rooms = await axios.get(`${process.env.UPSTASH_API_URL.trim()}/get/battlesnake:rooms`.trim(), {
-				headers: {
-					'Authorization': `Bearer ${process.env.UPSTASH_API_RO_KEY.trim()}`,
-				},
-			});
-			resolve(JSON.parse(rooms.data.result));
-		} catch (err) {
-			reject(err);
-		}
+		reject('Not implemented.');
 	});
 }
 
