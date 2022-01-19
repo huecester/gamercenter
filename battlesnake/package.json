@@ -1,0 +1,8 @@
+{
+  "name": "battlesnake",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:huecester/battlesnake",
+  "author": "huecester <jericho.paulino@yahoo.com.ph>",
+  "license": "MIT"
+}
