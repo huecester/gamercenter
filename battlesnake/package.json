@@ -4,5 +4,14 @@
   "main": "index.js",
   "repository": "git@github.com:huecester/battlesnake",
   "author": "huecester <jericho.paulino@yahoo.com.ph>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^9.1.4",
+    "sinon": "^12.0.1"
+  },
+  "dependencies": {
+    "express": "^4.17.2",
+    "socket.io": "^4.4.1"
+  }
 }
