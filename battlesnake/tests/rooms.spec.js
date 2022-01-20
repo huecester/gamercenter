@@ -67,10 +67,10 @@ describe('Rooms API', function() {
 
 
 	// Password
-	it('should send a room with password set to false if password is undefined', async function() {
+	it('should send a room with password set to false if password is null', async function() {
 		await chai.request(app).post('/rooms').send({
 			roomname: 'aaaaaa',
-			password: undefined,
+			password: null,
 		});
 
 		const res = await chai.request(app).get('/rooms');
@@ -78,7 +78,7 @@ describe('Rooms API', function() {
 		expect(room).to.have.property('password', false);
 	});
 
-	it('should send a room with password set to false if password is empty', async function() {
+	it('should send a room with password set to false if password is undefined', async function() {
 		await chai.request(app).post('/rooms').send({
 			roomname: 'bbbbbb',
 		});
