@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@faker-js/faker@^6.0.0-alpha.3":
+  version "6.0.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/@faker-js/faker/-/faker-6.0.0-alpha.3.tgz#c6f85a44d7996c131ec16ce41d6be0f344b6ad15"
+  integrity sha512-8B+7Jlwb9ogcoluzxB6AaSRZn2gnoewTA/WygAYhWNxkrFKjQL0TDXK6AW6uJlASMKl7qG/qbEVtpjLByuL0ZQ==
+
 "@socket.io/base64-arraybuffer@~1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@socket.io/base64-arraybuffer/-/base64-arraybuffer-1.0.2.tgz#568d9beae00b0d835f4f8c53fd55714986492e61"
