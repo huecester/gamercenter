@@ -1,17 +1,17 @@
 import genID from './util/id.js';
 
-let rooms = [];
+let rooms = new Map();
 
 export function getRooms() {
-	return rooms;
+	return Array.from(rooms.values());
 }
 
 export function addRoom(room) {
-	rooms.push(room);
+	rooms.set(room.id, room);
 }
 
 export function clearRooms() {
-	rooms = [];
+	rooms.clear();
 }
 
 
