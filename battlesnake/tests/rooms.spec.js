@@ -3,7 +3,7 @@ import chai, { expect } from 'chai';
 import chaiHTTP from 'chai-http';
 
 import { clearRooms } from '../src/rooms.js';
-import app from '../src/index.js';
+import app from '../src/app.js';
 
 
 chai.use(chaiHTTP);

@@ -2,15 +2,12 @@ import express from 'express';
 import { addRoom, createRoom, getRooms } from './rooms.js';
 import logger from './util/log.js';
 
-const port = process.env.PORT || 3030;
 const app = express();
 
 
 // Body parser
 app.use(express.json());
 
-// Logging
-// app.use(logger);
 
 // Room creation
 app.get('/rooms', (req, res, next) => {
@@ -35,11 +32,8 @@ app.post('/rooms', (req, res, next) => {
 	next();
 });
 
-app.use(logger);
 
-// Listen
-app.listen(port, () => {
-	console.log(`App listening on port ${port}.`);
-});
+// Logging
+app.use(logger);
 
 export default app;
