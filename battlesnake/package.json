@@ -7,7 +7,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "test": "mocha ./**/*.spec.js --ignore node_modules"
+    "start": "node .",
+    "test": "mocha . --extension .spec.js --recursive --ignore node_modules"
   },
   "devDependencies": {
     "chai": "^4.3.4",
