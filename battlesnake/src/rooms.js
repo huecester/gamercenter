@@ -25,7 +25,7 @@ export function createRoom(name, password) {
 		sanitized() {
 			return {
 				name: this.name,
-				password: this.password.length > 0,
+				password: this.password?.length > 0,
 				id: this.id,
 				players: this.players.map(player => player.sanitized),
 			}

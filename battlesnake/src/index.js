@@ -11,7 +11,7 @@ app.use(express.json());
 
 // Room creation
 app.get('/rooms', (req, res) => {
-	res.json(getRooms());
+	res.json(getRooms().map(room => room.sanitized()));
 });
 
 app.post('/rooms', (req, res) => {
@@ -35,3 +35,5 @@ app.post('/rooms', (req, res) => {
 app.listen(port, () => {
 	console.log(`App listening on port ${port}.`);
 });
+
+export default app;
