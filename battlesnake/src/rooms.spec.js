@@ -2,16 +2,16 @@ import { describe } from 'mocha';
 import { expect } from 'chai';
 import { addRoom, clearRooms, createRoom, getRooms } from './rooms.js';
 
-describe('rooms.js', function() {
-	beforeEach(function() {
+describe('rooms.js', () => {
+	beforeEach(() => {
 		clearRooms();
 	});
 
-	it('should return an empty array without adding rooms', function() {
+	it('should return an empty array without adding rooms', () => {
 		expect(getRooms()).to.be.an('array').that.is.empty;
 	});
 
-	it('should be able to create a room', function() {
+	it('should be able to create a room', () => {
 		const room = createRoom('bazinga', 'gaming');
 
 		expect(room).to.have.property('name', 'bazinga');
@@ -20,7 +20,7 @@ describe('rooms.js', function() {
 		expect(room).to.have.property('players').that.is.an('array').that.is.empty;
 	});
 
-	it('should be able to add and get a room', function() {
+	it('should be able to add and get a room', () => {
 		const room = createRoom('bangin', 'secretpass');
 		addRoom(room);
 

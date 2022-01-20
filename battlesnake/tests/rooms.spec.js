@@ -8,20 +8,20 @@ import app from '../src/index.js';
 
 chai.use(chaiHTTP);
 
-describe('Rooms API', function() {
-	beforeEach(function() {
+describe('Rooms API', () => {
+	beforeEach(() => {
 		clearRooms();
 	});
 
 	// Basic API functions
-	it('should respond with an empty array with GET /rooms', async function() {
+	it('should respond with an empty array with GET /rooms', async () => {
 		const res = await chai.request(app).get('/rooms');
 
 		expect(res).to.have.property('status', 200);
 		expect(res).to.have.property('body').that.deep.equals([]);
 	});
 
-	it('should be able to create a room with POST /rooms', async function() {
+	it('should be able to create a room with POST /rooms', async () => {
 		const postRes = await chai.request(app).post('/rooms').send({
 			roomname: 'deadbeef',
 			password: 'gaminggamers',
@@ -35,7 +35,7 @@ describe('Rooms API', function() {
 
 
 	// Creating rooms
-	it('should properly return a room after creating it', async function() {
+	it('should properly return a room after creating it', async () => {
 		await chai.request(app).post('/rooms').send({
 			roomname: 'room',
 			password: 'password',
@@ -47,7 +47,7 @@ describe('Rooms API', function() {
 		expect(room).to.have.property('password', true);
 	});
 
-	it('should slice roomname to 32 characters', async function() {
+	it('should slice roomname to 32 characters', async () => {
 		await chai.request(app).post('/rooms').send({
 			roomname: 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz',
 			password: 'gargle',
@@ -58,7 +58,7 @@ describe('Rooms API', function() {
 		expect(room).to.have.property('name', 'abcdefghijklmnopqrstuvwxyzabcdef');
 	});
 
-	it('should respond with HTTP 400 if roomname is not sent', async function() {
+	it('should respond with HTTP 400 if roomname is not sent', async () => {
 		const res = await chai.request(app).post('/rooms').send({
 			password: 'huh',
 		});
@@ -67,7 +67,7 @@ describe('Rooms API', function() {
 
 
 	// Password
-	it('should send a room with password set to false if password is null', async function() {
+	it('should send a room with password set to false if password is null', async () => {
 		await chai.request(app).post('/rooms').send({
 			roomname: 'aaaaaa',
 			password: null,
@@ -78,7 +78,7 @@ describe('Rooms API', function() {
 		expect(room).to.have.property('password', false);
 	});
 
-	it('should send a room with password set to false if password is undefined', async function() {
+	it('should send a room with password set to false if password is undefined', async () => {
 		await chai.request(app).post('/rooms').send({
 			roomname: 'bbbbbb',
 		});
@@ -88,7 +88,7 @@ describe('Rooms API', function() {
 		expect(room).to.have.property('password', false);
 	});
 
-	it('should send a room with password set to false if password is an empty string', async function() {
+	it('should send a room with password set to false if password is an empty string', async () => {
 		await chai.request(app).post('/rooms').send({
 			roomname: 'cccccc',
 			password: '',
