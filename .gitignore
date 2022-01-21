@@ -1,1 +1,6 @@
 .vercel
+tags
+yarn-error.log
+.env
+.env.*
+.DS_Store
