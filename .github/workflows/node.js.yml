@@ -3,8 +3,12 @@ name: Node.js CI
 on:
   push:
     branches: [ main, dev ]
+    paths:
+      - "battlesnake/**"
   pull_request:
     branches: [ main, dev ]
+    paths:
+      - "battlesnake/**"
 
 jobs:
   build:
@@ -27,3 +31,4 @@ jobs:
 
       - name: Test app
         run: yarn test
+        working-directory: battlesnake
