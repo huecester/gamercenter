@@ -1,39 +1,42 @@
 import express from 'express';
-import { addRoom, createRoom, getRooms } from './rooms.js';
+import http from 'http';
+import path from 'path';
+import { Server } from 'socket.io';
 import logger from './util/log.js';
 
+
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { serveClient: false });
 
 
 // Body parser
 app.use(express.json());
 
 
-// Room creation
-app.get('/rooms', (req, res, next) => {
-	res.json(getRooms().map(room => room.sanitized()));
-	next();
+// Setup routes
+for (const filename of [
+	'rooms.js',
+]) {
+	const filepath = './' + path.join('routes', filename);
+	const router = await import(filepath);
+	app.use(router.default);
+}
+
+
+io.on('connection', socket => {
+	console.log('User connected');
 });
 
-app.post('/rooms', (req, res, next) => {
-	if (!req?.body?.roomname) {
-		res.sendStatus(400);
-		next();
-		return;
+// Fallbacks
+app.all('*', (req, res, next) => {
+	if (!res.headersSent) {
+		res.sendStatus(404);
 	}
-
-	const roomname = req.body.roomname.slice(0, 32);
-	const password = req.body.password?.slice(0, 32);
-
-	const room = createRoom(roomname, password);
-	addRoom(room);
-
-	res.sendStatus(201);
 	next();
 });
-
 
 // Logging
 app.use(logger);
 
-export default app;
+export default server;
