@@ -9,18 +9,18 @@ import app from '../src/app.js';
 
 chai.use(chaiHTTP);
 
-let roomname;
-let password;
-
-function createRoom() {
-	return chai.request(app).post('/rooms').send({ roomname, password });
-}
-
-function getRooms() {
-	return chai.request(app).get('/rooms');
-}
 
 describe('Rooms API', () => {
+	let roomname, password;
+
+	function createRoom() {
+		return chai.request(app).post('/rooms').send({ roomname, password });
+	}
+
+	function getRooms() {
+		return chai.request(app).get('/rooms');
+	}
+
 	beforeEach(() => {
 		clearRooms();
 		roomname = faker.lorem.word();

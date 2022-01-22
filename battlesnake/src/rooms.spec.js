@@ -3,11 +3,10 @@ import { expect } from 'chai';
 import faker from '@faker-js/faker';
 import { addRoom, clearRooms, createRoom, getRooms } from './rooms.js';
 
-let roomname;
-let password;
-let room;
 
 describe('rooms.js', () => {
+	let roomname, password, room;
+
 	beforeEach(() => {
 		clearRooms();
 		roomname = faker.lorem.word();
