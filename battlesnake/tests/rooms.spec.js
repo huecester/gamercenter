@@ -12,6 +12,14 @@ chai.use(chaiHTTP);
 let roomname;
 let password;
 
+function createRoom() {
+	return chai.request(app).post('/rooms').send({ roomname, password });
+}
+
+function getRooms() {
+	return chai.request(app).get('/rooms');
+}
+
 describe('Rooms API', () => {
 	beforeEach(() => {
 		clearRooms();
@@ -21,17 +29,14 @@ describe('Rooms API', () => {
 
 	// Basic API functions
 	it('should respond with an empty array with GET /rooms', async () => {
-		const res = await chai.request(app).get('/rooms');
+		const res = await getRooms();
 
 		expect(res).to.have.property('status', 200);
 		expect(res).to.have.property('body').that.deep.equals([]);
 	});
 
 	it('should be able to create a room with POST /rooms', async () => {
-		const postRes = await chai.request(app).post('/rooms').send({
-			roomname,
-			password,
-		});
+		const postRes = await createRoom();
 		expect(postRes).to.have.property('status', 201);
 
 		const getRes = await chai.request(app).get('/rooms');
@@ -42,10 +47,7 @@ describe('Rooms API', () => {
 
 	// Creating rooms
 	it('should properly return a room after creating it', async () => {
-		await chai.request(app).post('/rooms').send({
-			roomname,
-			password,
-		});
+		await createRoom();
 
 		const res = await chai.request(app).get('/rooms');
 		const room = res.body[0];
@@ -54,10 +56,8 @@ describe('Rooms API', () => {
 	});
 
 	it('should slice roomname to 32 characters', async () => {
-		await chai.request(app).post('/rooms').send({
-			roomname: 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz',
-			password,
-		});
+		roomname = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz';
+		await createRoom();
 
 		const res = await chai.request(app).get('/rooms');
 		const room = res.body[0];
@@ -65,19 +65,16 @@ describe('Rooms API', () => {
 	});
 
 	it('should respond with HTTP 400 if roomname is not sent', async () => {
-		const res = await chai.request(app).post('/rooms').send({
-			password,
-		});
+		roomname = undefined;
+		const res = await createRoom();
 		expect(res).to.have.property('status', 400);
 	});
 
 
 	// Password
 	it('should send a room with password set to false if password is null', async () => {
-		await chai.request(app).post('/rooms').send({
-			roomname,
-			password: null,
-		});
+		password = null;
+		await createRoom();
 
 		const res = await chai.request(app).get('/rooms');
 		const room = res.body[0];
@@ -85,9 +82,8 @@ describe('Rooms API', () => {
 	});
 
 	it('should send a room with password set to false if password is undefined', async () => {
-		await chai.request(app).post('/rooms').send({
-			roomname,
-		});
+		password = undefined;
+		await createRoom();
 
 		const res = await chai.request(app).get('/rooms');
 		const room = res.body[0];
@@ -95,10 +91,8 @@ describe('Rooms API', () => {
 	});
 
 	it('should send a room with password set to false if password is an empty string', async () => {
-		await chai.request(app).post('/rooms').send({
-			roomname,
-			password: '',
-		});
+		password = '';
+		await createRoom();
 
 		const res = await chai.request(app).get('/rooms');
 		const room = res.body[0];
