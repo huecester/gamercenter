@@ -14,13 +14,13 @@ const io = new Server(server, { serveClient: false });
 app.use(express.json());
 
 
-// Setup routes
+// Express setup
 for (const filename of [
 	'rooms.js',
 ]) {
 	const filepath = './' + path.join('routes', filename);
-	const router = await import(filepath);
-	app.use(router.default);
+	const module = await import(filepath);
+	app.use(module.router);
 }
 
 

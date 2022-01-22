@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { addRoom, createRoom, getRooms } from '../rooms.js';
 
-const router = Router();
+export const router = Router();
 
 router.get('/rooms', (req, res, next) => {
 	res.json(getRooms().map(room => room.sanitized()));
@@ -31,5 +31,3 @@ router.all('/', (req, res, next) => {
 	}
 	next();
 });
-
-export default router;
