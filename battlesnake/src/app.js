@@ -3,7 +3,8 @@ import http from 'http';
 import path from 'path';
 import { Server } from 'socket.io';
 
-import logger from './util/log.js';
+import expressLogger from './util/expressLog.js';
+import socketIOLogger from './util/socketIOLog.js';
 import getJS from './util/getJS.js';
 
 
@@ -12,24 +13,18 @@ const server = http.createServer(app);
 const io = new Server(server, { serveClient: false });
 
 
+// Express setup
 // Body parser
 app.use(express.json());
 
-
-// Express setup
+// Load routes
 for (const filepath of getJS('./src/routes')) {
 	const relFilepath = `./${path.relative('src', filepath)}`;
 	const route = path.join('/', path.parse(relFilepath).name);
-
 	const module = await import(relFilepath);
 
 	app.use(route, module.router);
 }
-
-
-io.on('connection', socket => {
-	console.log('User connected');
-});
 
 // Fallbacks
 app.all('*', (req, res, next) => {
@@ -40,6 +35,25 @@ app.all('*', (req, res, next) => {
 });
 
 // Logging
-app.use(logger);
+app.use(expressLogger);
+
+
+// Socket.IO setup
+// Logging
+io.on('connection', socket => {
+	socketIOLogger(socket, ['connection'], () => {});
+	socket.use((data, next) => socketIOLogger(socket, data, next));
+});
+
+// Load namespace handlers
+for (const filepath of getJS('./src/namespaces')) {
+	const relFilepath = `./${path.relative('src', filepath)}`;
+	const namespace = path.join('/', path.parse(relFilepath).name);
+	const module = await import(relFilepath);
+
+	module.init?.(io.of(namespace));
+	module.onConnection && io.of(namespace).on('connection', module.onConnection);
+}
+
 
 export default server;
