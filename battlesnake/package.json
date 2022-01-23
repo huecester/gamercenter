@@ -13,7 +13,9 @@
   "devDependencies": {
     "@faker-js/faker": "^6.0.0-alpha.3",
     "chai": "^4.3.4",
-    "mocha": "^9.1.4"
+    "memfs": "^3.4.1",
+    "mocha": "^9.1.4",
+    "sinon": "^12.0.1"
   },
   "dependencies": {
     "chai-http": "^4.3.0",

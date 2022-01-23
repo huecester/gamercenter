@@ -2,7 +2,9 @@ import express from 'express';
 import http from 'http';
 import path from 'path';
 import { Server } from 'socket.io';
+
 import logger from './util/log.js';
+import getJS from './util/getJS.js';
 
 
 const app = express();
@@ -15,12 +17,13 @@ app.use(express.json());
 
 
 // Express setup
-for (const filename of [
-	'rooms.js',
-]) {
-	const filepath = './' + path.join('routes', filename);
-	const module = await import(filepath);
-	app.use(module.router);
+for (const filepath of getJS('./src/routes')) {
+	const relFilepath = `./${path.relative('src', filepath)}`;
+	const route = path.join('/', path.parse(relFilepath).name);
+
+	const module = await import(relFilepath);
+
+	app.use(route, module.router);
 }
 
 

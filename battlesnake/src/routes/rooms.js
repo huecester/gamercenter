@@ -3,12 +3,12 @@ import { addRoom, createRoom, getRooms } from '../rooms.js';
 
 export const router = Router();
 
-router.get('/rooms', (req, res, next) => {
+router.get('/', (req, res, next) => {
 	res.json(getRooms().map(room => room.sanitized()));
 	next();
 });
 
-router.post('/rooms', (req, res, next) => {
+router.post('/', (req, res, next) => {
 	if (!req?.body?.roomname) {
 		res.sendStatus(400);
 		next();
