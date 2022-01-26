@@ -24,6 +24,7 @@ describe('rooms.js', () => {
 		expect(room).to.have.property('id').that.is.a('string').with.length(8);
 		expect(room).to.have.property('players').that.is.an('array').that.is.empty;
 		expect(room).to.have.property('sanitized').that.is.a('function');
+		expect(room).to.have.property('close').that.is.a('function');
 	});
 
 	it('should be able to sanitize a room', () => {
@@ -40,5 +41,11 @@ describe('rooms.js', () => {
 		const res = getRooms();
 		expect(res).to.be.an('array').with.length(1);
 		expect(res[0]).to.deep.equal(room);
+	});
+
+	it('should be able to close', () => {
+		addRoom(room);
+		room.close();
+		expect(getRooms()).to.be.empty;
 	});
 });

@@ -10,7 +10,7 @@ import app from '../src/app.js';
 chai.use(chaiHTTP);
 
 
-describe('Rooms API', () => {
+describe('Rooms API (rooms page)', () => {
 	let roomname, password;
 
 	function createRoom() {
