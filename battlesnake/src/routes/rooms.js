@@ -24,10 +24,3 @@ router.post('/', (req, res, next) => {
 	res.sendStatus(201);
 	next();
 });
-
-router.all('/', (req, res, next) => {
-	if (!res.headersSent) {
-		res.sendStatus(405);
-	}
-	next();
-});
