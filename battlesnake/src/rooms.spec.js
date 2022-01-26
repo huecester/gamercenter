@@ -23,6 +23,7 @@ describe('rooms.js', () => {
 		expect(room).to.have.property('password', password);
 		expect(room).to.have.property('id').that.is.a('string').with.length(8);
 		expect(room).to.have.property('players').that.is.an('array').that.is.empty;
+		expect(room).to.have.property('socket').that.is.an.object;
 		expect(room).to.have.property('sanitized').that.is.a('function');
 		expect(room).to.have.property('close').that.is.a('function');
 	});
@@ -33,6 +34,10 @@ describe('rooms.js', () => {
 		expect(sanitized).to.have.property('password').that.equals(true);
 		expect(sanitized).to.have.property('id').that.is.a('string').with.length(8);
 		expect(sanitized).to.have.property('players').that.is.an('array').that.is.empty;
+
+		expect(room).to.not.have.property('socket');
+		expect(room).to.not.have.property('sanitized');
+		expect(room).to.not.have.property('close');
 	});
 
 	it('should be able to add and get a room', () => {

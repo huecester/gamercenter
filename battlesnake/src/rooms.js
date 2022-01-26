@@ -15,12 +15,14 @@ export function clearRooms() {
 }
 
 
-export function createRoom(name, password) {
+export function createRoom(name, password, io) {
+	const id = genID();
 	return {
 		name,
 		password,
-		id: genID(),
+		id,
 		players: [],
+		socket: io.in(id),
 
 		sanitized() {
 			return {

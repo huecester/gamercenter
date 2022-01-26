@@ -1,26 +1,30 @@
 import { Router } from 'express';
 import { addRoom, createRoom, getRooms } from '../rooms.js';
 
-export const router = Router();
+export function createRouter(io) {
+	const router = Router();
 
-router.get('/', (req, res, next) => {
-	res.json(getRooms().map(room => room.sanitized()));
-	next();
-});
-
-router.post('/', (req, res, next) => {
-	if (!req?.body?.roomname) {
-		res.sendStatus(400);
+	router.get('/', (req, res, next) => {
+		res.json(getRooms().map(room => room.sanitized()));
 		next();
-		return;
-	}
+	});
 
-	const roomname = req.body.roomname.slice(0, 32);
-	const password = req.body.password?.slice(0, 32);
+	router.post('/', (req, res, next) => {
+		if (!req?.body?.roomname) {
+			res.sendStatus(400);
+			next();
+			return;
+		}
 
-	const room = createRoom(roomname, password);
-	addRoom(room);
+		const roomname = req.body.roomname.slice(0, 32);
+		const password = req.body.password?.slice(0, 32);
 
-	res.sendStatus(201);
-	next();
-});
+		const room = createRoom(roomname, password, io);
+		addRoom(room);
+
+		res.sendStatus(201);
+		next();
+	});
+
+	return router;
+}

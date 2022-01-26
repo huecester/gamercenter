@@ -23,15 +23,17 @@ for (const filepath of getJS('./src/routes')) {
 	const route = path.join('/', path.parse(relFilepath).name);
 	const module = await import(relFilepath);
 
+	const router = module.createRouter(io);
+
 	// 405 Method Not Allowed
-	module.router.all('/', (req, res, next) => {
+	router.all('/', (req, res, next) => {
 		if (!res.headersSent) {
 			res.sendStatus(405);
 		}
 		next();
 	});
 
-	app.use(route, module.router);
+	app.use(route, router);
 }
 
 // Fallbacks
