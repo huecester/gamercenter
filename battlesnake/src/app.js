@@ -56,13 +56,13 @@ io.on('connection', socket => {
 });
 
 // Load namespace handlers
-for (const filepath of getJS('./src/namespaces')) {
+for (const filepath of getJS('./src/io')) {
 	const relFilepath = `./${path.relative('src', filepath)}`;
-	const namespace = path.join('/', path.parse(relFilepath).name);
+	// const namespace = path.join('/', path.parse(relFilepath).name);
 	const module = await import(relFilepath);
 
-	module.init?.(io.of(namespace));
-	module.onConnection && io.of(namespace).on('connection', module.onConnection);
+	module.init?.(io);
+	module.onConnection && io.on('connection', module.onConnection);
 }
 
 
