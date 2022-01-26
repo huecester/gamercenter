@@ -21,8 +21,8 @@ export function createRoom(name, password, io) {
 		name,
 		password,
 		id,
-		players: [],
-		socket: io.in(id),
+		players: new Map(),
+		io: io.in(id),
 
 		sanitized() {
 			return {
@@ -32,5 +32,9 @@ export function createRoom(name, password, io) {
 				players: this.players.map(player => player.sanitized),
 			}
 		},
+
+		addPlayer(player) {},
+
+		removePlayer(player) {},
 	}
 }
