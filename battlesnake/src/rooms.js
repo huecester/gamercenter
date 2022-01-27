@@ -33,7 +33,7 @@ export function createRoom(name, password, io) {
 				name: this.name,
 				password: this.password?.length > 0,
 				id: this.id,
-				players: this.players.map(player => player.sanitized),
+				players: Array.from(this.players).map(player => player.sanitized),
 			}
 		},
 
