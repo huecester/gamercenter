@@ -1,5 +1,5 @@
-import { getRoom } from '../src/rooms.js';
-import { createPlayer } from '../src/players.js';
+import { getRoom } from '../rooms.js';
+import { createPlayer } from '../players.js';
 
 export function init() {}
 
