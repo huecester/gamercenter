@@ -58,15 +58,17 @@ describe('rooms.js', () => {
 	});
 
 	it('should be able to get a room by id', () => {
+		const targetRoom = room;
 		const targetID = room.id;
 		addRoom(room);
+
 		for (let i = 0; i < 10; i++) {
 			generateRoom();
 			addRoom(room);
 		}
 
 		const resRoom = getRoom(targetID);
-		expect(room).to.deep.equal(resRoom);
+		expect(targetRoom).to.deep.equal(resRoom);
 	});
 
 	it('should be able to close', () => {
