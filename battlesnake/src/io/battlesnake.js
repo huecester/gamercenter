@@ -6,7 +6,14 @@ export function init() {}
 export function onConnection(socket) {
 	console.log('[BATTLESNAKE] ')
 
+	const timeoutID = setTimeout(() => {
+		socket.disconnect(true);
+	}, 5000);
+
 	socket.on('join', (id, username, password, cb) => {
+		// Disable timeout
+		clearTimeout(timeoutID);
+
 		const room = getRoom(id);
 		// Check if room exists
 		if (!room) {
