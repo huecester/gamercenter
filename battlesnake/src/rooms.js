@@ -10,6 +10,10 @@ export function getRoom(id) {
 	return rooms.get(id);
 }
 
+export function deleteRoom(id) {
+	rooms.delete(id);
+}
+
 export function addRoom(room) {
 	rooms.set(room.id, room);
 }
@@ -40,5 +44,11 @@ export function createRoom(name, password, io) {
 		addPlayer(player) {},
 
 		removePlayer(player) {},
+
+		close(reason) {
+			reason = reason || undefined;
+			this.io.emit('close', reason);
+			deleteRoom(this.id);
+		},
 	}
 }
