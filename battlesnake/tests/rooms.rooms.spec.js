@@ -6,7 +6,6 @@ import faker from '@faker-js/faker';
 import { clearRooms } from '../src/rooms.js';
 import app from '../src/app.js';
 
-
 chai.use(chaiHTTP);
 
 
