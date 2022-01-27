@@ -1,11 +1,16 @@
 import { describe } from 'mocha';
 import { expect } from 'chai';
+import sinon from 'sinon';
 import faker from '@faker-js/faker';
 import { addRoom, clearRooms, createRoom, deleteRoom, getRoom, getRooms } from './rooms.js';
 
 
 describe('rooms.js', () => {
-	let roomname, password, room;
+	let roomname, password, room, mock;
+	const io = {
+		in(id) {},
+		emit(event, ...args) {},
+	};
 
 	function generateRoom() {
 		roomname = faker.lorem.word();
@@ -13,8 +18,13 @@ describe('rooms.js', () => {
 		room = createRoom(roomname, password);
 	}
 
+
 	beforeEach(() => {
 		clearRooms();
+
+		mock = sinon.mock(io);
+		mock.expects('in').once().withExactArgs(room.id).returns(io).throws();
+
 		generateRoom();
 	});
 
@@ -83,6 +93,8 @@ describe('rooms.js', () => {
 	describe('Rooms', () => {
 		it('should be able to close', () => {
 			addRoom(room);
+			mock.expects('emit').once().withExactArgs('close', undefined).throws();
+
 			room.close();
 			expect(getRooms()).to.be.empty;
 		});
