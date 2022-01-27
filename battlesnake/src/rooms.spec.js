@@ -144,9 +144,13 @@ describe('rooms.js', () => {
 				room.removePlayer(player);
 
 				expect(room.players.get(player.id)).to.be.undefined;
-				expect(sanitizedPlayersStub.calledTwice).to.be.true;
-				expect(expectation.getCall(0).calledWith('join', username)).to.be.true;
-				expect(expectation.getCall(1).calledWith('leave', username)).to.be.true;
+				expect(sanitizedPlayersStub.callCount).to.equal(2);
+
+				expect(expectation.getCall(0).args[0]).to.equal('join');
+				expect(expectation.getCall(0).args[1]).to.equal(username);
+
+				expect(expectation.getCall(1).args[0]).to.equal('leave')
+				expect(expectation.getCall(1).args[1]).to.equal(username);
 			});
 		});
 	});
