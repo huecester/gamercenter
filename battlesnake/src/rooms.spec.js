@@ -10,7 +10,7 @@ describe('rooms.js', () => {
 	function generateRoom() {
 		roomname = faker.lorem.word();
 		password = faker.internet.password();
-		room = createRoom(roomname, password);
+		room = createRoom(roomname, password, { in(id) { return {} } });
 	}
 
 	beforeEach(() => {
@@ -27,8 +27,11 @@ describe('rooms.js', () => {
 		expect(room).to.have.property('password', password);
 		expect(room).to.have.property('id').that.is.a('string').with.length(8);
 		expect(room).to.have.property('players').that.is.an('array').that.is.empty;
-		expect(room).to.have.property('socket').that.is.an.object;
+
+		expect(room).to.have.property('io').that.is.an.object;
 		expect(room).to.have.property('sanitized').that.is.a('function');
+		expect(room).to.have.property('addPlayer').that.is.a('function');
+		expect(room).to.have.property('removePlayer').that.is.a('function');
 		expect(room).to.have.property('close').that.is.a('function');
 	});
 
@@ -39,8 +42,10 @@ describe('rooms.js', () => {
 		expect(sanitized).to.have.property('id').that.is.a('string').with.length(8);
 		expect(sanitized).to.have.property('players').that.is.an('array').that.is.empty;
 
-		expect(room).to.not.have.property('socket');
+		expect(room).to.not.have.property('io');
 		expect(room).to.not.have.property('sanitized');
+		expect(room).to.not.have.property('addPlayer');
+		expect(room).to.not.have.property('removePlayer');
 		expect(room).to.not.have.property('close');
 	});
 
