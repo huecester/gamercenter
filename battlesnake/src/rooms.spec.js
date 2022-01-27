@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import faker from '@faker-js/faker';
 import { addRoom, clearRooms, createRoom, deleteRoom, getRoom, getRooms } from './rooms.js';
+import genID from './util/id.js';
 
 
 describe('rooms.js', () => {
@@ -105,6 +106,48 @@ describe('rooms.js', () => {
 
 			room.close();
 			expect(getRooms()).to.be.empty;
+		});
+
+		describe('Players', () => {
+			let username, player, sanitizedPlayersStub;
+
+			beforeEach(() => {
+				// Fake player
+				username = faker.internet.userName();
+				player = {
+					username,
+					id: genID(),
+				};
+
+				// Stub
+				sanitizedPlayersStub = sinon.stub(room, 'sanitizedPlayers');
+			});
+
+			afterEach(() => {
+				sanitizedPlayersStub.restore();
+			});
+
+			it('should be able to add a player', () => {
+				addRoom(room);
+
+				mock.expects('emit').once().withArgs('join', username);
+				room.addPlayer(player);
+
+				expect(room.players.get(player.id)).to.deep.equal(player);
+			});
+
+			it('should be able to remove a player', () => {
+				addRoom(room);
+
+				const expectation = mock.expects('emit').twice();
+				room.addPlayer(player);
+				room.removePlayer(player);
+
+				expect(room.players.get(player.id)).to.be.undefined;
+				expect(sanitizedPlayersStub.calledTwice).to.be.true;
+				expect(expectation.getCall(0).calledWith('join', username)).to.be.true;
+				expect(expectation.getCall(1).calledWith('leave', username)).to.be.true;
+			});
 		});
 	});
 });
