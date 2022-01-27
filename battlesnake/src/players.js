@@ -6,6 +6,15 @@ export function createPlayer(username) {
 		id: genID(),
 		color: genColor(),
 		isHost: false,
+
+		sanitized() {
+			return {
+				username: this.username,
+				id: this.id,
+				color: this.color,
+				isHost: this.isHost,
+			}
+		},
 	}
 }
 
