@@ -8,14 +8,18 @@ import { addRoom, clearRooms, createRoom, deleteRoom, getRoom, getRooms } from '
 describe('rooms.js', () => {
 	let roomname, password, room, mock;
 	const io = {
-		in(id) {},
-		emit(event, ...args) {},
+		in() {},
+		emit() {},
 	};
 
-	function generateRoom() {
+	function generateInfo() {
 		roomname = faker.lorem.word();
 		password = faker.internet.password();
-		room = createRoom(roomname, password);
+	}
+
+	function generateRoom() {
+		generateInfo();
+		room = createRoom(roomname, password, io);
 	}
 
 
@@ -23,9 +27,12 @@ describe('rooms.js', () => {
 		clearRooms();
 
 		mock = sinon.mock(io);
-		mock.expects('in').once().withExactArgs(room.id).returns(io).throws();
-
+		mock.expects('in').once().returns(io);
 		generateRoom();
+	});
+
+	afterEach(() => {
+		mock.restore();
 	});
 
 
@@ -74,6 +81,7 @@ describe('rooms.js', () => {
 			const targetID = room.id;
 			addRoom(room);
 
+			mock.restore();
 			for (let i = 0; i < 10; i++) {
 				generateRoom();
 				addRoom(room);
@@ -93,7 +101,7 @@ describe('rooms.js', () => {
 	describe('Rooms', () => {
 		it('should be able to close', () => {
 			addRoom(room);
-			mock.expects('emit').once().withExactArgs('close', undefined).throws();
+			mock.expects('emit').once().withExactArgs('close', undefined);
 
 			room.close();
 			expect(getRooms()).to.be.empty;
