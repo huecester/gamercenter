@@ -1,6 +1,7 @@
 import { describe } from 'mocha';
 import { expect } from 'chai';
 import faker from '@faker-js/faker';
+import { createPlayer } from './players.js'
 
 describe('players.js', () => {
 	let username, player;
@@ -14,7 +15,6 @@ describe('players.js', () => {
 		expect(player).to.have.property('username', username);
 		expect(player).to.have.property('id').that.is.a('string');
 		expect(player).to.have.property('color').that.matches(/^#[0-9a-f]{6}$/i);
-		expect(player).to.have.property('socket').that.is.an('object');
 		expect(player).to.have.property('sanitized').that.is.a('function');
 	});
 
@@ -24,7 +24,6 @@ describe('players.js', () => {
 		expect(sanitized).to.have.property('id').that.is.a('string');
 		expect(sanitized).to.have.property('color').that.matches(/^#[0-9a-f]{6}$/i);
 
-		expect(sanitized).to.not.have.property('socket');
 		expect(sanitized).to.not.have.property('sanitized');
 	});
 });

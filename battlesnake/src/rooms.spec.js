@@ -1,17 +1,21 @@
 import { describe } from 'mocha';
 import { expect } from 'chai';
 import faker from '@faker-js/faker';
-import { addRoom, clearRooms, createRoom, getRooms } from './rooms.js';
+import { addRoom, clearRooms, createRoom, getRoom, getRooms } from './rooms.js';
 
 
 describe('rooms.js', () => {
 	let roomname, password, room;
 
-	beforeEach(() => {
-		clearRooms();
+	function generateRoom() {
 		roomname = faker.lorem.word();
 		password = faker.internet.password();
 		room = createRoom(roomname, password);
+	}
+
+	beforeEach(() => {
+		clearRooms();
+		generateRoom();
 	});
 
 	it('should return an empty array without adding rooms', () => {
@@ -46,6 +50,18 @@ describe('rooms.js', () => {
 		const res = getRooms();
 		expect(res).to.be.an('array').with.length(1);
 		expect(res[0]).to.deep.equal(room);
+	});
+
+	it('should be able to get a room by id', () => {
+		const targetID = room.id;
+		addRoom(room);
+		for (let i = 0; i < 10; i++) {
+			generateRoom();
+			addRoom(room);
+		}
+
+		const resRoom = getRoom(targetID);
+		expect(room).to.deep.equal(resRoom);
 	});
 
 	it('should be able to close', () => {

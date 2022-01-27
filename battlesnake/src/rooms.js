@@ -6,6 +6,10 @@ export function getRooms() {
 	return Array.from(rooms.values());
 }
 
+export function getRoom(id) {
+	return rooms.get(id);
+}
+
 export function addRoom(room) {
 	rooms.set(room.id, room);
 }
