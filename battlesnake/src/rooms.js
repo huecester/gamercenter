@@ -37,13 +37,23 @@ export function createRoom(name, password, io) {
 				name: this.name,
 				password: this.password?.length > 0,
 				id: this.id,
-				players: Array.from(this.players).map(player => player.sanitized),
+				players: this.sanitizedPlayers(),
 			}
 		},
 
-		addPlayer(player) {},
+		sanitizedPlayers() {
+			return Array.from(this.players).map(player => player.sanitized);
+		},
 
-		removePlayer(player) {},
+		addPlayer(player) {
+			this.players.set(player.id, player);
+			this.io.emit('join', player.username, this.sanitizedPlayers());
+		},
+
+		removePlayer(player) {
+			this.players.delete(player.id);
+			this.io.emit('leave', player.username, this.sanitizedPlayers());
+		},
 
 		close(reason) {
 			reason = reason || undefined;
