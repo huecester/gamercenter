@@ -57,16 +57,8 @@ describe('rooms.js', () => {
 
 		it('should be able to sanitize a room', () => {
 			const sanitized = room.sanitized();
-			expect(sanitized).to.have.property('name', roomname);
-			expect(sanitized).to.have.property('password').that.equals(true);
-			expect(sanitized).to.have.property('id').that.is.a('string').with.length(8);
-			expect(sanitized).to.have.property('players').that.is.an('array').that.is.empty;
-
-			expect(sanitized).to.not.have.property('io');
-			expect(sanitized).to.not.have.property('sanitized');
-			expect(sanitized).to.not.have.property('addPlayer');
-			expect(sanitized).to.not.have.property('removePlayer');
-			expect(sanitized).to.not.have.property('close');
+			expect(sanitized).to.have.all.keys('name', 'password', 'id', 'players');
+			expect(sanitized).to.not.have.any.keys('io', 'sanitized', 'addPlayer', 'removePlayer', 'close');
 		});
 
 		it('should be able to add and get a room', () => {
