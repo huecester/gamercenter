@@ -30,6 +30,7 @@ export function createRoom(name, password, io) {
 		password,
 		id,
 		players: new Map(),
+		max: 8,
 		io: io.in(id),
 
 		sanitized() {

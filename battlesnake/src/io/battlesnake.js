@@ -27,7 +27,15 @@ export function onConnection(socket) {
 		if (room.password && password !== room.password) {
 			return cb({
 				type: 'err',
-				err: 'WRONGPASS',
+				err: 'BADPASS',
+			});
+		}
+
+		// Check if room is full
+		if (room.players.size >= room.max) {
+			return cb({
+				type: 'err',
+				err: 'ROOMFULL',
 			});
 		}
 	});
