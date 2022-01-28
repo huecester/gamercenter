@@ -1,56 +1,57 @@
+import chalk from 'chalk';
 import parseDate from './date.js';
 
 export function parseStatusCode(code) {
 	const codeString = code.toString().padEnd(3);
 	if (codeString.length !== 3) return codeString;
 
-	let color = '';
+	let color = str => str;
 	switch (codeString.charAt(0)) {
 		case '1':
-			color = `\x1b[44m\x1b[37m`;
+			color = chalk.bgBlue.white;
 			break;
 		case '2':
-			color = `\x1b[42m\x1b[37m`;
+			color = chalk.bgGreen.white;
 			break;
 		case '3':
-			color = `\x1b[45m\x1b[37m`;
+			color = chalk.bgMagenta.white;
 			break;
 		case '4':
-			color = `\x1b[43m\x1b[37m`;
+			color = chalk.bgYellow.white;
 			break;
 		case '5':
-			color = `\x1b[41m\x1b[37m`;
+			color = chalk.bgRed.white;
 			break;
 	}
-	return `${color} ${codeString.padEnd(3)} \x1b[0m`;
+	return color(` ${codeString.padEnd(3)} `);
 }
 
 export function parseMethod(method) {
-	let color = '';
+	let color = str => str;
 	switch (method) {
 		case 'GET':
-			color = `\x1b[42m\x1b[37m`;
+			color = chalk.bgGreen.white;
 			break;
 		case 'POST':
-			color = `\x1b[44m\x1b[37m`;
+			color = chalk.bgBlue.white;
 			break;
 		case 'PUT':
-			color = `\x1b[46m\x1b[37m`;
+			color = chalk.bgCyan.white;
 			break;
 		case 'PATCH':
-			color = `\x1b[45m\x1b[37m`;
+			color = chalk.bgMagenta.white;
 			break;
 		case 'DELETE':
-			color = `\x1b[41m\x1b[37m`;
+			color = chalk.bgRed.white;
 			break;
 		case 'HEAD':
-			color = `\x1b[47m\x1b[30m`;
+			color = chalk.bgWhite.black;
 			break;
 		case 'OPTIONS':
-			color = `\x1b[43m\x1b[30m`;
+			color = chalk.bgYellow.black;
 			break;
 	}
-	return `${color} ${method.padEnd(7)} \x1b[0m`;
+	return color(` ${method.padEnd(7)} `);
 }
 
 export default function logger(req, res, next) {
