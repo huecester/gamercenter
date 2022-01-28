@@ -14,29 +14,44 @@ export function onConnection(socket) {
 		// Disable timeout
 		clearTimeout(timeoutID);
 
-		const room = getRoom(id);
-		// Check if room exists
-		if (!room) {
-			return cb({
-				type: 'err',
-				err: 'NOTFOUND',
-			});
+		// Get room
+		const res = checkRoom(id);
+		if (res.type === 'err') {
+			return cb(err);
 		}
-
-		// Check for password
-		if (room.password && password !== room.password) {
-			return cb({
-				type: 'err',
-				err: 'BADPASS',
-			});
-		}
-
-		// Check if room is full
-		if (room.players.size >= room.max) {
-			return cb({
-				type: 'err',
-				err: 'ROOMFULL',
-			});
-		}
+		const room = res.room;
 	});
+}
+
+function checkRoom(id) {
+	const room = getRoom(id);
+
+	// Check if room exists
+	if (!room) {
+		return {
+			type: 'err',
+			err: 'NOTFOUND',
+		};
+	}
+
+	// Check for password
+	if (room.password && password !== room.password) {
+		return {
+			type: 'err',
+			err: 'BADPASS',
+		};
+	}
+
+	// Check if room is full
+	if (room.players.size >= room.max) {
+		return {
+			type: 'err',
+			err: 'ROOMFULL',
+		};
+	}
+
+	return {
+		type: 'ok',
+		room,
+	};
 }
