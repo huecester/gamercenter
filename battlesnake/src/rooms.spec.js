@@ -45,7 +45,7 @@ describe('rooms.js', () => {
 		it('should be able to create a room', () => {
 			expect(room).to.have.property('name', roomname);
 			expect(room).to.have.property('password', password);
-			expect(room).to.have.property('id').that.is.a('string').with.length(8);
+			expect(room).to.have.property('id').that.is.a('string').with.lengthOf(8);
 			expect(room).to.have.property('players').that.is.a('map').that.is.empty;
 
 			expect(room).to.have.property('io').that.is.an('object');
@@ -65,7 +65,7 @@ describe('rooms.js', () => {
 			addRoom(room);
 
 			const res = getRooms();
-			expect(res).to.be.an('array').with.length(1);
+			expect(res).to.be.an('array').with.lengthOf(1);
 			expect(res[0]).to.deep.equal(room);
 		});
 
