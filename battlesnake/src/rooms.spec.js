@@ -135,14 +135,14 @@ describe('rooms.js', () => {
 				room.addPlayer(player);
 				room.removePlayer(player);
 
+				// Test room players map
 				expect(room.players.get(player.id)).to.be.undefined;
+				// Test for sending sanitized players
 				expect(sanitizedPlayersStub.callCount).to.equal(2);
 
-				expect(expectation.getCall(0).args[0]).to.equal('join');
-				expect(expectation.getCall(0).args[1]).to.equal(username);
-
-				expect(expectation.getCall(1).args[0]).to.equal('leave')
-				expect(expectation.getCall(1).args[1]).to.equal(username);
+				// Test for emitting
+				expect(expectation.getCall(0).args).to.include.ordered.members(['join', username]);
+				expect(expectation.getCall(1).args).to.include.ordered.members(['leave', username]);
 			});
 		});
 	});
