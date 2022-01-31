@@ -3,6 +3,7 @@ import http from 'http';
 import path from 'path';
 import { Server } from 'socket.io';
 
+import io from './io.js';
 import expressLogger from './util/expressLog.js';
 import socketIOLogger from './util/socketIOLog.js';
 import getJS from './util/getJS.js';
@@ -10,7 +11,6 @@ import getJS from './util/getJS.js';
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { serveClient: false });
 
 
 // Express setup
@@ -23,7 +23,7 @@ for (const filepath of getJS('./src/routes')) {
 	const route = path.join('/', path.parse(relFilepath).name);
 	const module = await import(relFilepath);
 
-	const router = module.createRouter(io);
+	const router = module.createRouter();
 
 	// 405 Method Not Allowed
 	router.all('/', (req, res, next) => {
@@ -48,22 +48,12 @@ app.all('*', (req, res, next) => {
 app.use(expressLogger);
 
 
-// Socket.IO setup
-// Logging
+// Socket.IO logging
 io.on('connection', socket => {
 	socketIOLogger(socket, ['connection'], () => {});
 	socket.use((data, next) => socketIOLogger(socket, data, next));
 });
 
-// Load namespace handlers
-for (const filepath of getJS('./src/io')) {
-	const relFilepath = `./${path.relative('src', filepath)}`;
-	// const namespace = path.join('/', path.parse(relFilepath).name);
-	const module = await import(relFilepath);
-
-	module.init?.(io);
-	module.onConnection && io.on('connection', module.onConnection);
-}
-
+io.attach(server);
 
 export default server;
