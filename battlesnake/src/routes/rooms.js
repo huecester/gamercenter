@@ -36,8 +36,6 @@ export function createRouter() {
 }
 
 function onConnection(socket) {
-	console.log('[BATTLESNAKE] ')
-
 	const timeoutID = setTimeout(() => {
 		socket.disconnect(true);
 	}, 5000);
