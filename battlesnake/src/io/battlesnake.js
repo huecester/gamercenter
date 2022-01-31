@@ -20,6 +20,17 @@ export function onConnection(socket) {
 			return cb(err);
 		}
 		const room = res.room;
+
+
+		// Initialize player
+		const player = createPlayer(username)
+
+		// If player is first to join, set as host
+		if (room.players.size <= 0) {
+			player.isHost = true;
+		}
+
+		room.addPlayer(player);
 	});
 }
 
