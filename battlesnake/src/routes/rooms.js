@@ -46,8 +46,8 @@ function onConnection(socket) {
 
 		// Get room
 		const res = checkRoom(id);
-		if (res.type === 'err') {
-			return cb(err);
+		if (res.err) {
+			return cb(res.err);
 		}
 		const room = res.room;
 
@@ -69,30 +69,18 @@ function checkRoom(id) {
 
 	// Check if room exists
 	if (!room) {
-		return {
-			type: 'err',
-			err: 'NOTFOUND',
-		};
+		return { err: 'NOTFOUND' };
 	}
 
 	// Check for password
 	if (room.password && password !== room.password) {
-		return {
-			type: 'err',
-			err: 'BADPASS',
-		};
+		return { err: 'BADPASS' };
 	}
 
 	// Check if room is full
 	if (room.players.size >= room.max) {
-		return {
-			type: 'err',
-			err: 'ROOMFULL',
-		};
+		return { err: 'ROOMFULL' };
 	}
 
-	return {
-		type: 'ok',
-		room,
-	};
+	return { room };
 }
