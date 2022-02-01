@@ -25,7 +25,7 @@ export function createRouter() {
 		const room = createRoom(roomname, password);
 		addRoom(room);
 
-		res.sendStatus(201);
+		res.status(201).set('Content-Type', 'text/plain').send(room.id);
 		next();
 	});
 
