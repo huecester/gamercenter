@@ -1,4 +1,3 @@
 import { Server } from 'socket.io';
 
-export default const io = new Server({ serveClient: false });
-
+export default new Server({ serveClient: false });
