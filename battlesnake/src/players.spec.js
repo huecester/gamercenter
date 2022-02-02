@@ -21,6 +21,6 @@ describe('players.js', () => {
 	it('should be able to sanitize a player', () => {
 		const sanitized = player.sanitized();
 		expect(sanitized).to.have.all.keys('username', 'id', 'color', 'isHost');
-		expect(sanitized).to.not.have.any.keys('sanitized');
+		expect(sanitized).to.not.have.any.keys('sanitized', 'socket');
 	});
 });

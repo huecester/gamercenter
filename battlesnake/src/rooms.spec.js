@@ -7,11 +7,7 @@ import genID from './util/id.js';
 
 
 describe('rooms.js', () => {
-	let roomname, password, room, mock;
-	const io = {
-		in() {},
-		emit() {},
-	};
+	let roomname, password, room;
 
 	function generateInfo() {
 		roomname = faker.lorem.word();
@@ -20,20 +16,14 @@ describe('rooms.js', () => {
 
 	function generateRoom() {
 		generateInfo();
-		room = createRoom(roomname, password, io);
+		room = createRoom(roomname, password);
 	}
 
 
 	beforeEach(() => {
 		clearRooms();
 
-		mock = sinon.mock(io);
-		mock.expects('in').once().returns(io);
 		generateRoom();
-	});
-
-	afterEach(() => {
-		mock.restore();
 	});
 
 
@@ -74,7 +64,6 @@ describe('rooms.js', () => {
 			const targetID = room.id;
 			addRoom(room);
 
-			mock.restore();
 			for (let i = 0; i < 10; i++) {
 				generateRoom();
 				addRoom(room);
@@ -94,14 +83,13 @@ describe('rooms.js', () => {
 	describe('Rooms', () => {
 		it('should be able to close', () => {
 			addRoom(room);
-			mock.expects('emit').once().withExactArgs('close', undefined);
 
 			room.close();
 			expect(getRooms()).to.be.empty;
 		});
 
 		describe('Players', () => {
-			let username, player, sanitizedPlayersStub;
+			let username, player, sanitizedPlayersStub, setupPlayerSocketStub;
 
 			beforeEach(() => {
 				// Fake player
@@ -113,25 +101,27 @@ describe('rooms.js', () => {
 
 				// Stub
 				sanitizedPlayersStub = sinon.stub(room, 'sanitizedPlayers');
+				setupPlayerSocketStub = sinon.stub(room, 'setupPlayerSocket');
 			});
 
 			afterEach(() => {
 				sanitizedPlayersStub.restore();
+				setupPlayerSocketStub.restore();
 			});
 
 			it('should be able to add a player', () => {
 				addRoom(room);
 
-				mock.expects('emit').once().withArgs('join', username);
 				room.addPlayer(player);
 
 				expect(room.players.get(player.id)).to.deep.equal(player);
+				expect(setupPlayerSocketStub.callCount).to.equal(1);
+				expect(setupPlayerSocketStub.getCall(0).args[0]).to.deep.equal(player);
 			});
 
 			it('should be able to remove a player', () => {
 				addRoom(room);
 
-				const expectation = mock.expects('emit').twice();
 				room.addPlayer(player);
 				room.removePlayer(player);
 
@@ -139,10 +129,6 @@ describe('rooms.js', () => {
 				expect(room.players.get(player.id)).to.be.undefined;
 				// Test for sending sanitized players
 				expect(sanitizedPlayersStub.callCount).to.equal(2);
-
-				// Test for emitting
-				expect(expectation.getCall(0).args).to.include.ordered.members(['join', username]);
-				expect(expectation.getCall(1).args).to.include.ordered.members(['leave', username]);
 			});
 		});
 	});
