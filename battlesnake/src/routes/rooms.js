@@ -40,12 +40,17 @@ function onConnection(socket) {
 		socket.disconnect(true);
 	}, 5000);
 
-	socket.on('join', (id, username, password, cb) => {
+	socket.on('join', (data, cb) => {
 		// Disable timeout
 		clearTimeout(timeoutID);
 
+		// Check for ID
+		if (!res.id) {
+			return cb({ err: 'NOID' })
+		}
+
 		// Get room
-		const res = checkRoom(id);
+		const res = checkRoom(res.id);
 		if (res.err) {
 			return cb(res.err);
 		}
@@ -53,7 +58,7 @@ function onConnection(socket) {
 
 
 		// Initialize player
-		const player = createPlayer(username)
+		const player = createPlayer(data.username)
 
 		// If player is first to join, set as host
 		if (room.players.size <= 0) {
