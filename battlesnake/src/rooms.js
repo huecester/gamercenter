@@ -60,6 +60,10 @@ export function createRoom(name, password) {
 		},
 
 		removePlayer(player) {
+			if (player.isHost) {
+				return this.close('HOSTLEFT');
+			}
+
 			this.players.delete(player.id);
 			this.io.emit('leave', {
 				player: player.username,
