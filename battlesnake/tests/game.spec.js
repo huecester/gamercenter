@@ -21,6 +21,14 @@ describe('Game page', () => {
 		it('should not be able to join a room that does not exist', () => {
 
 		});
+
+		it('should be able to join a room with a password', () => {
+
+		});
+
+		it('should not be able to join a room with an incorrect password', () => {
+
+		});
 	});
 
 	describe('Messaging', () => {
