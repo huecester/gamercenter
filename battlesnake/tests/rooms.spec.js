@@ -9,25 +9,24 @@ import app from '../src/app.js';
 chai.use(chaiHTTP);
 
 
-describe('Rooms API', () => {
-	describe('Rooms page', () => {
-		let roomname, password;
+describe('Rooms page', () => {
+	let roomname, password;
 
-		function createRoom() {
-			return chai.request(app).post('/rooms').send({ roomname, password });
-		}
+	function createRoom() {
+		return chai.request(app).post('/rooms').send({ roomname, password });
+	}
 
-		function getRooms() {
-			return chai.request(app).get('/rooms');
-		}
+	function getRooms() {
+		return chai.request(app).get('/rooms');
+	}
 
-		beforeEach(() => {
-			clearRooms();
-			roomname = faker.lorem.word();
-			password = faker.internet.password();
-		});
+	beforeEach(() => {
+		clearRooms();
+		roomname = faker.lorem.word();
+		password = faker.internet.password();
+	});
 
-		// Basic API functions
+	describe('Basic API', () => {
 		it('should respond with an empty array with GET /rooms', async () => {
 			const res = await getRooms();
 
@@ -43,9 +42,10 @@ describe('Rooms API', () => {
 			expect(getRes).to.have.property('status', 200);
 			expect(getRes).to.have.property('body').that.is.an('array').with.length(1);
 		});
+	});
 
 
-		// Creating rooms
+	describe('Creating rooms', () => {
 		it('should properly return a room after creating it', async () => {
 			await createRoom();
 
@@ -69,9 +69,10 @@ describe('Rooms API', () => {
 			const res = await createRoom();
 			expect(res).to.have.property('status', 400);
 		});
+	});
 
 
-		// Password
+	describe('Passwords', () => {
 		it('should send a room with password set to false if password is null', async () => {
 			password = null;
 			await createRoom();
