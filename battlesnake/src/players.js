@@ -1,11 +1,12 @@
 import genID from './util/id.js';
 
-export function createPlayer(username) {
+export function createPlayer(username, socket) {
 	return {
 		username,
 		id: genID(),
 		color: genColor(),
 		isHost: false,
+		socket,
 
 		sanitized() {
 			return {

@@ -63,7 +63,7 @@ function onConnection(socket) {
 
 
 		// Initialize player
-		const player = createPlayer(data.username)
+		const player = createPlayer(data.username, socket);
 
 		// If player is first to join, set as host
 		if (room.players.size <= 0) {
@@ -71,6 +71,10 @@ function onConnection(socket) {
 		}
 
 		room.addPlayer(player);
+
+		cb({
+			room: room.sanitized(),
+		});
 	});
 }
 

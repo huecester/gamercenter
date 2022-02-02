@@ -1,4 +1,5 @@
 import genID from './util/id.js';
+import io from './io.js';
 
 let rooms = new Map();
 
@@ -23,15 +24,17 @@ export function clearRooms() {
 }
 
 
-export function createRoom(name, password, io) {
+export function createRoom(name, password) {
 	const id = genID();
+	const roomIO = io.in(id);
+
 	return {
 		name,
 		password,
 		id,
 		players: new Map(),
 		max: 8,
-		io: io.in(id),
+		io: roomIO,
 
 		sanitized() {
 			return {
@@ -48,18 +51,37 @@ export function createRoom(name, password, io) {
 
 		addPlayer(player) {
 			this.players.set(player.id, player);
-			this.io.emit('join', player.username, this.sanitizedPlayers());
+			this.io.emit('join', {
+				player: player.username,
+				players: this.sanitizedPlayers(),
+			});
+
+			this.setupPlayerSocket(player);
 		},
 
 		removePlayer(player) {
 			this.players.delete(player.id);
-			this.io.emit('leave', player.username, this.sanitizedPlayers());
+			this.io.emit('leave', {
+				player: player.username,
+				players: this.santiizedPlayers(),
+			});
 		},
 
 		close(reason) {
 			reason = reason || undefined;
 			this.io.emit('close', reason);
 			deleteRoom(this.id);
+		},
+
+
+		setupPlayerSocket(player) {
+			player.socket.join(this.id);
+			player.socket.on('msg', msg => {
+				this.io.emit('msg', {
+					author: player.username,
+					msg: msg.trim().slice(0, 64),
+				});
+			});
 		},
 	}
 }
