@@ -58,8 +58,8 @@ export default function logger(req, res, next) {
 	// [REST] yyyy/mm/dd - HH:mm:ss | 200 | 111.111.111.111 | GET      "/path"
 	const msg = [`[${'REST'.padEnd(10)}] `];
 	msg.push(parseDate(new Date()));
-	msg.push(parseStatusCode(res.statusCode));
 	msg.push(` ${(req.header('x-forwarded-for') || req.connection.remoteAddress).padEnd(15)} `);
+	msg.push(parseStatusCode(res.statusCode));
 	msg.push(`${parseMethod(req.method)} ${req.url}`);
 
 	console.log(msg.join('|'))
