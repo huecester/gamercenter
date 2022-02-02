@@ -63,7 +63,7 @@ export function createRoom(name, password) {
 			this.players.delete(player.id);
 			this.io.emit('leave', {
 				player: player.username,
-				players: this.santiizedPlayers(),
+				players: this.sanitizedPlayers(),
 			});
 		},
 
