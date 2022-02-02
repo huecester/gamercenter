@@ -45,16 +45,21 @@ function onConnection(socket) {
 		clearTimeout(timeoutID);
 
 		// Check for ID
-		if (!res.id) {
+		if (!data.id) {
 			return cb({ err: 'NOID' })
 		}
 
 		// Get room
-		const res = checkRoom(res.id);
+		const res = checkRoom(data.id);
 		if (res.err) {
 			return cb(res.err);
 		}
 		const room = res.room;
+
+		// Check for password
+		if (room.password && data?.password !== room.password) {
+			return cb({ err: 'BADPASS' });
+		}
 
 
 		// Initialize player
@@ -75,11 +80,6 @@ function checkRoom(id) {
 	// Check if room exists
 	if (!room) {
 		return { err: 'NOTFOUND' };
-	}
-
-	// Check for password
-	if (room.password && password !== room.password) {
-		return { err: 'BADPASS' };
 	}
 
 	// Check if room is full
