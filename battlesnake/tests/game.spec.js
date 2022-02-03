@@ -29,6 +29,10 @@ describe('Game page', () => {
 		it('should not be able to join a room with an incorrect password', () => {
 
 		});
+
+		it('should timeout the room after 5 seconds', () => {
+
+		});
 	});
 
 	describe('Messaging', () => {
