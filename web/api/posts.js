@@ -3,7 +3,7 @@ import client from '../lib/sanity.js';
 const getPosts = () => {
 	return new Promise(async (resolve, reject) => {
 		try {
-			const posts = await client.fetch`*[_type == 'post'] {
+			const posts = await client.fetch`*[_type == 'post'] | order(_createdAt desc) {
 	_createdAt,
 	title,
 	'body': body[] {
