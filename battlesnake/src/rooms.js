@@ -75,12 +75,11 @@ export function createRoom(name, password) {
 			reason = reason || undefined;
 			this.io.emit('close', reason);
 
-			// Force disconnect in 1 second
-			setTimeout(() => {
-				for (const socket of this.io.sockets.values) {
-					socket.disconnect();
+			if (this.io.sockets) {
+				for (const socket of this.io.socketsvalues) {
+					socket?.disconnect();
 				}
-			}, 1000);
+			}
 
 			deleteRoom(this.id);
 		},
