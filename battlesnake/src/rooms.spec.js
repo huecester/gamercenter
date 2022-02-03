@@ -1,9 +1,12 @@
 import { describe } from 'mocha';
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
 import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 import faker from '@faker-js/faker';
 import { addRoom, clearRooms, createRoom, deleteRoom, getRoom, getRooms } from './rooms.js';
 import genID from './util/id.js';
+
+chai.use(sinonChai);
 
 
 describe('rooms.js', () => {
@@ -115,8 +118,9 @@ describe('rooms.js', () => {
 				room.addPlayer(player);
 
 				expect(room.players.get(player.id)).to.deep.equal(player);
-				expect(setupPlayerSocketStub.callCount).to.equal(1);
-				expect(setupPlayerSocketStub.getCall(0).args[0]).to.deep.equal(player);
+
+				expect(setupPlayerSocketStub).to.have.been.calledOnce;
+				expect(setupPlayerSocketStub.getCall(0)).to.have.been.calledWith(player);
 			});
 
 			it('should be able to remove a player', () => {
@@ -125,10 +129,9 @@ describe('rooms.js', () => {
 				room.addPlayer(player);
 				room.removePlayer(player);
 
-				// Test room players map
 				expect(room.players.get(player.id)).to.be.undefined;
-				// Test for sending sanitized players
-				expect(sanitizedPlayersStub.callCount).to.equal(2);
+
+				expect(sanitizedPlayersStub).to.have.been.calledTwice;
 			});
 		});
 	});
