@@ -41,6 +41,7 @@ export default async (req, res) => {
 			} catch (err) {
 				console.error('Error:', err);
 				res
+					.setHeader('Cache-Control', 'max-age: 43200, public')
 					.status(500)
 					.end();
 			}
