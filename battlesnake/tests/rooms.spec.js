@@ -38,7 +38,7 @@ describe('Rooms page', () => {
 			const postRes = await createRoom();
 			expect(postRes).to.have.property('status', 201);
 
-			const getRes = await chai.request(app).get('/rooms');
+			const getRes = await getRooms();
 			expect(getRes).to.have.property('status', 200);
 			expect(getRes).to.have.property('body').that.is.an('array').with.length(1);
 		});
@@ -49,7 +49,7 @@ describe('Rooms page', () => {
 		it('should properly return a room after creating it', async () => {
 			await createRoom();
 
-			const res = await chai.request(app).get('/rooms');
+			const res = await getRooms();
 			const room = res.body[0];
 			expect(room).to.have.property('name', roomname);
 			expect(room).to.have.property('password', true);
@@ -59,7 +59,7 @@ describe('Rooms page', () => {
 			roomname = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz';
 			await createRoom();
 
-			const res = await chai.request(app).get('/rooms');
+			const res = await getRooms();
 			const room = res.body[0];
 			expect(room).to.have.property('name', 'abcdefghijklmnopqrstuvwxyzabcdef');
 		});
@@ -77,7 +77,7 @@ describe('Rooms page', () => {
 			password = null;
 			await createRoom();
 
-			const res = await chai.request(app).get('/rooms');
+			const res = await getRooms();
 			const room = res.body[0];
 			expect(room).to.have.property('password', false);
 		});
@@ -86,7 +86,7 @@ describe('Rooms page', () => {
 			password = undefined;
 			await createRoom();
 
-			const res = await chai.request(app).get('/rooms');
+			const res = await getRooms();
 			const room = res.body[0];
 			expect(room).to.have.property('password', false);
 		});
@@ -95,7 +95,7 @@ describe('Rooms page', () => {
 			password = '';
 			await createRoom();
 
-			const res = await chai.request(app).get('/rooms');
+			const res = await getRooms();
 			const room = res.body[0];
 			expect(room).to.have.property('password', false);
 		});
