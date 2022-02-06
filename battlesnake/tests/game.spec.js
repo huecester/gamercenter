@@ -33,6 +33,10 @@ describe('Game page', () => {
 		it('should timeout the room after 5 seconds', () => {
 
 		});
+
+		it('should timeout a client after 2 seconds', () => {
+
+		});
 	});
 
 	describe('Messaging', () => {
