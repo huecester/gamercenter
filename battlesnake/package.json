@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^6.0.0-alpha.3",
+    "axios": "^0.25.0",
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",
     "memfs": "^3.4.1",
