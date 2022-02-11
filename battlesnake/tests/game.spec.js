@@ -58,6 +58,7 @@ describe('Game page', () => {
 	});
 
 	afterEach(() => {
+		clearRooms();
 		io.disconnectSockets();
 	});
 
@@ -66,20 +67,28 @@ describe('Game page', () => {
 		io.close();
 	});
 
-	describe('Joining', done => {
+	describe('Joining', () => {
 		it('should be able to join a room', done => {
 			createRoom().then(id => {
 				const client = createClient();
-				client.emit('join', { id }, res => {
-					expect(res).to.have.property('room');
+				client.emit('join', { id, username }, res => {
+					expect(res).to.have.property('room').that.is.an('object');
 					expect(res).to.not.have.property('err');
+
+					client.disconnect();
 					done();
 				});
 			});
 		});
 
-		it('should not be able to join a room that does not exist', () => {
+		it('should not be able to join a room that does not exist', done => {
+			const client = createClient();
+			client.emit('join', { id: 'deadbeef', username }, res => {
+				expect(res).to.have.property('err').that.equals('NOTFOUND');
 
+				client.disconnect();
+				done();
+			});
 		});
 
 		it('should be able to join a room with a password', () => {
