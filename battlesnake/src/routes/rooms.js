@@ -52,7 +52,7 @@ function onConnection(socket) {
 		// Get room
 		const res = checkRoom(data.id);
 		if (res.err) {
-			return cb(res.err);
+			return cb(res);
 		}
 		const room = res.room;
 
