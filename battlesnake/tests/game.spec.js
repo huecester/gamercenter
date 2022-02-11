@@ -88,7 +88,7 @@ describe('Game page', () => {
 			});
 		});
 
-		it('should be able to join a room with a password', () => {
+		it('should be able to join a room with a password', done => {
 			createRoom(true).then(id => {
 				createClient();
 				client.emit('join', { id, username, password }, res => {
@@ -99,7 +99,7 @@ describe('Game page', () => {
 			});
 		});
 
-		it('should not be able to join a password room without a password', () => {
+		it('should not be able to join a password room without a password', done => {
 			createRoom(true).then(id => {
 				createClient();
 				client.emit('join', { id, username }, res => {
@@ -109,11 +109,12 @@ describe('Game page', () => {
 			});
 		});
 
-		it('should not be able to join a password room with an incorrect password', () => {
+		it('should not be able to join a password room with an incorrect password', done => {
 			createRoom(true).then(id => {
 				createClient();
 				client.emit('join', { id, username, password: 'a' }, res => {
 					expect(res).to.have.property('err').that.equals('BADPASS');
+					done();
 				});
 			});
 		});
