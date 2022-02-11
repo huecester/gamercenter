@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import io from '../io.js';
-import { addRoom, createRoom, getRoom, getRooms } from '../rooms.js';
+import { addRoom, createRoom, deleteRoom, getRoom, getRooms } from '../rooms.js';
 import { createPlayer } from '../players.js';
 
 export function createRouter() {
@@ -24,6 +24,7 @@ export function createRouter() {
 
 		const room = createRoom(roomname, password);
 		addRoom(room);
+		room.timeoutID = setTimeout(() => deleteRoom(room.id), 5000);
 
 		res.status(201).set('Content-Type', 'text/plain').send(room.id);
 		next();
@@ -65,9 +66,12 @@ function onConnection(socket) {
 		// Initialize player
 		const player = createPlayer(data.username, socket);
 
-		// If player is first to join, set as host
+		// If player is first to join, set as host and clear room timeout
 		if (room.players.size <= 0) {
 			player.isHost = true;
+
+			clearTimeout(room.timeoutID);
+			delete room.timeoutID;
 		}
 
 		room.addPlayer(player);
