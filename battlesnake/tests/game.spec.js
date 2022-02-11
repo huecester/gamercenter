@@ -89,11 +89,33 @@ describe('Game page', () => {
 		});
 
 		it('should be able to join a room with a password', () => {
-
+			createRoom(true).then(id => {
+				createClient();
+				client.emit('join', { id, username, password }, res => {
+					expect(res).to.have.property('room').that.is.an('object');
+					expect(res).to.not.have.property('err');
+					done();
+				});
+			});
 		});
 
-		it('should not be able to join a room with an incorrect password', () => {
+		it('should not be able to join a password room without a password', () => {
+			createRoom(true).then(id => {
+				createClient();
+				client.emit('join', { id, username }, res => {
+					expect(res).to.have.property('err').that.equals('BADPASS');
+					done();
+				});
+			});
+		});
 
+		it('should not be able to join a password room with an incorrect password', () => {
+			createRoom(true).then(id => {
+				createClient();
+				client.emit('join', { id, username, password: 'a' }, res => {
+					expect(res).to.have.property('err').that.equals('BADPASS');
+				});
+			});
 		});
 
 		it('should timeout the room after 5 seconds', () => {
