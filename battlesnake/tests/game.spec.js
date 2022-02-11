@@ -15,8 +15,8 @@ chai.use(chaiHTTP);
 
 
 describe('Game page', () => {
-	let roomname, password, username, axios;
-	let httpServer, port;
+	let roomname, password, username, client;
+	let axios, httpServer, port;
 
 	function generateFakeData() {
 		roomname = faker.lorem.word();
@@ -39,7 +39,7 @@ describe('Game page', () => {
 	}
 
 	function createClient() {
-		return new Client(`http://localhost:${port}`);
+		client = new Client(`http://localhost:${port}`);
 	}
 
 	before(done => {
@@ -60,6 +60,7 @@ describe('Game page', () => {
 	afterEach(() => {
 		clearRooms();
 		io.disconnectSockets();
+		client.disconnect();
 	});
 
 	after(() => {
@@ -70,23 +71,19 @@ describe('Game page', () => {
 	describe('Joining', () => {
 		it('should be able to join a room', done => {
 			createRoom().then(id => {
-				const client = createClient();
+				createClient();
 				client.emit('join', { id, username }, res => {
 					expect(res).to.have.property('room').that.is.an('object');
 					expect(res).to.not.have.property('err');
-
-					client.disconnect();
 					done();
 				});
 			});
 		});
 
 		it('should not be able to join a room that does not exist', done => {
-			const client = createClient();
+			createClient();
 			client.emit('join', { id: 'deadbeef', username }, res => {
 				expect(res).to.have.property('err').that.equals('NOTFOUND');
-
-				client.disconnect();
 				done();
 			});
 		});
