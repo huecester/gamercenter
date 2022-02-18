@@ -38,8 +38,9 @@ export function createRouter() {
 
 function onConnection(socket) {
 	const timeoutID = setTimeout(() => {
+		socket.emit('close', 'TIMEOUT');
 		socket.disconnect(true);
-	}, 5000);
+	}, 2000);
 
 	socket.on('join', (data, cb) => {
 		// Disable timeout

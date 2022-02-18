@@ -60,7 +60,9 @@ describe('Game page', () => {
 	afterEach(() => {
 		clearRooms();
 		io.disconnectSockets();
-		client.disconnect();
+		if (!client.disconnected) {
+			client.disconnect();
+		}
 	});
 
 	after(() => {
@@ -119,12 +121,39 @@ describe('Game page', () => {
 			});
 		});
 
-		it('should timeout the room after 5 seconds', () => {
+		describe('Timeout', () => {
+			let clock;
 
-		});
+			function getRooms() {
+				return new Promise(async (resolve, reject) => {
+					try {
+						const res = await axios.get('/rooms');
+						resolve(res.data);
+					} catch (err) {
+						reject(err);
+					}
+				});
+			}
 
-		it('should timeout a client after 2 seconds', () => {
+			before(() => {
+				clock = sinon.useFakeTimers();
+			});
 
+			after(() => {
+				clock.restore();
+			});
+
+			it('should timeout the room after 5 seconds', async () => {
+				const id = await createRoom();
+
+				clock.tick(4999);
+				expect(await getRooms()).to.be.an('array').with.length(1);
+
+				clock.tick(1);
+				expect(await getRooms()).to.be.an('array').that.is.empty;
+			});
+
+			// TODO client timeout?
 		});
 	});
 

@@ -12,6 +12,11 @@ export function getRoom(id) {
 }
 
 export function deleteRoom(id) {
+	const room = getRoom(id);
+	if (room?.timeoutID) {
+		clearTimeout(room.timeoutID);
+	}
+
 	rooms.delete(id);
 }
 
@@ -20,6 +25,11 @@ export function addRoom(room) {
 }
 
 export function clearRooms() {
+	for (const room of rooms.values()) {
+		if (room.timeoutID) {
+			clearTimeout(room.timeoutID);
+		}
+	}
 	rooms.clear();
 }
 
