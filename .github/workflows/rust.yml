@@ -22,6 +22,8 @@ jobs:
 
     - name: Build
       run: cargo build --verbose
+      working-directory: battlesnake
 
     - name: Run tests
       run: cargo test --verbose
+      working-directory: battlesnake
