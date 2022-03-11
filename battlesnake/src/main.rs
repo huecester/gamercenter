@@ -23,24 +23,23 @@ fn index() -> &'static str {
 }
 
 #[get("/rooms")]
-fn list_rooms(rooms: &State<Rooms>) -> Json<Vec<Room>> {
-    let clone = Arc::clone(rooms);
-    let rooms = clone.lock().unwrap();
+fn list_rooms(rooms: &State<Rooms>) -> Json<HashMap<Uuid, SanitizedRoom>> {
+    let rooms = rooms.clone().lock().unwrap();
 
-    Json(rooms.values().map(|room| room.to_owned()).collect())
+    let sanitized_rooms = rooms.iter().map(|(id, room)| (id.to_owned(), room.sanitized())).collect();
+    Json(sanitized_rooms)
 }
 
 #[post("/rooms", data = "<room>")]
 fn create_room(room: Form<Room>, rooms: &State<Rooms>) -> Created<String> {
-    let clone = Arc::clone(rooms);
-    let mut rooms = clone.lock().unwrap();
+    let mut rooms = rooms.clone().lock().unwrap();
 
     let room = room.into_inner();
     let id = Uuid::new_v4();
     let id_string = id.to_simple().to_string();
 
     rooms.insert(id, room);
-    Created::new("https://example.com/").body(id_string)
+    Created::new(format!("/games/battlesnake/{}", id_string))
 }
 
 #[launch]

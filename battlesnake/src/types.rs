@@ -21,6 +21,13 @@ impl Room {
         &self.name
     }
 
+    pub fn sanitized(&self) -> SanitizedRoom {
+        SanitizedRoom {
+            name: self.name.to_owned(),
+            password: self.password.is_some(),
+        }
+    }
+
     pub fn check_password(&self, input: &str) -> bool {
         if let Some(password) = &self.password {
             password == input
@@ -28,6 +35,12 @@ impl Room {
             true
         }
     }
+}
+
+#[derive(Clone, Debug, Serialize)]
+pub struct SanitizedRoom {
+    pub name: String,
+    pub password: bool,
 }
 
 
