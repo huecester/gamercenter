@@ -17,8 +17,6 @@ fn index() -> &'static str {
 }
 
 #[launch]
-// TODO:
-// - Player constructor
 fn rocket() -> _ {
     rocket::build()
         .manage(Arc::new(Mutex::new(HashMap::<Uuid, Room>::new())))
