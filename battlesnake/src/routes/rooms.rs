@@ -12,7 +12,7 @@ use rocket::{
     State,
 };
 
-#[get("/rooms")]
+#[get("/")]
 pub fn list_rooms(rooms: &State<Rooms>) -> Json<HashMap<Uuid, SanitizedRoom>> {
     let rooms = rooms.clone().lock().unwrap();
 
@@ -20,7 +20,7 @@ pub fn list_rooms(rooms: &State<Rooms>) -> Json<HashMap<Uuid, SanitizedRoom>> {
     Json(sanitized_rooms)
 }
 
-#[post("/rooms", data = "<room>")]
+#[post("/", data = "<room>")]
 pub fn create_room(room: Form<Room>, rooms: &State<Rooms>) -> Created<String> {
     let mut rooms = rooms.clone().lock().unwrap();
 

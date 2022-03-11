@@ -20,6 +20,7 @@ fn index() -> &'static str {
 fn rocket() -> _ {
     rocket::build()
         .manage(Arc::new(Mutex::new(HashMap::<Uuid, Room>::new())))
-        .mount("/", routes![index, list_rooms, create_room])
+        .mount("/", routes![index])
+        .mount("/rooms", routes![list_rooms, create_room])
 }
 
