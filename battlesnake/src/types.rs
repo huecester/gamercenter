@@ -1,6 +1,13 @@
+use std::{
+    collections::HashMap,
+    sync::{Arc, Mutex},
+};
 use rocket::{
     form::FromForm,
-    serde::Serialize,
+    serde::{
+        Serialize,
+        uuid::Uuid,
+    },
 };
 
 #[derive(Clone, Debug, FromForm, Serialize)]
@@ -43,6 +50,7 @@ pub struct SanitizedRoom {
     pub password: bool,
 }
 
+pub type Rooms = Arc<Mutex<HashMap<Uuid, Room>>>;
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Player {
