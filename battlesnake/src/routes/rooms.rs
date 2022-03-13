@@ -21,10 +21,10 @@ pub fn list_rooms(rooms: &State<Rooms>) -> Json<HashMap<Uuid, SanitizedRoom>> {
 }
 
 #[post("/", data = "<room>")]
-pub fn create_room(room: Form<Room>, rooms: &State<Rooms>) -> Created<String> {
+pub fn create_room(room: Form<FormRoom>, rooms: &State<Rooms>) -> Created<String> {
     let mut rooms = rooms.clone().lock().unwrap();
 
-    let room = room.into_inner();
+    let room = Room::from(room.into_inner());
     let id = Uuid::new_v4();
 
     rooms.insert(id, room);

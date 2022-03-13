@@ -10,27 +10,29 @@ use rocket::{
     },
 };
 
-#[derive(Clone, Debug, FromForm, Serialize)]
-pub struct Room {
+pub type Rooms = Arc<Mutex<HashMap<Uuid, Room>>>;
+
+#[derive(Clone, Debug, FromForm)]
+pub struct FormRoom<'a> {
     #[field(validate = len(1..=32))]
+    name: &'a str,
+
+    #[field(validate = len(1..=32))]
+    password: Option<&'a str>,
+}
+
+#[derive(Clone, Debug)]
+pub struct Room {
     name: String,
-
-    #[field(validate = len(..=32))]
     password: Option<String>,
-
-    // #[field(default = vec![])]
     // players: Vec<Player>,
 }
 
 impl Room {
     // Methods
-    pub fn get_name(&self) -> &str {
-        &self.name
-    }
-
     pub fn sanitized(&self) -> SanitizedRoom {
         SanitizedRoom {
-            name: self.name.to_owned(),
+            name: self.name.to_string(),
             password: self.password.is_some(),
         }
     }
@@ -44,17 +46,17 @@ impl Room {
     }
 }
 
+impl From<FormRoom<'_>> for Room {
+    fn from(form_room: FormRoom) -> Self {
+        Room {
+            name: form_room.name.to_string(),
+            password: form_room.password.and_then(|password| Some(password.to_string())),
+        }
+    }
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct SanitizedRoom {
     pub name: String,
     pub password: bool,
-}
-
-pub type Rooms = Arc<Mutex<HashMap<Uuid, Room>>>;
-
-#[derive(Clone, Debug, Serialize)]
-pub struct Player {
-    username: String,
-    // id: String,
-    // color: Color,
 }
