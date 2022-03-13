@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ "$VERCEL_ENV" == "production" ]]; then
-  exit 1;
+	git diff --exit-code HEAD^ HEAD .
 else
   exit 0;
 fi
