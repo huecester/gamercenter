@@ -57,6 +57,6 @@ impl From<FormRoom<'_>> for Room {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct SanitizedRoom {
-    pub name: String,
-    pub password: bool,
+    name: String,
+    password: bool,
 }
