@@ -30,13 +30,6 @@ pub struct Room {
 
 impl Room {
     // Methods
-    pub fn sanitized(&self) -> SanitizedRoom {
-        SanitizedRoom {
-            name: self.name.to_string(),
-            password: self.password.is_some(),
-        }
-    }
-
     pub fn check_password(&self, input: &str) -> bool {
         if let Some(password) = &self.password {
             password == input
@@ -59,4 +52,13 @@ impl From<FormRoom<'_>> for Room {
 pub struct SanitizedRoom {
     name: String,
     password: bool,
+}
+
+impl From<&Room> for SanitizedRoom {
+    fn from(room: &Room) -> Self {
+        SanitizedRoom {
+            name: room.name.to_string(),
+            password: room.password.is_some(),
+        }
+    }
 }

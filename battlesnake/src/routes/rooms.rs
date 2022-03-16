@@ -16,7 +16,7 @@ use rocket::{
 pub fn list_rooms(rooms: &State<Rooms>) -> Json<HashMap<Uuid, SanitizedRoom>> {
     let rooms = rooms.clone().lock().unwrap();
 
-    let sanitized_rooms = rooms.iter().map(|(id, room)| (id.to_owned(), room.sanitized())).collect();
+    let sanitized_rooms = rooms.iter().map(|(id, room)| (id.to_owned(), room.into())).collect();
     Json(sanitized_rooms)
 }
 
