@@ -14,10 +14,9 @@ pub async fn join_room(room_id: Uuid, rooms: &State<Rooms>) -> Result<EventStrea
 
     if let Some(room) = rooms.get(&room_id) {
         Ok(EventStream! {
-            loop {
-                yield Event::data("ping");
-                time::interval(Duration::from_secs(1)).tick().await;
-            }
+            yield Event::data("data")
+                .event("event")
+                .with_comment("comment");
         })
     } else {
         Err((Status::NotFound, format!("No room with ID {}", room_id)))

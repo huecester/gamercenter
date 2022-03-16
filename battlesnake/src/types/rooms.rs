@@ -17,7 +17,7 @@ pub struct FormRoom<'a> {
     #[field(validate = len(1..=32))]
     name: &'a str,
 
-    #[field(validate = len(1..=32))]
+    #[field(validate = len(..=32))]
     password: Option<&'a str>,
 }
 
