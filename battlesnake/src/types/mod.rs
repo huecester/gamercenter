@@ -1,6 +1,6 @@
-pub mod rooms;
+pub mod room;
 
-pub use rooms::*;
+pub use room::*;
 
 /*
 #[derive(Clone, Debug, Serialize)]

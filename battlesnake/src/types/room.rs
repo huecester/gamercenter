@@ -8,6 +8,13 @@ use rocket::{
         Serialize,
         uuid::Uuid,
     },
+    tokio::{
+        self,
+        sync::{
+            broadcast,
+            mpsc,
+        },
+    },
 };
 
 pub type Rooms = Arc<Mutex<HashMap<Uuid, Room>>>;
@@ -41,6 +48,15 @@ impl Room {
 
 impl From<FormRoom<'_>> for Room {
     fn from(form_room: FormRoom) -> Self {
+        let (client_msg_tx, room_msg_rx) = mpsc::channel();
+        let (room_msg_tx, _) = broadcast::channel(16);
+
+        tokio::spawn(async move {
+            while let Some(msg) = room_msg_rx.recv().await {
+                room_msg_tx.send(msg).await
+            }
+        });
+
         Room {
             name: form_room.name.to_string(),
             password: form_room.password.and_then(|password| Some(password.to_string())),
