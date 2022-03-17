@@ -1,8 +1,8 @@
 use crate::types::*;
 use rocket::{
     serde::{Serialize, Serializer},
+    tokio::sync::mpsc::Sender,
 };
-use tokio::sync::mpsc::Sender;
 
 #[derive(Debug)]
 pub struct Player {
