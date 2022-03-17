@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 use crate::types::*;
 use rocket::{
-    form::Form,
-    response::status::Created,
     get,
     post,
+    form::Form,
+    response::status::Created,
     serde::{
         json::Json,
         uuid::Uuid,
