@@ -1,12 +1,5 @@
 pub mod room;
+pub mod player;
 
 pub use room::*;
-
-/*
-#[derive(Clone, Debug, Serialize)]
-pub struct Player {
-    username: String,
-    // id: String,
-    // color: Color,
-}
-*/
+pub use player::*;
