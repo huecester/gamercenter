@@ -1,27 +1,44 @@
-use crate::types::{*, Message::*};
+use crate::types::*;
 use rocket::{
     get,
-    http::Status,
-    response::stream::{Event, EventStream},
+    post,
+    http::{Cookie, CookieJar, Status},
+    response::{
+        status::Created,
+        stream::{Event, EventStream},
+    },
     serde::uuid::Uuid,
     State,
 };
 
-#[get("/<room_id>")]
-pub async fn join_room(room_id: Uuid, rooms: &State<Rooms>) -> Result<EventStream![], (Status, String)> {
-    let rooms = rooms.clone().lock().unwrap();
+#[get("/<room_id>", data = "<username>")]
+pub async fn join_room(room_id: Uuid, username: &str, rooms: &State<Rooms>, jar: &CookieJar<'_>) -> Result<EventStream![], (Status, String)> {
+    if username.len() <= 0 {
+        return Err((Status::BadRequest, "No username provided.".to_string()));
+    } else if username.len() >= 32 {
+        return Err((Status::UnprocessableEntity, "Username too long.".to_string()));
+    }
 
-    if let Some(room) = rooms.get(&room_id) {
+    let mut rooms = rooms.clone().lock().unwrap();
+
+    if let Some(room) = rooms.get_mut(&room_id) {
         let mut msg_rx = room.subscribe();
+        let (id, token) = room.add_player(username);
+
+        jar.add(Cookie::new("id", id.to_hyphenated().to_string()));
+        jar.add_private(Cookie::new("token", token.to_hyphenated().to_string()));
 
         Ok(EventStream! {
             while let Ok(msg) = msg_rx.recv().await {
-                match msg {
-                    Chat(msg) => yield Event::data(msg),
-                }
+                yield Event::data(msg.msg);
             }
         })
     } else {
-        Err((Status::NotFound, format!("No room with ID {}", room_id)))
+        Err((Status::NotFound, format!("No room with ID {}.", room_id)))
     }
+}
+
+#[post("/<room_id>/<player_id>/message", data = "<msg>")]
+pub fn send_message(room_id: Uuid, player_id: Uuid, msg: &str, player: Player) -> Created<()> {
+    todo!()
 }

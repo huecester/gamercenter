@@ -49,11 +49,18 @@ impl Room {
         }
     }
 
-    pub fn add_player(&mut self, username: &str) {
+    pub fn get_player(&self, id: &Uuid) -> Option<&Player> {
+        self.players.get(&id)
+    }
+
+    pub fn add_player(&mut self, username: &str) -> (Uuid, Uuid) {
         let id = Uuid::new_v4();
-        let player = Player::new(username, &self.msg_client_tx);
+        let id_clone = id.clone();
+        let player = Player::new(username, self.msg_client_tx.clone());
+        let token = player.get_token().clone();
 
         self.players.insert(id, player);
+        (id_clone, token)
     }
 
     pub fn subscribe(&self) -> broadcast::Receiver<Message> {
@@ -87,8 +94,8 @@ impl From<FormRoom<'_>> for Room {
 }
 
 #[derive(Clone, Debug)]
-pub enum Message {
-    Chat(String),
+pub struct Message {
+    pub msg: String,
 }
 
 #[derive(Clone, Debug, Serialize)]
