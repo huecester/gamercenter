@@ -1,6 +1,6 @@
 use crate::types::*;
 use rocket::{
-    http::{Cookie, CookieJar, Status},
+    http::{CookieJar, Status},
     request::{self, Request, FromRequest},
     serde::{
         Serialize,

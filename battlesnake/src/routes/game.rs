@@ -38,7 +38,7 @@ pub async fn join_room(room_id: Uuid, username: &str, rooms: &State<Rooms>, jar:
     }
 }
 
-#[post("/<room_id>/<player_id>/message", data = "<msg>")]
-pub fn send_message(room_id: Uuid, player_id: Uuid, msg: &str, player: Player) -> Created<()> {
+#[post("/<_room_id>/<_player_id>/message", data = "<msg>")]
+pub fn send_message(_room_id: Uuid, _player_id: Uuid, msg: &str, player: Player) -> Created<()> {
     todo!()
 }
