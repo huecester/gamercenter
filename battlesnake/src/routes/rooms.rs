@@ -4,12 +4,12 @@ use rocket::{
     get,
     post,
     form::Form,
+    State,
     response::status::Created,
     serde::{
         json::Json,
         uuid::Uuid,
     },
-    State,
 };
 
 #[get("/")]

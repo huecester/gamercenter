@@ -2,12 +2,12 @@ use crate::types::*;
 use rocket::{
     http::{CookieJar, Status},
     request::{self, Request, FromRequest},
+    State,
     serde::{
         Serialize,
         Serializer,
         uuid::Uuid,
     },
-    State,
     tokio::sync::mpsc::Sender,
 };
 
