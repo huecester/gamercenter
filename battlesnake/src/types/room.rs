@@ -1,6 +1,6 @@
 use std::{
     collections::HashMap,
-    sync::{Arc, Mutex},
+    sync::{Arc, Mutex, RwLock},
 };
 use crate::types::*;
 use rocket::{
@@ -18,9 +18,9 @@ use rocket::{
     },
 };
 
-pub type Rooms = Arc<Mutex<HashMap<Uuid, Room>>>;
+pub type Rooms = RwLock<HashMap<Uuid, Room>>;
 
-#[derive(Clone, Debug, FromForm)]
+#[derive(Debug, FromForm)]
 pub struct FormRoom<'a> {
     #[field(validate = len(1..=32))]
     name: &'a str,
@@ -33,7 +33,7 @@ pub struct FormRoom<'a> {
 pub struct Room {
     name: String,
     password: Option<String>,
-    players: HashMap<Uuid, Player>,
+    pub players: RwLock<HashMap<Uuid, Player>>,
 
     msg_client_tx: mpsc::Sender<Message>,
     msg_room_tx: Arc<Mutex<broadcast::Sender<Message>>>,
@@ -49,18 +49,13 @@ impl Room {
         }
     }
 
-    pub fn get_player(&self, id: &Uuid) -> Option<&Player> {
-        self.players.get(&id)
-    }
-
-    pub fn add_player(&mut self, username: &str) -> (Uuid, Uuid) {
+    pub fn add_player(&self, username: &str) -> (Uuid, Uuid) {
         let id = Uuid::new_v4();
-        let id_clone = id.clone();
         let player = Player::new(username, self.msg_client_tx.clone());
         let token = player.get_token().clone();
 
-        self.players.insert(id, player);
-        (id_clone, token)
+        self.players.write().unwrap().insert(id.clone(), player);
+        (id, token)
     }
 
     pub fn subscribe(&self) -> broadcast::Receiver<Message> {
@@ -77,7 +72,7 @@ impl From<FormRoom<'_>> for Room {
         let room = Room {
             name: form_room.name.to_string(),
             password: form_room.password.and_then(|password| Some(password.to_string())),
-            players: HashMap::new(),
+            players: RwLock::new(HashMap::new()),
             msg_client_tx,
             msg_room_tx,
         };
@@ -93,12 +88,14 @@ impl From<FormRoom<'_>> for Room {
     }
 }
 
+
 #[derive(Clone, Debug)]
 pub struct Message {
     pub msg: String,
 }
 
-#[derive(Clone, Debug, Serialize)]
+
+#[derive(Debug, Serialize)]
 pub struct SanitizedRoom {
     name: String,
     password: bool,
@@ -108,9 +105,9 @@ pub struct SanitizedRoom {
 impl From<&Room> for SanitizedRoom {
     fn from(room: &Room) -> Self {
         SanitizedRoom {
-            name: room.name.to_string(),
+            name: room.name.clone(),
             password: room.password.is_some(),
-            players: room.players.iter().map(|(id, player)| (id.clone(), player.sanitized())).collect(),
+            players: room.players.read().unwrap().iter().map(|(id, player)| (id.clone(), player.into())).collect(),
         }
     }
 }

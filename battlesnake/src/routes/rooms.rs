@@ -14,20 +14,16 @@ use rocket::{
 
 #[get("/")]
 pub fn list_rooms(rooms: &State<Rooms>) -> Json<HashMap<Uuid, SanitizedRoom>> {
-    let rooms = rooms.clone().lock().unwrap();
-
-    let sanitized_rooms = rooms.iter().map(|(id, room)| (id.to_owned(), room.into())).collect();
-    Json(sanitized_rooms)
+    let rooms = rooms.read().unwrap();
+    Json(rooms.iter().map(|(id, room)| (id.clone(), room.into())).collect())
 }
 
 #[post("/", data = "<room>")]
 pub fn create_room(room: Form<FormRoom>, rooms: &State<Rooms>) -> Created<String> {
-    let mut rooms = rooms.clone().lock().unwrap();
-
     let room = Room::from(room.into_inner());
     let id = Uuid::new_v4();
 
-    rooms.insert(id, room);
+    rooms.write().unwrap().insert(id, room);
     Created::new(format!("/games/battlesnake/{}", id))
 }
 
