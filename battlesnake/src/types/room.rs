@@ -94,6 +94,14 @@ pub struct Message {
     pub msg: String,
 }
 
+impl Message {
+    pub fn new(msg: &str) -> Message {
+        Message {
+            msg: msg.to_string(),
+        }
+    }
+}
+
 
 #[derive(Debug, Serialize)]
 pub struct SanitizedRoom {

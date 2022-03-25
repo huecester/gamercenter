@@ -8,7 +8,7 @@ use rocket::{
     tokio::sync::mpsc::Sender,
 };
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Player {
     username: String,
     color: Color,
@@ -29,6 +29,14 @@ impl Player {
 
     pub fn get_token(&self) -> &Uuid {
         &self.token
+    }
+
+    pub fn check_token(&self, token: &Uuid) -> bool {
+        &self.token == token
+    }
+
+    pub async fn send_msg(&self, msg: &str) {
+        self.msg_tx.send(Message::new(msg)).await.unwrap();
     }
 }
 
