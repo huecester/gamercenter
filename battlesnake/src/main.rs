@@ -1,24 +1,37 @@
-#[macro_use] extern crate rocket;
-
-use std::default::Default;
-use battlesnake_server::{
-    types::*,
-    routes::*,
+use std::env;
+use poem::{
+    EndpointExt,
+    Route,
+    Server,
+    get,
+    handler,
+    listener::TcpListener,
+    middleware::Tracing,
+    web::Path,
 };
 
-
-#[get("/")]
+#[handler]
 fn index() -> &'static str {
     "Hello, world!"
 }
 
-#[launch]
-fn rocket() -> _ {
-    let rooms: Rooms = Default::default();
-
-    rocket::build()
-        .manage(rooms)
-        .mount("/", routes![index])
-        .mount("/rooms", routes![list_rooms, create_room, join_room, send_message])
+#[handler]
+fn hello(Path(thing): Path<String>) -> String {
+    format!("Hello, {}!", thing)
 }
 
+#[tokio::main]
+async fn main() -> Result<(), std::io::Error> {
+    let port = env::var("PORT").unwrap_or("8000".to_string()).parse::<u16>().unwrap_or(8000);
+
+    tracing_subscriber::fmt::init();
+
+    let app = Route::new()
+        .at("/", get(index))
+        .at("/:thing", get(hello))
+        .with(Tracing);
+
+    Server::new(TcpListener::bind(("127.0.0.1", port)))
+        .run(app)
+        .await
+}
