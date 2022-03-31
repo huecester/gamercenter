@@ -2,5 +2,9 @@
   "name": "battlesnake",
   "version": "1.0.0",
   "main": "src/index.js",
-  "license": "MIT"
+  "type": "module",
+  "license": "MIT",
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.1"
+  }
 }
