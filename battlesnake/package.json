@@ -1,10 +1,19 @@
 {
-  "name": "battlesnake",
-  "version": "1.0.0",
-  "main": "src/index.js",
-  "type": "module",
-  "license": "MIT",
-  "devDependencies": {
-    "@tsconfig/recommended": "^1.0.1"
-  }
+	"name": "battlesnake",
+	"version": "1.0.0",
+	"main": "build/index.js",
+	"license": "MIT",
+	"scripts": {
+		"build": "tsc",
+		"dev": "nodemon --ext ts --exec 'tsc && node build/index.js'"
+	},
+	"devDependencies": {
+		"@tsconfig/recommended": "^1.0.1",
+		"@types/express": "^4.17.13",
+		"@types/node": "^17.0.23"
+	},
+	"dependencies": {
+		"dotenv": "^16.0.0",
+		"express": "^4.17.3"
+	}
 }
