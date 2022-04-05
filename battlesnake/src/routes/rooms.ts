@@ -1,18 +1,12 @@
 import { Router } from 'express';
-import {v4 as uuidv4} from 'uuid';
 
 import { SanitizedRoom, SanitizedRooms, Room, Rooms, RoomForm } from '../types/room';
+import { addRoom, getSanitizedRooms } from '../store/rooms';
 
 const router = Router();
 
-const rooms: Rooms = new Map();
-
 router.get('/', (req, res) => {
-	const sanitizedRooms: SanitizedRooms = {};
-	for (const [id, room] of rooms) {
-		sanitizedRooms[id] = room.sanitized();
-	}
-	res.json(sanitizedRooms);
+	res.json(getSanitizedRooms());
 });
 
 router.post('/', (req, res) => {
@@ -22,9 +16,12 @@ router.post('/', (req, res) => {
 	}
 
 	const room = Room.fromForm(form);
-	rooms.set(uuidv4(), room);
+	const id = addRoom(room);
 
-	res.sendStatus(201);
+	res
+		.status(201)
+		.set('Content-Type', 'text/plain')
+		.send(id);
 });
 
 export default router;
