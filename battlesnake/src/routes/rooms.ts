@@ -1,9 +1,12 @@
 import { Router } from 'express';
+import { Namespace, Socket } from 'socket.io';
 
 import { SanitizedRoom, SanitizedRooms, Room, Rooms, RoomForm } from '../types/room';
-import { addRoom, getSanitizedRooms } from '../store/rooms';
+import { Player } from '../types/player';
+import { JoinData, JoinError, JoinResult } from '../types/data';
+import { addRoom, getRoom, getSanitizedRooms } from '../store/rooms';
 
-const router = Router();
+export const router = Router();
 
 router.get('/', (req, res) => {
 	res.json(getSanitizedRooms());
@@ -15,8 +18,7 @@ router.post('/', (req, res) => {
 		return res.sendStatus(422);
 	}
 
-	const room = Room.fromForm(form);
-	const id = addRoom(room);
+	const id = addRoom(form);
 
 	res
 		.status(201)
@@ -24,4 +26,41 @@ router.post('/', (req, res) => {
 		.send(id);
 });
 
-export default router;
+
+export function onConnection(io: Namespace, socket: Socket) {
+	// Timeout
+	const timeoutID = setTimeout(() => {
+		socket.disconnect(true);
+	}, 5000);
+
+	socket.on('join', (data: JoinData, cb: (res: JoinResult) => void) => {
+		// Clear timeout
+		clearTimeout(timeoutID);
+
+		// Test for username
+		if (!data.username) {
+			return cb({
+				err: JoinError.NOUSERNAME,
+			});
+		}
+
+		const username = data.username.slice(0, 32);
+
+		// Get room
+		const room = getRoom(data.id);
+		if (!room) {
+			return cb({
+				err: JoinError.NOTFOUND,
+			});
+		}
+
+		// Check password
+		if (room.password && room.password !== data.password) {
+			return cb({
+				err: JoinError.BADPASS,
+			});
+		}
+
+		room.addPlayer(username, socket);
+	});
+}
