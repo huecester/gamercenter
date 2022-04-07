@@ -1,7 +1,4 @@
 import express from 'express';
-import { createServer as createHttpServer } from 'http';
-import { Server as IOServer } from 'socket.io';
-
 const app = express();
 
 // Middleware

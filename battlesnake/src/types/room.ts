@@ -1,6 +1,6 @@
 import { BroadcastOperator, Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
-import { Player, Players, SanitizedPlayer, SanitizedPlayers } from './player';
+import { Player, Players, SanitizedPlayers } from './player';
 import { ServerToClientEvents } from '../io';
 
 export type Rooms = Map<string, Room>;

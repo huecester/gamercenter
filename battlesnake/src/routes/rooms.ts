@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import { Namespace, Socket } from 'socket.io';
 
-import { SanitizedRoom, SanitizedRooms, Room, Rooms, RoomForm } from '../types/room';
-import { Player } from '../types/player';
+import { RoomForm } from '../types/room';
 import { JoinData, JoinError, JoinResult } from '../types/data';
 import { addRoom, getRoom, getSanitizedRooms } from '../store/rooms';
 
