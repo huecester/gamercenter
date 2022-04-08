@@ -2,7 +2,7 @@ import { describe } from 'mocha';
 import { expect } from 'chai';
 import { faker } from '@faker-js/faker';
 
-import { addRoom, clearRooms, deleteRoom, getRoom, getSanitizedRooms } from './rooms'
+import { addRoom, clearRooms, deleteRoom, getRoom, getSanitizedRooms } from './rooms';
 
 describe('store/rooms', () => {
 	let name, password;

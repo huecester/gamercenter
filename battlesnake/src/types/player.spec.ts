@@ -1,12 +1,8 @@
 import { describe } from 'mocha';
-import chai, { expect } from 'chai';
-import { mock } from 'sinon';
-import sinonChai from 'sinon-chai';
+import { expect } from 'chai';
 import { faker } from '@faker-js/faker';
 
 import { Player } from './player';
-
-chai.use(sinonChai);
 
 describe('types/players', () => {
 	let username;
