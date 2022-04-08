@@ -26,3 +26,12 @@ rules:
   no-duplicate-imports:
     - error
     - includeExports: true
+overrides:
+  - files:
+    - 'src/**/*.spec.ts'
+    - 'test/**'
+    rules:
+      '@typescript-eslint/no-empty-function':
+        - error
+        - allow:
+          - methods
