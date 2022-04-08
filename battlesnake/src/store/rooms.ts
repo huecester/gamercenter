@@ -11,6 +11,10 @@ export function addRoom(form: RoomForm) {
 	return id;
 }
 
+export function clearRooms() {
+	rooms.clear();
+}
+
 export function deleteRoom(id: string) {
 	return rooms.delete(id);
 }
