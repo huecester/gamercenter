@@ -141,11 +141,13 @@ describe('Rooms', () => {
 				.send(form))
 				.text;
 			username = faker.internet.userName();
-			client = new IOClient(`http://localhost:${PORT}/rooms`);
+			client = IOClient(`http://localhost:${PORT}/rooms`);
 		});
 
 		afterEach(() => {
 			clearRooms();
+			client.off();
+			client.disconnect();
 		});
 
 		after(() => {
@@ -213,6 +215,35 @@ describe('Rooms', () => {
 				client.emit('join', { username, id, password: 'bazinga' }, data => {
 					expect(data).to.have.a.property('err').that.equals(JoinError.BADPASS);
 					done();
+				});
+			});
+		});
+
+		describe('Messages', () => {
+			it('should be able to send messages', done => {
+				const msg = faker.lorem.sentence(5);
+
+				client.on('msg', (resUsername, resMsg) => {
+					expect(resUsername).to.be.a('string').that.equals(username);
+					expect(resMsg).to.be.a('string').that.equals(msg);
+					done();
+				});
+
+				client.emit('join', { username, id, password }, () => {
+					client.emit('msg', msg);
+				});
+			});
+
+			it('should limit messages to 64 characters', done => {
+				const msg = faker.lorem.sentences(20);
+
+				client.on('msg', (resUsername, resMsg) => {
+					expect(resMsg).to.equal(msg.slice(0, 64));
+					done();
+				});
+
+				client.emit('join', { username, id, password }, () => {
+					client.emit('msg', msg);
 				});
 			});
 		});
