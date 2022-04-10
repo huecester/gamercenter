@@ -254,6 +254,7 @@ describe('Rooms', () => {
 
 				client2.on('msg', (_, resMsg) => {
 					expect(resMsg).to.equal(msg);
+					client2.close();
 					done();
 				});
 
