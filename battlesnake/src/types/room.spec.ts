@@ -21,6 +21,22 @@ describe('types/room', () => {
 		expect(room).to.be.an('object').that.has.a.property('name').that.equals(name);
 	});
 
+	it('should be able to have a password', () => {
+		const room = new Room(name, {}, password);
+		expect(room).to.have.property('password').that.equals(password);
+	});
+
+	it('should truncate name and password to a max of 32 characters', () => {
+		const room = new Room(
+			'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz',
+			{},
+			'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz',
+		);
+
+		expect(room.name).to.equal('abcdefghijklmnopqrstuvwxyzabcdef');
+		expect(room.password).to.equal('abcdefghijklmnopqrstuvwxyzabcdef');
+	});
+
 	it('should set password to null if password is not provided', () => {
 		const room = new Room(name);
 		expect(room).to.have.property('password').that.equals(null);
@@ -29,11 +45,6 @@ describe('types/room', () => {
 	it('should set password to null if password is an empty string', () => {
 		const room = new Room(name, {}, '');
 		expect(room).to.have.property('password').that.equals(null);
-	});
-
-	it('should be able to have a password', () => {
-		const room = new Room(name, {}, password);
-		expect(room).to.have.property('password').that.equals(password);
 	});
 
 	it('should be able to be created from a form', () => {

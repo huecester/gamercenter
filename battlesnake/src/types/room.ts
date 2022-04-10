@@ -18,8 +18,8 @@ export class Room {
 	readonly io: BroadcastOperator<ServerToClientEvents, null>;
 
 	constructor(name: string, io: BroadcastOperator<ServerToClientEvents, null>, password?: string) {
-		this.name = name;
-		this.password = password?.length && password?.length > 0 ? password : null;
+		this.name = name.slice(0, 32);
+		this.password = password?.length && password?.length > 0 ? password.slice(0, 32) : null;
 
 		this.io = io;
 	}
