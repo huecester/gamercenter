@@ -1,7 +1,5 @@
 .vercel
-tags
-tags.lock
-tags.temp
+tags*
 yarn-error.log
 .env
 .env.*
