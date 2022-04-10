@@ -246,6 +246,23 @@ describe('Rooms', () => {
 					client.emit('msg', msg);
 				});
 			});
+
+			it('should be able to send messages between clients', done => {
+				const msg = faker.lorem.sentence(5);
+				const username2 = faker.internet.userName();
+				const client2 = IOClient(`http://localhost:${PORT}/rooms`);
+
+				client2.on('msg', (_, resMsg) => {
+					expect(resMsg).to.equal(msg);
+					done();
+				});
+
+				client2.emit('join', { username: username2, id, password }, data => {
+					client.emit('join', { username, id, password }, data => {
+						client.emit('msg', msg);
+					});
+				});
+			});
 		});
 	});
 });
