@@ -5,9 +5,16 @@
 	"license": "MIT",
 	"scripts": {
 		"build": "tsc",
-		"dev": "nodemon --ext ts --exec 'yarn test && tsc || exit 1 && node .'",
+
+		"dev": "tsc && node .",
+		"dev:watch": "nodemon --ext ts --exec 'yarn dev || exit 1'",
+		"dev:full": "nodemon --ext ts --exec 'yarn test && yarn dev || exit 1'",
+
+		"test": "ts-mocha --extension .spec.ts --recursive src test",
+		"test:watch": "nodemon --ext ts --exec  'yarn test || exit 1'",
+
 		"lint": "eslint src test",
-		"test": "ts-mocha --extension .spec.ts --recursive src test"
+		"lint:watch": "nodemon --ext ts --exec 'yarn lint'"
 	},
 	"devDependencies": {
 		"@faker-js/faker": "^6.1.2",
