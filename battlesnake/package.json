@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "tsc",
 		"dev": "nodemon --ext ts --exec 'yarn test && tsc || exit 1 && node .'",
-		"lint": "eslint src",
+		"lint": "eslint src test",
 		"test": "ts-mocha --extension .spec.ts --recursive src test"
 	},
 	"devDependencies": {
