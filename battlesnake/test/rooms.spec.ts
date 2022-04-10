@@ -8,6 +8,7 @@ import { io as IOClient } from 'socket.io-client';
 import app from '../src/app';
 import io from '../src/io';
 import { clearRooms } from '../src/store/rooms';
+import { JoinError } from '../src/types/data';
 
 chai.use(chaiHttp);
 
@@ -114,12 +115,8 @@ describe('Rooms', () => {
 	describe('Socket.IO', () => {
 		const PORT = 8000;
 
-		let username, id;
-		let req, server;
-
-		function createClient() {
-			return new IOClient(`http://localhost:${PORT}`)
-		}
+		let username, id, password;
+		let req, server, client;
 
 		before(done => {
 			server = createHttpServer(app);
@@ -133,9 +130,10 @@ describe('Rooms', () => {
 		});
 
 		beforeEach(async () => {
+			password = faker.internet.password();
 			const form = {
 				name: faker.lorem.word(),
-				password: faker.internet.password(),
+				password,
 			};
 
 			id = (await req.post('/rooms')
@@ -143,6 +141,7 @@ describe('Rooms', () => {
 				.send(form))
 				.text;
 			username = faker.internet.userName();
+			client = new IOClient(`http://localhost:${PORT}/rooms`);
 		});
 
 		afterEach(() => {
@@ -154,25 +153,68 @@ describe('Rooms', () => {
 			server.close();
 		});
 
-		it('should be able to connect', done => {
-			req.post('/rooms')
-				.type('form')
-				.send({ name: faker.lorem.word() })
-				.then(res => {
-					const client = new IOClient('http://localhost:8000/rooms')
-					client.emit('join', { username, id: res.text }, data => {
-						expect(data).to.be.an('object')
-							.that.has.a.property('players')
-							.that.is.an('object');
+		describe('Joining', () => {
+			it('should be able to connect', done => {
+				req.post('/rooms')
+					.type('form')
+					.send({ name: faker.lorem.word() })
+					.then(res => {
+						client.emit('join', { username, id: res.text }, data => {
+							expect(data).to.be.an('object')
+								.that.has.a.property('players')
+								.that.is.an('object');
 
-						const player = Object.values(data.players)[0];
-						expect(player).to.be.an('object');
-						expect(player).to.have.a.property('username').that.equals(username);
-						expect(player).to.have.a.property('color').that.is.a('string').that.matches(/^#[a-f0-9]{6}$/i);
+							const player = Object.values(data.players)[0];
+							expect(player).to.be.an('object');
+							expect(player).to.have.a.property('username').that.equals(username);
+							expect(player).to.have.a.property('color').that.is.a('string').that.matches(/^#[a-f0-9]{6}$/i);
 
-						done();
+							done();
+						});
 					});
+			});
+
+			it('should be able to connect with a password', done => {
+				client.emit('join', { username, id, password }, data => {
+					expect(data).to.not.have.property('err');
+					done();
 				});
+			});
+
+			it('should not be able to connect without a name', done => {
+				client.emit('join', { id, password }, data => {
+					expect(data).to.have.a.property('err').that.equals(JoinError.NOUSERNAME)
+					done();
+				});
+			});
+
+			it('should not be able to connect without an ID', done => {
+				client.emit('join', { username, password }, data => {
+					expect(data).to.have.a.property('err').that.equals(JoinError.NOTFOUND);
+					done();
+				});
+			});
+
+			it('should not be able to connect with an unknown ID', done => {
+				client.emit('join', { username, id: 'bazinga', password }, data => {
+					expect(data).to.have.a.property('err').that.equals(JoinError.NOTFOUND);
+					done();
+				});
+			});
+
+			it('should not be able to connect without a password', done => {
+				client.emit('join', { username, id }, data => {
+					expect(data).to.have.a.property('err').that.equals(JoinError.BADPASS);
+					done();
+				});
+			});
+
+			it('should not be able to connect with an incorrect password', done => {
+				client.emit('join', { username, id, password: 'bazinga' }, data => {
+					expect(data).to.have.a.property('err').that.equals(JoinError.BADPASS);
+					done();
+				});
+			});
 		});
 	});
 });
