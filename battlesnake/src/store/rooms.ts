@@ -1,12 +1,11 @@
 import {v4 as uuidv4} from 'uuid';
 import { SanitizedRooms, RoomForm, Room, Rooms } from '../types/room';
-import io from '../io';
 
 const rooms: Rooms = new Map();
 
 export function addRoom(form: RoomForm) {
 	const id = uuidv4();
-	const room = Room.fromForm(form, io.of('/rooms').to(id));
+	const room = Room.fromForm(form, id);
 	rooms.set(id, room);
 	return id;
 }

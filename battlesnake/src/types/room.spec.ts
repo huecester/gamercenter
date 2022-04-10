@@ -3,32 +3,36 @@ import chai, { expect } from 'chai';
 import { mock } from 'sinon';
 import sinonChai from 'sinon-chai';
 import { faker } from '@faker-js/faker';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Room } from './room';
 
 chai.use(sinonChai);
 
 describe('types/room', () => {
-	let name, password;
+	let name, id, password;
 	
 	beforeEach(() => {
 		name = faker.lorem.word();
+		id = uuidv4();
 		password = faker.internet.password();
 	});
 
 	it('should be able to be created properly', () => {
 		const room = new Room(name);
 		expect(room).to.be.an('object').that.has.a.property('name').that.equals(name);
+		expect(room).to.have.all.keys('name', 'id', 'password', 'io', 'players');
 	});
 
 	it('should be able to have a password', () => {
-		const room = new Room(name, {}, password);
+		const room = new Room(name, id, {}, password);
 		expect(room).to.have.property('password').that.equals(password);
 	});
 
 	it('should truncate name and password to a max of 32 characters', () => {
 		const room = new Room(
 			'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz',
+			id,
 			{},
 			'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz',
 		);
@@ -43,7 +47,7 @@ describe('types/room', () => {
 	});
 
 	it('should set password to null if password is an empty string', () => {
-		const room = new Room(name, {}, '');
+		const room = new Room(name, id, {}, '');
 		expect(room).to.have.property('password').that.equals(null);
 	});
 
@@ -56,7 +60,7 @@ describe('types/room', () => {
 	});
 
 	it('should be able to be sanitized', () => {
-		const room = new Room(name, {}, password);
+		const room = new Room(name, id, {}, password);
 		const sanitized = room.sanitized();
 
 		expect(sanitized).to.have.all.keys('name', 'players', 'password');
@@ -75,12 +79,14 @@ describe('types/room', () => {
 
 		const socketApi = {
 			on() {},
+			join() {},
 		};
 		const socketMock = mock(socketApi);
 		socketMock.expects('on').once().withArgs('msg');
+		socketMock.expects('join').once().withExactArgs(id);
 
 		// Tests
-		const room = new Room(name, ioApi);
+		const room = new Room(name, id, ioApi);
 		room.addPlayer(username, socketApi);
 
 		const player = room.players.values().next().value;
@@ -99,11 +105,11 @@ describe('types/room', () => {
 		const ioMock = mock(ioApi);
 		const emitMock = ioMock.expects('emit').twice();
 
-		const room = new Room(name, ioApi);
-		room.addPlayer(username, { on() {} });
+		const room = new Room(name, id, ioApi);
+		room.addPlayer(username, { on() {}, join() {} });
 		
-		const id = room.players.entries().next().value[0];
-		room.removePlayer(id);
+		const playerID = room.players.entries().next().value[0];
+		room.removePlayer(playerID);
 
 		expect(emitMock.getCall(1)).to.have.been.calledWith('leave', username);
 

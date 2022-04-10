@@ -1,7 +1,7 @@
 import { BroadcastOperator, Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import { Player, Players, SanitizedPlayers } from './player';
-import { ServerToClientEvents } from '../io';
+import io, { ServerToClientEvents } from '../io';
 
 export type Rooms = Map<string, Room>;
 
@@ -12,20 +12,22 @@ export interface RoomForm {
 
 export class Room {
 	readonly name: string;
+	readonly id: string;
 	players: Players = new Map();
 	readonly password: string | null;
 
 	readonly io: BroadcastOperator<ServerToClientEvents, null>;
 
-	constructor(name: string, io: BroadcastOperator<ServerToClientEvents, null>, password?: string) {
+	constructor(name: string, id: string, io: BroadcastOperator<ServerToClientEvents, null>, password?: string) {
 		this.name = name.slice(0, 32);
+		this.id = id;
 		this.password = password?.length && password?.length > 0 ? password.slice(0, 32) : null;
 
 		this.io = io;
 	}
 
-	static fromForm(form: RoomForm, io: BroadcastOperator<ServerToClientEvents, null>) {
-		return new Room(form.name, io, form.password);
+	static fromForm(form: RoomForm, id: string) {
+		return new Room(form.name, id, io.of('/rooms').to(id), form.password);
 	}
 
 	sanitizedPlayers() {
@@ -43,6 +45,7 @@ export class Room {
 	addPlayer(username: string, socket: Socket) {
 		const id = uuidv4();
 		const player = new Player(username, socket);
+		socket.join(this.id);
 
 		socket.on('msg', (msg: string) => {
 			this.io.emit('msg', player.username, msg.slice(0, 64));
