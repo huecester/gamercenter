@@ -46,8 +46,8 @@ describe('Rooms', () => {
 			expect(res).to.have.a.status(200);
 			expect(res.body).to.be.an('object')
 				.that.has.a.property(id)
-					.that.is.an('object')
-					.that.has.all.keys('name', 'players', 'password');
+				.that.is.an('object')
+				.that.has.all.keys('name', 'players', 'password');
 
 			const room = res.body[id];
 			expect(room).to.have.a.property('name').that.equals(name);
@@ -185,7 +185,7 @@ describe('Rooms', () => {
 
 			it('should not be able to connect without a name', done => {
 				client.emit('join', { id, password }, data => {
-					expect(data).to.have.a.property('err').that.equals(JoinError.NOUSERNAME)
+					expect(data).to.have.a.property('err').that.equals(JoinError.NOUSERNAME);
 					done();
 				});
 			});
@@ -257,8 +257,8 @@ describe('Rooms', () => {
 					done();
 				});
 
-				client2.emit('join', { username: username2, id, password }, data => {
-					client.emit('join', { username, id, password }, data => {
+				client2.emit('join', { username: username2, id, password }, () => {
+					client.emit('join', { username, id, password }, () => {
 						client.emit('msg', msg);
 					});
 				});
