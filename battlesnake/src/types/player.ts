@@ -9,18 +9,20 @@ export type Players = Map<string, Player>;
 export class Player {
 	readonly username: string;
 	readonly color: string;
+	readonly host: boolean;
 
 	readonly socket: Socket;
 
-	constructor(username: string, socket: Socket) {
+	constructor(username: string, socket: Socket, host: boolean = false) {
 		this.username = username;
 		this.color = randomColor();
+		this.host = host;
 
 		this.socket = socket;
 	}
 
 	sanitized() {
-		return new SanitizedPlayer(this.username, this.color);
+		return new SanitizedPlayer(this.username, this.color, this.host);
 	}
 }
 
@@ -28,10 +30,12 @@ export class Player {
 export class SanitizedPlayer {
 	readonly username: string;
 	readonly color: string;
+	readonly host: boolean;
 
-	constructor(username: string, color: string) {
+	constructor(username: string, color: string, host: boolean) {
 		this.username = username;
 		this.color = color;
+		this.host = host;
 	}
 }
 

@@ -20,12 +20,12 @@ describe('types/room', () => {
 
 	it('should be able to be created properly', () => {
 		const room = new Room(name);
+		expect(room).to.have.all.keys('name', 'id', 'password', 'io', 'players', 'timeoutID');
 		expect(room).to.be.an('object').that.has.a.property('name').that.equals(name);
-		expect(room).to.have.all.keys('name', 'id', 'password', 'io', 'players');
 	});
 
 	it('should be able to have a password', () => {
-		const room = new Room(name, id, {}, password);
+		const room = new Room(name, id, {}, 0, password);
 		expect(room).to.have.property('password').that.equals(password);
 	});
 
@@ -34,6 +34,7 @@ describe('types/room', () => {
 			'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz',
 			id,
 			{},
+			0,
 			'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz',
 		);
 

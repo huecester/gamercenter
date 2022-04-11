@@ -16,18 +16,20 @@ export class Room {
 	players: Players = new Map();
 	readonly password: string | null;
 
+	readonly timeoutID?: number;
 	readonly io: BroadcastOperator<ServerToClientEvents, null>;
 
-	constructor(name: string, id: string, io: BroadcastOperator<ServerToClientEvents, null>, password?: string) {
+	constructor(name: string, id: string, io: BroadcastOperator<ServerToClientEvents, null>, timeoutID: number, password?: string) {
 		this.name = name.trim().slice(0, 32);
 		this.id = id;
 		this.password = password?.length && password?.length > 0 ? password.trim().slice(0, 32) : null;
 
+		this.timeoutID = timeoutID;
 		this.io = io;
 	}
 
-	static fromForm(form: RoomForm, id: string) {
-		return new Room(form.name, id, io.of('/rooms').to(id), form.password);
+	static fromForm(form: RoomForm, id: string, timeoutID: number) {
+		return new Room(form.name, id, io.of('/rooms').to(id), timeoutID, form.password);
 	}
 
 	sanitizedPlayers() {
@@ -43,14 +45,21 @@ export class Room {
 	}
 
 	addPlayer(username: string, socket: Socket) {
-		const id = uuidv4();
-		const player = new Player(username, socket);
-		socket.join(this.id);
+		// If timeoutID still exists, player is first to join and is host
+		let player;
+		if (this.timeoutID) {
+			clearTimeout(this.timeoutID);
+			player = new Player(username, socket, true);
+		} else {
+			player = new Player(username, socket);
+		}
 
+		socket.join(this.id);
 		socket.on('msg', (msg: string) => {
 			this.io.emit('msg', player.username, msg.slice(0, 64));
 		});
 
+		const id = uuidv4();
 		this.players.set(id, player);
 		this.io.emit('join', player.username, this.sanitizedPlayers());
 	}

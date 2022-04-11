@@ -1,6 +1,7 @@
 import { describe } from 'mocha';
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
+import sinon from 'sinon';
 import { faker } from '@faker-js/faker';
 import { createServer as createHttpServer } from 'http';
 import { io as IOClient } from 'socket.io-client';
@@ -109,6 +110,40 @@ describe('Rooms', () => {
 				.type('form')
 				.send();
 			expect(res).to.have.a.status(422);
+		});
+
+		describe('Timeouts', () => {
+			let clock;
+
+			before(() => {
+				clock = sinon.useFakeTimers();
+			});
+
+			after(() => {
+				clock.restore();
+			});
+
+			it('should timeout a room after 5 seconds without a connection', async () => {
+				const req = chai.request(app).keepOpen();
+				const id = (await req.post('/rooms')
+					.type('form')
+					.send({ name, password }))
+					.text;
+
+				clock.tick(4999);
+				{
+					const res = await req.get('/rooms');
+					expect(res.body).to.have.a.property(id);
+				}
+
+				clock.tick(1);
+				{
+					const res = await req.get('/rooms');
+					expect(res.body).to.be.an('object').that.is.empty;
+				}
+
+				req.close();
+			});
 		});
 	});
 

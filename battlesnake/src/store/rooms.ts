@@ -5,16 +5,24 @@ const rooms: Rooms = new Map();
 
 export function addRoom(form: RoomForm) {
 	const id = uuidv4();
-	const room = Room.fromForm(form, id);
+	const timeoutID = setTimeout(() => rooms.delete(id), 5000);
+	const room = Room.fromForm(form, id, timeoutID);
 	rooms.set(id, room);
 	return id;
 }
 
 export function clearRooms() {
+	for (const room of rooms.values()) {
+		room.timeoutID && clearTimeout(room.timeoutID);
+	}
 	rooms.clear();
 }
 
 export function deleteRoom(id: string) {
+	const timeoutID = rooms.get(id)?.timeoutID;
+	if (timeoutID) {
+		clearTimeout(timeoutID);
+	}
 	return rooms.delete(id);
 }
 

@@ -14,6 +14,7 @@ describe('types/players', () => {
 	it('should be able to be created properly', () => {
 		const player = new Player(username);
 		expect(player).to.be.an('object');
+		expect(player).to.have.all.keys('username', 'color', 'socket', 'host');
 		expect(player).to.have.a.property('username').that.equals(username);
 		expect(player).to.have.a.property('color').that.matches(/^#[a-f0-9]{6}$/i);
 	});
@@ -22,6 +23,6 @@ describe('types/players', () => {
 		const player = new Player(username);
 		const sanitized = player.sanitized();
 
-		expect(sanitized).to.have.all.keys('username', 'color');
+		expect(sanitized).to.have.all.keys('username', 'color', 'host');
 	});
 });
