@@ -19,8 +19,7 @@ router.post('/', (req, res) => {
 
 	const id = addRoom(form);
 
-	res
-		.status(201)
+	res.status(201)
 		.set('Content-Type', 'text/plain')
 		.send(id);
 });
