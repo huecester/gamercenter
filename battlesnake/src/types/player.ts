@@ -13,7 +13,7 @@ export class Player {
 
 	readonly socket: Socket;
 
-	constructor(username: string, socket: Socket, host: boolean = false) {
+	constructor(username: string, socket: Socket, host = false) {
 		this.username = username;
 		this.color = randomColor();
 		this.host = host;
