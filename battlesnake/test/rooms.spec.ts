@@ -9,7 +9,6 @@ import { io as IOClient } from 'socket.io-client';
 import app from '../src/app';
 import io from '../src/io';
 import { clearRooms } from '../src/store/rooms';
-import { JoinError } from '../src/types/data';
 
 chai.use(chaiHttp);
 
@@ -220,35 +219,35 @@ describe('Rooms', () => {
 
 			it('should not be able to connect without a name', done => {
 				client.emit('join', { id, password }, data => {
-					expect(data).to.have.a.property('err').that.equals(JoinError.NOUSERNAME);
+					expect(data).to.have.a.property('err').that.equals('NOUSERNAME');
 					done();
 				});
 			});
 
 			it('should not be able to connect without an ID', done => {
 				client.emit('join', { username, password }, data => {
-					expect(data).to.have.a.property('err').that.equals(JoinError.NOTFOUND);
+					expect(data).to.have.a.property('err').that.equals('NOTFOUND');
 					done();
 				});
 			});
 
 			it('should not be able to connect with an unknown ID', done => {
 				client.emit('join', { username, id: 'bazinga', password }, data => {
-					expect(data).to.have.a.property('err').that.equals(JoinError.NOTFOUND);
+					expect(data).to.have.a.property('err').that.equals('NOTFOUND');
 					done();
 				});
 			});
 
 			it('should not be able to connect without a password', done => {
 				client.emit('join', { username, id }, data => {
-					expect(data).to.have.a.property('err').that.equals(JoinError.BADPASS);
+					expect(data).to.have.a.property('err').that.equals('BADPASS');
 					done();
 				});
 			});
 
 			it('should not be able to connect with an incorrect password', done => {
 				client.emit('join', { username, id, password: 'bazinga' }, data => {
-					expect(data).to.have.a.property('err').that.equals(JoinError.BADPASS);
+					expect(data).to.have.a.property('err').that.equals('BADPASS');
 					done();
 				});
 			});

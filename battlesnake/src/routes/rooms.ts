@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { Namespace, Socket } from 'socket.io';
 
 import { RoomForm } from '../types/room';
-import { JoinData, JoinError, JoinResult } from '../types/data';
+import { JoinData, JoinResult } from '../types/data';
 import { addRoom, getRoom, getSanitizedRooms } from '../store/rooms';
 
 export const router = Router();
@@ -38,7 +38,7 @@ export function onConnection(io: Namespace, socket: Socket) {
 		// Test for username
 		if (!data.username) {
 			return cb({
-				err: JoinError.NOUSERNAME,
+				err: 'NOUSERNAME',
 			});
 		}
 
@@ -48,14 +48,14 @@ export function onConnection(io: Namespace, socket: Socket) {
 		const room = getRoom(data.id);
 		if (!room) {
 			return cb({
-				err: JoinError.NOTFOUND,
+				err: 'NOTFOUND',
 			});
 		}
 
 		// Check password
 		if (room.password && room.password !== data.password) {
 			return cb({
-				err: JoinError.BADPASS,
+				err: 'BADPASS',
 			});
 		}
 

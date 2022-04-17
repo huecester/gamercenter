@@ -18,8 +18,4 @@ export interface JoinFailure {
 	err: JoinError,
 }
 
-export enum JoinError {
-	NOUSERNAME,
-	NOTFOUND,
-	BADPASS,
-}
+export type JoinError = 'NOUSERNAME' | 'NOTFOUND' | 'BADPASS';
