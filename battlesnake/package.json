@@ -5,6 +5,7 @@
 	"license": "MIT",
 	"scripts": {
 		"build": "tsc",
+		"build:watch": "tsc -w",
 
 		"dev": "tsc && node .",
 		"dev:watch": "nodemon --ext ts --exec 'yarn dev || exit 1'",
