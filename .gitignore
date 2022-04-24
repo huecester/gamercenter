@@ -5,3 +5,4 @@ yarn-error.log
 .env.*
 .DS_Store
 node_modules/
+tagbardebug.log
