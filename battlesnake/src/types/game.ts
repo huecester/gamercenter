@@ -11,12 +11,12 @@ const DIRECTION_BUFFER_SIZE = 2;
 
 // Helper functions
 const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
-const getNowMs = () => {
+const clamp = (min: number, val: number, max: number) => Math.max(min, Math.min(max, val));
+function getNowMs() {
 	const time = process.hrtime();
 	return time[0] * 1000 + time[1] / 1000000;
-};
-const clamp = (min: number, val: number, max: number) => Math.max(min, Math.min(max, val));
-const isOpposite = (orig: Direction, next: Direction) => {
+}
+function isOpposite(orig: Direction, next: Direction) {
 	switch (orig) {
 		case 'right':
 			return next !== 'left';
@@ -28,7 +28,7 @@ const isOpposite = (orig: Direction, next: Direction) => {
 			return next !== 'up';
 	}
 }
-const applyDirection = (cell: number[], dir: Direction) => {
+function applyDirection(cell: number[], dir: Direction) {
 	switch (dir) {
 		case 'right':
 			return [cell[0] + 1, cell[1]];
