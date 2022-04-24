@@ -21,7 +21,7 @@ export class Player {
 		this.socket = socket;
 	}
 
-	sanitized() {
+	get sanitized() {
 		return new SanitizedPlayer(this.username, this.color, this.host);
 	}
 }

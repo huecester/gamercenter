@@ -62,7 +62,7 @@ describe('types/room', () => {
 
 	it('should be able to be sanitized', () => {
 		const room = new Room(name, id, {}, password);
-		const sanitized = room.sanitized();
+		const sanitized = room.sanitized;
 
 		expect(sanitized).to.have.all.keys('name', 'players', 'password');
 	});

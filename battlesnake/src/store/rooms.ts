@@ -33,7 +33,7 @@ export function getRoom(id: string) {
 export function getSanitizedRooms() {
 	const sanitizedRooms: SanitizedRooms = {};
 	for (const [id, room] of rooms) {
-		sanitizedRooms[id] = room.sanitized();
+		sanitizedRooms[id] = room.sanitized;
 	}
 	return sanitizedRooms;
 }

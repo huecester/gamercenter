@@ -61,7 +61,7 @@ export function onConnection(io: Namespace, socket: Socket) {
 
 		room.addPlayer(username, socket);
 		cb({
-			players: room.sanitizedPlayers(),
+			players: room.sanitizedPlayers,
 		});
 	});
 }

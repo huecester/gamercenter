@@ -21,7 +21,7 @@ describe('types/players', () => {
 
 	it('should be able to be sanitized', () => {
 		const player = new Player(username);
-		const sanitized = player.sanitized();
+		const sanitized = player.sanitized;
 
 		expect(sanitized).to.have.all.keys('username', 'color', 'host');
 	});

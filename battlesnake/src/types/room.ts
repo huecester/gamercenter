@@ -32,16 +32,16 @@ export class Room {
 		return new Room(form.name, id, io.of('/rooms').to(id), timeoutID, form.password);
 	}
 
-	sanitizedPlayers() {
+	get sanitizedPlayers() {
 		const sanitizedPlayers: SanitizedPlayers = {};
 		for (const [id, player] of this.players) {
-			sanitizedPlayers[id] = player.sanitized();
+			sanitizedPlayers[id] = player.sanitized;
 		}
 		return sanitizedPlayers;
 	}
 
-	sanitized() {
-		return new SanitizedRoom(this.name, this.sanitizedPlayers(), this.password !== null);
+	get sanitized() {
+		return new SanitizedRoom(this.name, this.sanitizedPlayers, this.password !== null);
 	}
 
 	addPlayer(username: string, socket: Socket) {
@@ -61,7 +61,7 @@ export class Room {
 
 		const id = uuidv4();
 		this.players.set(id, player);
-		this.io.emit('join', player.username, this.sanitizedPlayers());
+		this.io.emit('join', player.username, this.sanitizedPlayers);
 	}
 
 	removePlayer(id: string) {
@@ -69,7 +69,7 @@ export class Room {
 		if (player) {
 			const username = player.username;
 			this.players.delete(id);
-			this.io.emit('leave', username, this.sanitizedPlayers());
+			this.io.emit('leave', username, this.sanitizedPlayers);
 		}
 	}
 }
