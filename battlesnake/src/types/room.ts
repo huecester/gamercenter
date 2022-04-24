@@ -1,7 +1,7 @@
-import { BroadcastOperator, Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import { Player, Players, SanitizedPlayers } from './player';
-import io, { ServerToClientEvents } from '../io';
+import io from '../io';
 
 export type Rooms = Map<string, Room>;
 
@@ -16,20 +16,18 @@ export class Room {
 	players: Players = new Map();
 	readonly password: string | null;
 
-	readonly timeoutID?: number;
-	readonly io: BroadcastOperator<ServerToClientEvents, null>;
+	readonly timeoutID?: NodeJS.Timeout;
 
-	constructor(name: string, id: string, io: BroadcastOperator<ServerToClientEvents, null>, timeoutID: number, password?: string) {
+	constructor(name: string, id: string, timeoutID: NodeJS.Timeout, password?: string) {
 		this.name = name.trim().slice(0, 32);
 		this.id = id;
 		this.password = password?.length && password?.length > 0 ? password.trim().slice(0, 32) : null;
 
 		this.timeoutID = timeoutID;
-		this.io = io;
 	}
 
-	static fromForm(form: RoomForm, id: string, timeoutID: number) {
-		return new Room(form.name, id, io.of('/rooms').to(id), timeoutID, form.password);
+	static fromForm(form: RoomForm, id: string, timeoutID: NodeJS.Timeout) {
+		return new Room(form.name, id, timeoutID, form.password);
 	}
 
 	get sanitizedPlayers() {
@@ -44,9 +42,13 @@ export class Room {
 		return new SanitizedRoom(this.name, this.sanitizedPlayers, this.password !== null);
 	}
 
+	emitMsg(author: string, msg: string) { io.of('/rooms').to(this.id).emit('msg', author, msg.slice(0, 64)); }
+	emitJoin(player: string, players: SanitizedPlayers) { io.of('/rooms').to(this.id).emit('join', player, players); }
+	emitLeave(player: string, players: SanitizedPlayers) { io.of('/rooms').to(this.id).emit('leave', player, players); }
+
 	addPlayer(username: string, socket: Socket) {
 		// If timeoutID still exists, player is first to join and is host
-		let player;
+		let player: Player;
 		if (this.timeoutID) {
 			clearTimeout(this.timeoutID);
 			player = new Player(username, socket, true);
@@ -56,12 +58,12 @@ export class Room {
 
 		socket.join(this.id);
 		socket.on('msg', (msg: string) => {
-			this.io.emit('msg', player.username, msg.slice(0, 64));
+			this.emitMsg(player.username, msg.slice(0, 64));
 		});
 
 		const id = uuidv4();
 		this.players.set(id, player);
-		this.io.emit('join', player.username, this.sanitizedPlayers);
+		this.emitJoin(player.username, this.sanitizedPlayers);
 	}
 
 	removePlayer(id: string) {
@@ -69,7 +71,7 @@ export class Room {
 		if (player) {
 			const username = player.username;
 			this.players.delete(id);
-			this.io.emit('leave', username, this.sanitizedPlayers);
+			this.emitLeave(username, this.sanitizedPlayers);
 		}
 	}
 }
