@@ -131,6 +131,10 @@ class GamePlayer {
 		this.color = color;
 	}
 
+	get head() {
+		return this.cells[0] ?? [-1, -1];
+	}
+
 	bufferDirection(direction: Direction) {
 		this.newDirections.push(direction);
 	}
@@ -146,7 +150,8 @@ class GamePlayer {
 		this.newDirections = [];
 
 		// Update body
-		const newCell = this.cells.pop() ?? [0, 0]; // Workaround for pop() returning undefined on empty array
+		// this.cells should never be empty, so newCell should never be [-1, -1]
+		const newCell = this.cells.pop() ?? [-1, -1];
 		this.cells.unshift(applyDirection(newCell, this.direction));
 	}
 }
