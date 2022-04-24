@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Namespace, Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 
 import { RoomForm } from '../types/room';
 import { JoinData, JoinResult } from '../types/data';
@@ -25,7 +25,7 @@ router.post('/', (req, res) => {
 });
 
 
-export function onConnection(io: Namespace, socket: Socket) {
+export function onConnection(socket: Socket) {
 	// Timeout
 	const timeoutID = setTimeout(() => {
 		socket.disconnect(true);

@@ -42,9 +42,9 @@ export class Room {
 		return new SanitizedRoom(this.name, this.sanitizedPlayers, this.password !== null);
 	}
 
-	emitMsg(author: string, msg: string) { io.of('/rooms').to(this.id).emit('msg', author, msg.slice(0, 64)); }
-	emitJoin(player: string, players: SanitizedPlayers) { io.of('/rooms').to(this.id).emit('join', player, players); }
-	emitLeave(player: string, players: SanitizedPlayers) { io.of('/rooms').to(this.id).emit('leave', player, players); }
+	emitMsg(author: string, msg: string) { io.to(this.id).emit('msg', author, msg.slice(0, 64)); }
+	emitJoin(player: string, players: SanitizedPlayers) { io.to(this.id).emit('join', player, players); }
+	emitLeave(player: string, players: SanitizedPlayers) { io.to(this.id).emit('leave', player, players); }
 
 	addPlayer(username: string, socket: Socket) {
 		// If timeoutID still exists, player is first to join and is host

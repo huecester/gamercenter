@@ -27,6 +27,6 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>();
 
 // Setup handlers
 import { onConnection as roomOnConnection } from './routes/rooms';
-io.of('/rooms').on('connection', socket => roomOnConnection(io.of('/rooms'), socket));
+io.on('connection', socket => roomOnConnection(socket));
 
 export default io;
