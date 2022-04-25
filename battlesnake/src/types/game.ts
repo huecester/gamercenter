@@ -1,4 +1,9 @@
 // TODO:
+// - Link with rooms and Socket.IO
+// - Init player bodies
+// - Tests
+
+// Ideas:
 // - round timers
 // - win counter
 // - better system for random food when empty not found in time
