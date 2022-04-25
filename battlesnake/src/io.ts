@@ -3,7 +3,7 @@ import { Server } from 'socket.io';
 // Define events
 import { JoinData, JoinResult } from './types/data';
 import { SanitizedPlayers } from './types/player';
-import { BoardState, Direction } from './types/game';
+import { BoardState, SanitizedGamePlayers, Direction } from './types/game';
 
 export interface ClientToServerEvents {
 	// Room
@@ -23,7 +23,11 @@ export interface ServerToClientEvents {
 	// Game
 	countdown: (seconds: number) => void,
 	start: () => void,
+	wall: (player: string) => void,
+	killed: (player: string, killer: string) => void,
 	board: (state: BoardState) => void,
+	players: (players: SanitizedGamePlayers) => void,
+	winner: (winner: string | null) => void,
 }
 
 const io = new Server<ClientToServerEvents, ServerToClientEvents>();

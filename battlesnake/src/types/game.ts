@@ -1,15 +1,17 @@
 // TODO:
 // - round timers
 // - win counter
+// - better system for random food when empty not found in time
 
 import io from '../io';
 
 // Base config variables
 const TICK_RATE = 20;
 const DIRECTION_BUFFER_SIZE = 2;
-const FOOD_SPAWN_ATTEMPTS = 10;
+const MAX_RANDOM_EMPTY_CELL_ATTEMPTS = 5;
 const DEFAULT_FOOD_FACTOR = 1/100;
 const DEFAULT_FOOD_MAX_FACTOR = 1/5;
+const FOOD_COLOR = '#ff0000';
 
 
 // Helper functions
@@ -92,6 +94,12 @@ export interface BoardState {
 	[color: string]: number[][];
 }
 
+export type SanitizedGamePlayers = {
+	[id: string]: SanitizedGamePlayer,
+}
+
+type PlayerState = 'alive' | 'dead' | 'winner';
+
 
 export class Game {
 	readonly id: string;
@@ -99,38 +107,87 @@ export class Game {
 
 	previousMs = getNowMs();
 	timeSinceLastUpdate = 0;
+	nextLoop?: NodeJS.Timeout;
 
 	players: GamePlayer[] = [];
 	food: number[][] = [];
+	
+	// State flags
+	noMoreFood = false;
 
 	constructor(id: string, config?: PartialGameConfig) {
 		this.id = id;
 		this.config = normalizeConfig(config);
 	}
 
-	async start() {
+	get sanitizedPlayers() {
+		const sanitizedPlayers: SanitizedGamePlayers = {};
+		for (const player of this.players) {
+			sanitizedPlayers[player.id] = player.sanitized;
+		}
+		return sanitizedPlayers;
+	}
+
+	get sanitizedBoard() {
+		const board: BoardState = {};
+
+		// Players
+		for (const player of this.players) {
+			board[player.color] = player.cells;
+		}
+
+		// Food
+		board[FOOD_COLOR] = this.food;
+
+		return board;
+	}
+
+	emitCountdown(seconds: number) { io.to(this.id).emit('countdown', seconds); }
+	emitStart() { io.to(this.id).emit('start'); }
+	emitWall(player: string) { io.to(this.id).emit('wall', player); }
+	emitKilled(player: string, killer: string) { io.to(this.id).emit('killed', player, killer); }
+	emitBoard() { io.to(this.id).emit('board', this.sanitizedBoard); }
+	emitPlayers() { io.to(this.id).emit('players', this.sanitizedPlayers); }
+	emitWinner(winner: string | null) { io.to(this.id).emit('winner', winner); }
+
+	async start(players: GamePlayer[]) {
+		this.players = players;
+		this.init();
+
 		for (let i = this.config.countdownLength; i > 0; i--) {
-			io.to(this.id).emit('countdown', i);
+			this.emitCountdown(i);
 			await sleep(1000);
 		}
-		io.to(this.id).emit('start');
-		this.init();
+
+		this.emitStart();
 		this.loop();
 	}
 
 	init() {
-		// Initialize players
-		// Initialize food
-	}
+		// Initialize state flags
+		this.noMoreFood = false;
 
-	findEmptyCell() {
-		for (let i = 0; i < FOOD_SPAWN_ATTEMPTS; i++) {
-			
+		// Initialize food
+		for (let i = 0; i < this.config.foodAmount; i++) {
+			const cell = this.findEmptyCell();
+			if (cell) {
+				this.food.push(cell);
+			} else {
+				this.noMoreFood = true;
+				break;
+			}
+		}
+
+		// Initialize players
+		for (const player of this.players) {
+			player.state = 'alive';
+			player.killer = '';
+			player.newDirections = [];
 		}
 	}
 
 	loop() {
-		setTimeout(this.loop, 1000 / TICK_RATE);
+		this.nextLoop = setTimeout(this.loop, 1000 / TICK_RATE);
 		const nowMs = getNowMs();
 		const delta = (nowMs - this.previousMs) / 1000;
 		this.timeSinceLastUpdate += delta;
@@ -142,43 +199,135 @@ export class Game {
 		this.previousMs = nowMs;
 	}
 
+	stopLoop() {
+		if (this.nextLoop) {
+			clearTimeout(this.nextLoop);
+			this.nextLoop = undefined;
+		}
+	}
+
 	update() {
 		// Update players
-		for (const player of this.players) {
+		for (const player of this.players.filter(player => player.state === 'alive')) {
 			player.update();
 		}
 
 		this.checkCollisions();
 		this.updateEntities();
+
+		const winner = this.checkWinner();
+		if (winner !== undefined) {
+			this.emitPlayers();
+
+			if (winner !== null) {
+				this.emitWinner(winner);
+			} else {
+				this.emitWinner(null);
+			}
+
+			this.stopLoop();
+			return;
+		}
+
+		this.emitBoard();
+	}
+
+	findEmptyCell() {
+		for (let i = 0; i < MAX_RANDOM_EMPTY_CELL_ATTEMPTS; i++) {
+			const cell = randomCell(this.config.boardMaxX, this.config.boardMaxY);
+			if (!this.players.some(player => player.cells.some(bodyCell => isColliding(bodyCell, cell)))
+				&& !this.food.some(food => isColliding(food, cell))) {
+					return cell;
+				}
+		}
+		return null;
 	}
 
 	checkCollisions() {
 		for (const player of this.players) {
 			// Player -> wall
 			if (outOfBounds(player.head, this.config.boardMaxX, this.config.boardMaxY)) {
-				player.dying = true;
+				player.deathType = 'wall';
 			}
 
-			// Player -> body
-			else if (this.players.some(target => target.cells.some(cell => isColliding(player.head, cell)))) {
-				player.dying = true;
-			}
-
-			// Player -> food
 			else {
-				for (const food of this.food) {
-					if (isColliding(player.head, food)) {
-						player.grow();
-						this.food = this.food.filter(item => !isColliding(item, food));
+				out: {
+					// Player -> body
+					for (const target of this.players) {
+						if (target.cells.some(cell => isColliding(player.head, cell))) {
+							player.deathType = 'player';
+							player.killer = target.username;
+							break out;
+						}
+					}
+
+					// Player -> food
+					for (const food of this.food) {
+						if (isColliding(player.head, food)) {
+							player.grow();
+							this.food = this.food.filter(item => !isColliding(item, food));
+							break out;
+						}
 					}
 				}
 			}
+		}
+	}
+
+	updateEntities() {
+		// Refill food
+		if (!this.noMoreFood) {
+			for (let i = 0; i < this.config.foodAmount - this.food.length; i++) {
+				const cell = this.findEmptyCell();
+				if (cell) {
+					this.food.push(cell);
+				} else {
+					this.noMoreFood = true;
+					break;
+				}
+			}
+		}
+
+		// Dying players
+		let updatePlayers = false;
+		for (const player of this.players.filter(player => player.deathType)) {
+			updatePlayers = true;
+			player.state = 'dead';
+			player.cells = [];
+			switch (player.deathType) {
+				case 'wall':
+					this.emitWall(player.username);
+					break;
+				case 'player':
+					this.emitKilled(player.username, player.killer);
+					break;
+			}
+		}
+
+		// Update players if necessary
+		if (updatePlayers) {
+			this.emitPlayers();
+		}
+	}
+
+	checkWinner() {
+		const alivePlayers = this.players.filter(player => player.state === 'alive');
+		if (alivePlayers.length === 1) {
+			const winner = alivePlayers[0];
+			winner.state = 'winner';
+			return winner.username;
+		} else if (alivePlayers.length === 0) {
+			return null;
+		} else {
+			return undefined;
 		}
 	}
 }
 
 
 class GamePlayer {
+	readonly username: string;
+	readonly id: string;
 	readonly color: string;
 
 	// First element is head
@@ -187,14 +336,22 @@ class GamePlayer {
 	newDirections: Direction[] = [];
 
 	// State flags
-	dying = false;
+	state: PlayerState = 'alive';
+	deathType: null | 'wall' | 'player' = null;
+	killer = '';
 
-	constructor(color: string) {
+	constructor(username: string, id: string, color: string) {
+		this.username = username;
+		this.id = id;
 		this.color = color;
 	}
 
 	get head() {
 		return this.cells[0] ?? [-1, -1];
+	}
+
+	get sanitized() {
+		return new SanitizedGamePlayer(this.username, this.color, this.state);
 	}
 
 	grow() {
@@ -219,5 +376,17 @@ class GamePlayer {
 		// this.cells should never be empty, so newCell should never be [-1, -1]
 		const newCell = this.cells.pop() ?? [-1, -1];
 		this.cells.unshift(applyDirection(newCell, this.direction));
+	}
+}
+
+class SanitizedGamePlayer {
+	readonly username: string;
+	readonly color: string;
+	readonly state: PlayerState;
+
+	constructor(username: string, color: string, state: PlayerState) {
+		this.username = username;
+		this.color = color;
+		this.state = state;
 	}
 }
