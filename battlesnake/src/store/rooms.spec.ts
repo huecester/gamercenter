@@ -3,7 +3,7 @@ import { expect, use } from 'chai';
 import chaiEach from 'chai-each';
 
 import { SanitizedRoom } from '../types/sanitizedRoom';
-import { getSanitizedRooms } from './rooms'
+import { getSanitizedRooms } from './rooms';
 
 use(chaiEach);
 
