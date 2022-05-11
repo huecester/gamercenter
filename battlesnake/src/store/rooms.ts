@@ -4,10 +4,22 @@ import faker from '@faker-js/faker';
 import { Room } from '../types/room';
 
 const rooms = new Map();
-for (let i = 0; i < 10; i++) {
-	rooms.set(uuidv4(), new Room(faker.lorem.word()));
+
+export function addRoom(room: Room) {
+	const id = uuidv4();
+	rooms.set(id, room);
+	return id;
+}
+
+export function getRoom(id: string) {
+	return rooms.get(id);
+}
+
+export function clearRooms() {
+	rooms.clear();
 }
 
 export function getSanitizedRooms() {
 	return Array.from(rooms.values()).map(room => room.sanitized());
 }
+

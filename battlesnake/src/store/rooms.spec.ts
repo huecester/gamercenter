@@ -1,16 +1,47 @@
 import { describe } from 'mocha';
 import { expect, use } from 'chai';
 import chaiEach from 'chai-each';
+import faker from '@faker-js/faker';
 
+import { Room } from '../types/room';
 import { SanitizedRoom } from '../types/sanitizedRoom';
-import { getSanitizedRooms } from './rooms';
+import { addRoom, clearRooms, getRoom, getSanitizedRooms } from './rooms';
 
 use(chaiEach);
 
 describe('store/rooms', () => {
-	it('should be able to get all rooms as sanitized', () => {
-		const rooms = getSanitizedRooms();
+	let room;
+	
+	beforeEach(() => {
+		room = new Room(faker.lorem.word());
+	});
 
-		expect(rooms).to.each.be.an.instanceof(SanitizedRoom);
+	afterEach(() => {
+		clearRooms();
+	});
+
+	it('should be able to add rooms', () => {
+		addRoom(room);
+		expect(getSanitizedRooms()).to.have.a.lengthOf(1);
+	});
+
+	it('should be able to get rooms by ID', () => {
+		const id = addRoom(room);
+		expect(getRoom(id)).to.deep.equal(room);
+	})
+
+	it('should be able to clear rooms', () => {
+		addRoom(room);
+		clearRooms();
+
+		expect(getSanitizedRooms()).to.have.a.lengthOf(0);
+	});
+
+	it('should be able to get all rooms as sanitized', () => {
+		for (let i = 0; i < 10; i++) {
+			addRoom(new Room(faker.lorem.word()));
+		}
+
+		expect(getSanitizedRooms()).to.each.be.an.instanceof(SanitizedRoom);
 	});
 });
