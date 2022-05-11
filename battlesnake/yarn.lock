@@ -479,6 +479,11 @@ camelcase@^6.0.0:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-6.3.0.tgz#5685b95eb209ac9c0c177467778c9c84df58ba9a"
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
+chai-each@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/chai-each/-/chai-each-0.0.1.tgz#d195674e02c2ab3210a2b11f4d7f3ca0d7f46712"
+  integrity sha512-W0G98eDRmV4ahXjGBXHsljhXU2MBLQquP2Eo+oOikqywGO0QLYK8tBUKkFGwl7KPQWeeQPLssvRbQXFsIk6Xlg==
+
 chai-http@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/chai-http/-/chai-http-4.3.0.tgz#3c37c675c1f4fe685185a307e345de7599337c1a"

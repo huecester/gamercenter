@@ -8,6 +8,6 @@ export class Room {
 	}
 
 	sanitized() {
-		return SanitizedRoom.fromRoom(this);
+		return new SanitizedRoom(this);
 	}
 }
