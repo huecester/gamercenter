@@ -42,6 +42,6 @@ describe('store/rooms', () => {
 			addRoom(new Room(faker.lorem.word()));
 		}
 
-		expect(Object.values(getSanitizedRooms())).to.each.be.an.instanceof(SanitizedRoom);
+		expect(Object.values(getSanitizedRooms())).to.each.be.an.instanceOf(SanitizedRoom);
 	});
 });

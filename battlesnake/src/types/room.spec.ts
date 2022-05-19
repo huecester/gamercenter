@@ -19,6 +19,6 @@ describe('types/room', () => {
 
 	it('should be able to be sanitized', () => {
 		const sanitized = room.sanitized();
-		expect(sanitized).to.be.an.instanceof(SanitizedRoom);
+		expect(sanitized).to.be.an.instanceOf(SanitizedRoom);
 	});
 });
