@@ -20,6 +20,9 @@ export function clearRooms() {
 }
 
 export function getSanitizedRooms() {
-	return Array.from(rooms.values()).map(room => room.sanitized());
+	return Array.from(rooms.entries()).reduce((rooms, [id, room]) => {
+		rooms[id] = room.sanitized();
+		return rooms;
+	}, {});
 }
 

@@ -22,7 +22,7 @@ describe('store/rooms', () => {
 
 	it('should be able to add rooms', () => {
 		addRoom(room);
-		expect(getSanitizedRooms()).to.have.a.lengthOf(1);
+		expect(Object.keys(getSanitizedRooms())).to.have.a.lengthOf(1);
 	});
 
 	it('should be able to get rooms by ID', () => {
@@ -34,7 +34,7 @@ describe('store/rooms', () => {
 		addRoom(room);
 		clearRooms();
 
-		expect(getSanitizedRooms()).to.have.a.lengthOf(0);
+		expect(getSanitizedRooms()).to.be.empty;
 	});
 
 	it('should be able to get all rooms as sanitized', () => {
@@ -42,6 +42,6 @@ describe('store/rooms', () => {
 			addRoom(new Room(faker.lorem.word()));
 		}
 
-		expect(getSanitizedRooms()).to.each.be.an.instanceof(SanitizedRoom);
+		expect(Object.values(getSanitizedRooms())).to.each.be.an.instanceof(SanitizedRoom);
 	});
 });
