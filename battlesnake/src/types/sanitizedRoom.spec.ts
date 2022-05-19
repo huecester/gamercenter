@@ -14,7 +14,7 @@ describe('types/sanitizedRoom', () => {
 		sanitized = new SanitizedRoom(room);
 	});
 
-	it('should be able to be created from a room', () => {
+	it('should be able to be created properly', () => {
 		expect(sanitized).to.have.a.property('name').that.is.a('string').that.equals(name);
 	});
 });
