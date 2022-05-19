@@ -31,7 +31,16 @@ describe('Rooms', () => {
 			.that.equals(name);
 	});
 
-	it('should be able to create rooms', () => {
+	it('should be able to create rooms', async () => {
+		{
+			const res = await request(app).post('/rooms')
+				.send({ name });
+			expect(res.status).to.equal(201);
+		}
 
+		{
+			const res = await request(app).get('/rooms');
+			expect(Object.keys(res.body)).to.have.a.lengthOf(1);
+		}
 	});
 });
