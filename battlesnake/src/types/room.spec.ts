@@ -25,6 +25,9 @@ describe('types/room', () => {
 	});
 
 	it('should be able to return sanitized players', () => {
+		for (let i = 0; i < 10; i++) {
+			room.registerPlayer(new Player(faker.internet.userName()));
+		}
 		const sanitized = room.sanitizedPlayers();
 		expect(Object.values(sanitized)).to.each.be.an.instanceOf(SanitizedPlayer);
 	});
