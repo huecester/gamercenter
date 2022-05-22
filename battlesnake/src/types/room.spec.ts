@@ -1,18 +1,32 @@
 import { describe } from 'mocha';
 import { expect } from 'chai';
+import { mock, restore } from 'sinon';
 import faker from '@faker-js/faker';
 
-import { Player } from './player';
 import { Room } from './room';
-import { SanitizedPlayer } from './sanitizedPlayer';
 import { SanitizedRoom } from './sanitizedRoom';
 
 describe('types/room', () => {
 	let name, room;
 
+	function createPlayerMock() {
+		const username = faker.internet.userName();
+		const playerApi = {
+			username,
+			sanitized() {
+				return { username: this.username }
+			},
+		};
+		return [playerApi, mock(playerApi)];
+	}
+
 	beforeEach(() => {
 		name = faker.lorem.word();
 		room = new Room(name);
+	});
+
+	afterEach(() => {
+		restore();
 	});
 
 	it('should be able to be created', () => {
@@ -25,20 +39,25 @@ describe('types/room', () => {
 	});
 
 	it('should be able to return sanitized players', () => {
+		const playerMocks = [];
+
 		for (let i = 0; i < 10; i++) {
-			room.registerPlayer(new Player(faker.internet.userName()));
+			const [playerApi, playerMock] = createPlayerMock();
+			playerMock.expects('sanitized').once();
+			room.registerPlayer(playerApi);
+			playerMocks.push(playerMock);
 		}
-		const sanitized = room.sanitizedPlayers();
-		expect(Object.values(sanitized)).to.each.be.an.instanceOf(SanitizedPlayer);
+		room.sanitizedPlayers();
+
+		playerMocks.forEach(mock => mock.verify());
 	});
 
 	it('should be able to register a player', () => {
-		const username = faker.internet.userName();
-		const playerMock = new Player(username);
-		room.registerPlayer(playerMock);
+		const [playerApi, _] = createPlayerMock();
+		room.registerPlayer(playerApi);
 
 		const sanitized = room.sanitizedPlayers();
 		expect(Object.keys(sanitized)).to.have.a.lengthOf(1);
-		expect(Object.values(sanitized)[0]).to.have.a.property('username').that.equals(username);
+		expect(Object.values(sanitized)[0]).to.have.a.property('username').that.equals(playerApi.username);
 	});
 });
