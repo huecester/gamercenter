@@ -36,6 +36,9 @@ describe('Rooms', () => {
 			const res = await request(app).post('/rooms')
 				.send({ name });
 			expect(res.status).to.equal(201);
+
+			const uuidRegex = new RegExp(/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/);
+			expect(res.text).to.be.a('string').that.matches(uuidRegex);
 		}
 
 		{

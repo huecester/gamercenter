@@ -14,8 +14,10 @@ app.get('/rooms', (req, res) => {
 
 app.post('/rooms', (req, res) => {
 	const room = new Room(req.body.name);
-	addRoom(room);
-	res.sendStatus(201);
+	const id = addRoom(room);
+	res.status(201)
+		.set('Content-Type', 'text/plain')
+		.send(id);
 });
 
 export default app;
