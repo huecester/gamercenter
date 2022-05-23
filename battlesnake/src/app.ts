@@ -1,5 +1,4 @@
 import express from 'express';
-
 import { Room } from './types/room';
 import { addRoom, getSanitizedRooms } from './store/rooms';
 
