@@ -9,7 +9,7 @@
 		"dev": "tsc && node .",
 		"dev:watch": "nodemon --ext ts --exec 'yarn dev || exit 1'",
 		"dev:full": "nodemon --ext ts --exec 'yarn test && yarn dev || exit 1'",
-		"test": "ts-mocha --extension .spec.ts --recursive src test",
+		"test": "nyc ts-mocha --extension .spec.ts --recursive src test",
 		"test:watch": "nodemon --ext ts --exec  'yarn test || exit 1'",
 		"lint": "eslint src test",
 		"lint:watch": "nodemon --ext ts --exec 'yarn lint'"
@@ -29,6 +29,7 @@
 		"chai-http": "^4.3.0",
 		"eslint": "^8.12.0",
 		"mocha": "^9.2.2",
+		"nyc": "^15.1.0",
 		"sinon": "^13.0.1",
 		"sinon-chai": "^3.7.0",
 		"socket.io-client": "^4.4.1",
