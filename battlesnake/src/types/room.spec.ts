@@ -14,7 +14,7 @@ describe('types/room', () => {
 		const playerApi = {
 			username,
 			sanitized() {
-				return { username: this.username }
+				return { username: this.username };
 			},
 		};
 		return [playerApi, mock(playerApi)];
@@ -53,7 +53,7 @@ describe('types/room', () => {
 	});
 
 	it('should be able to register a player', () => {
-		const [playerApi, _] = createPlayerMock();
+		const [playerApi] = createPlayerMock();
 		room.registerPlayer(playerApi);
 
 		const sanitized = room.sanitizedPlayers();

@@ -1,6 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import faker from '@faker-js/faker';
-
 import { Room } from '../types/room';
 
 const rooms = new Map();

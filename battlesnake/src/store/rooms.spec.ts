@@ -28,7 +28,7 @@ describe('store/rooms', () => {
 	it('should be able to get rooms by ID', () => {
 		const id = addRoom(room);
 		expect(getRoom(id)).to.deep.equal(room);
-	})
+	});
 
 	it('should be able to clear rooms', () => {
 		addRoom(room);
