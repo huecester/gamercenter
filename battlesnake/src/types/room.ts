@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Player } from './player';
+import { SanitizedPlayer } from './sanitizedPlayer';
 import { SanitizedRoom } from './sanitizedRoom';
 
 export class Room {
@@ -21,7 +22,7 @@ export class Room {
 	}
 
 	sanitizedPlayers() {
-		return Array.from(this.players.entries()).reduce((players, [id, player]) => {
+		return Array.from(this.players.entries()).reduce((players: {[id: string]: SanitizedPlayer}, [id, player]) => {
 			players[id] = player.sanitized();
 			return players;
 		}, {});

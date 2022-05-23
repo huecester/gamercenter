@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Room } from '../types/room';
+import { SanitizedRoom } from '../types/sanitizedRoom';
 
 const rooms = new Map();
 
@@ -18,7 +19,7 @@ export function clearRooms() {
 }
 
 export function getSanitizedRooms() {
-	return Array.from(rooms.entries()).reduce((rooms, [id, room]) => {
+	return Array.from(rooms.entries()).reduce((rooms: {[id: string]: SanitizedRoom}, [id, room]) => {
 		rooms[id] = room.sanitized();
 		return rooms;
 	}, {});
