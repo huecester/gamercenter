@@ -27,6 +27,9 @@ rules:
   no-duplicate-imports:
     - error
     - includeExports: true
+  '@typescript-eslint/no-unused-vars':
+    - error
+    - varsIgnorePattern: "^_.*"
 overrides:
   - files:
     - 'src/**/*.spec.ts'
