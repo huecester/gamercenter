@@ -2,6 +2,7 @@ import { describe } from 'mocha';
 import { expect, request, use } from 'chai';
 import chaiHttp from 'chai-http';
 import faker from '@faker-js/faker';
+import { v4 as uuidv4 } from 'uuid';
 
 import app from '../src/app';
 import { Room } from '../src/types/room';
@@ -21,7 +22,7 @@ describe('Rooms', () => {
 	});
 
 	it('should be able to get rooms', async () => {
-		const room = new Room(name);
+		const room = new Room(name, uuidv4());
 		addRoom(room);
 
 		const res = await request(app).get('/rooms');

@@ -1,19 +1,18 @@
 import { Server } from 'socket.io';
+import { JoinData } from './types/joinData';
+import { socketHandler as roomSocketHandler } from './app';
 
 interface ServerToClientEvents {
-	test: () => void;
+	msg: (author: string, msg: string) => void;
 }
 
 interface ClientToServerEvents {
+	join: (id: string, username: string, cb: (joinData: JoinData) => void) => void;
+	msg: (msg: string) => void;
 }
 
-const io = new Server<ServerToClientEvents, ClientToServerEvents>({ serveClient: false });
+const io = new Server<ClientToServerEvents, ServerToClientEvents>({ serveClient: false });
 
-io.on('connection', socket => {
-	console.log('connected');
-	socket.on('disconnect', () => {
-		console.log('disconnected');
-	});
-});
+io.of('/rooms').on('connection', roomSocketHandler);
 
 export default io;

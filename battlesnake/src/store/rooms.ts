@@ -1,13 +1,10 @@
-import { v4 as uuidv4 } from 'uuid';
 import { Room } from '../types/room';
 import { SanitizedRoom } from '../types/sanitizedRoom';
 
 const rooms = new Map();
 
 export function addRoom(room: Room) {
-	const id = uuidv4();
-	rooms.set(id, room);
-	return id;
+	rooms.set(room.id, room);
 }
 
 export function getRoom(id: string) {

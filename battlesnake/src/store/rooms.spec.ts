@@ -2,6 +2,7 @@ import { describe } from 'mocha';
 import { expect, use } from 'chai';
 import chaiEach from 'chai-each';
 import faker from '@faker-js/faker';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Room } from '../types/room';
 import { SanitizedRoom } from '../types/sanitizedRoom';
@@ -10,10 +11,11 @@ import { addRoom, clearRooms, getRoom, getSanitizedRooms } from './rooms';
 use(chaiEach);
 
 describe('store/rooms', () => {
-	let room;
+	let room, id;
 	
 	beforeEach(() => {
-		room = new Room(faker.lorem.word());
+		id = uuidv4();
+		room = new Room(faker.lorem.word(), id);
 	});
 
 	afterEach(() => {
@@ -26,7 +28,7 @@ describe('store/rooms', () => {
 	});
 
 	it('should be able to get rooms by ID', () => {
-		const id = addRoom(room);
+		addRoom(room);
 		expect(getRoom(id)).to.deep.equal(room);
 	});
 
@@ -39,7 +41,7 @@ describe('store/rooms', () => {
 
 	it('should be able to get all rooms as sanitized', () => {
 		for (let i = 0; i < 10; i++) {
-			addRoom(new Room(faker.lorem.word()));
+			addRoom(new Room(uuidv4(), faker.lorem.word()));
 		}
 
 		expect(Object.values(getSanitizedRooms())).to.each.be.an.instanceOf(SanitizedRoom);

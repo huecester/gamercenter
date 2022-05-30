@@ -2,6 +2,7 @@ import { describe } from 'mocha';
 import { expect } from 'chai';
 import { mock, restore } from 'sinon';
 import faker from '@faker-js/faker';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Room } from './room';
 import { SanitizedRoom } from './sanitizedRoom';
@@ -16,13 +17,17 @@ describe('types/room', () => {
 			sanitized() {
 				return { username: this.username };
 			},
+			socket: {
+				join() { /* empty */ },
+				on() { /* empty */ },
+			},
 		};
-		return [playerApi, mock(playerApi)];
+		return [playerApi, mock(playerApi), mock(playerApi.socket)];
 	}
 
 	beforeEach(() => {
 		name = faker.lorem.word();
-		room = new Room(name);
+		room = new Room(name, uuidv4());
 	});
 
 	afterEach(() => {
@@ -53,8 +58,14 @@ describe('types/room', () => {
 	});
 
 	it('should be able to register a player', () => {
-		const [playerApi] = createPlayerMock();
+		const [playerApi, _, socketMock] = createPlayerMock();
+
+		socketMock.expects('join').once().withExactArgs(room.id);
+		socketMock.expects('on').once();
+
 		room.registerPlayer(playerApi);
+
+		socketMock.verify();
 
 		const sanitized = room.sanitizedPlayers();
 		expect(Object.keys(sanitized)).to.have.a.lengthOf(1);
