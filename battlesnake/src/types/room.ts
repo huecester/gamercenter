@@ -46,8 +46,7 @@ export class Room {
 		return id;
 	}
 
-	setupPlayerSocket(player: Player) {
-		const socket = player.socket;
+	setupPlayerSocket({ socket }: Player) {
 		socket.join(this.id);
 
 		socket.on('msg', msg => {
